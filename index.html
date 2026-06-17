@@ -5,473 +5,849 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Haarlem Games | Explore Haarlem and discover how games are made</title>
   <meta name="description" content="Haarlem Games is an independent browser game studio crafting playful games with the heart of Haarlem." />
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://haarlemgames.com/" />
+  <meta property="og:title"       content="Haarlem Games | Explore Haarlem and discover how games are made" />
+  <meta property="og:description" content="From the canals of Haarlem to players around the world. Haarlem Games is where ideas, creativity, and Dutch craftsmanship come together." />
+  <meta property="og:image"       content="assets/haarlem-above.png" />
+  <!-- LinkedIn -->
+  <meta property="og:see_also"    content="https://www.linkedin.com/company/haarlem-games/" />
+
+  <link rel="canonical" href="https://haarlemgames.com/" />
   <link rel="icon" type="image/png" href="assets/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
   <style>
-    :root{
-      --bg:#fffaf0;
-      --paper:#fffdf7;
-      --ink:#173d34;
-      --ink-2:#29584b;
-      --canal:#4f8f86;
-      --gold:#d6b54c;
-      --orange:#e88945;
-      --cream:#f6eedb;
-      --line:#173d34;
-      --soft:#eef5e8;
-      --shadow:0 28px 80px rgba(23,61,52,.18);
-      --radius:34px;
+    :root {
+      --bg:      #fffaf0;
+      --paper:   #fffdf7;
+      --ink:     #173d34;
+      --ink-2:   #29584b;
+      --canal:   #4f8f86;
+      --gold:    #d6b54c;
+      --orange:  #e88945;
+      --cream:   #f6eedb;
+      --soft:    #eef5e8;
+      --shadow:  0 28px 80px rgba(23,61,52,.18);
+      --radius:  34px;
     }
 
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{
-      margin:0;
-      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      color:var(--ink);
-      background:linear-gradient(180deg,#fffdf8 0%,#f4efe2 100%);
-      overflow-x:hidden;
+    /* ─── Reset ─────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, #fffdf8 0%, #f4efe2 100%);
+      overflow-x: hidden;
     }
 
-    body:before{
-      content:"";
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      opacity:.18;
-      background-image:linear-gradient(rgba(23,61,52,.16) 1px,transparent 1px),linear-gradient(90deg,rgba(23,61,52,.16) 1px,transparent 1px);
-      background-size:34px 34px;
-      z-index:-2;
+    /* ─── Reduced-motion ─────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
     }
 
-    .canal-line{
-      position:fixed;
-      left:50%;
-      top:0;
-      width:54px;
-      height:100vh;
-      transform:translateX(-50%);
+    /* ─── Background: layered paper + grid + vignette ───── */
+    body {
+      /* Warm parchment base with a gentle vertical gradient */
       background:
-        radial-gradient(circle at 50% 10px, rgba(255,255,255,.55) 0 5px, transparent 6px),
-        repeating-linear-gradient(180deg, rgba(255,255,255,.20) 0 18px, transparent 18px 38px),
-        linear-gradient(180deg,rgba(79,143,134,.20),rgba(79,143,134,.74),rgba(79,143,134,.20));
-      background-size:54px 84px,54px 76px,auto;
-      animation:waterDrift 7s linear infinite;
-      border-left:4px solid rgba(23,61,52,.18);
-      border-right:4px solid rgba(23,61,52,.18);
-      box-shadow:inset 0 0 0 6px rgba(255,255,255,.16),0 0 30px rgba(79,143,134,.18);
-      z-index:-1;
+        linear-gradient(180deg, #fffdf5 0%, #f9f2e0 40%, #f0e8d0 100%);
     }
 
-    a{text-decoration:none;color:inherit}
-    .nav{
-      position:fixed;
-      top:18px;
-      left:50%;
-      transform:translateX(-50%);
-      z-index:50;
-      width:min(1120px,calc(100% - 28px));
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:14px;
-      padding:12px;
-      border:3px solid var(--ink);
-      border-radius:26px;
-      background:rgba(255,253,247,.86);
-      backdrop-filter:blur(16px);
-      box-shadow:0 10px 0 rgba(23,61,52,.12);
+    /* Layer 1 – fine dot-grid (replaces harsh lines) */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -3;
+      background-image: radial-gradient(circle, rgba(23,61,52,.13) 1px, transparent 1px);
+      background-size: 28px 28px;
+      opacity: 1;
     }
-    .brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:-.04em;line-height:1}
-    .logo{
-      width:46px;height:46px;border-radius:14px;background:var(--ink);color:var(--gold);display:grid;place-items:center;
-      font-family:"Space Grotesk",sans-serif;font-size:24px;border:3px solid var(--ink);box-shadow:inset 0 -6px 0 rgba(0,0,0,.18)
-    }
-    .links{display:flex;align-items:center;gap:20px;font-size:14px;font-weight:900}
-    .links a{position:relative;padding:8px 0}
-    .links a:after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:.22s ease;border-radius:999px}
-    .links a:hover:after{transform:scaleX(1)}
-    .nav-cta,.btn{
-      border:3px solid var(--ink);
-      border-radius:22px;
-      background:var(--gold);
-      color:var(--ink);
-      font-weight:900;
-      padding:13px 20px;
-      box-shadow:6px 6px 0 var(--ink);
-      transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
-      cursor:pointer;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-    }
-    .nav-cta:hover,.btn:hover{transform:translate(-3px,-3px) rotate(-1deg);box-shadow:10px 10px 0 var(--ink);background:#efd06a}
-    .nav-cta:active,.btn:active{transform:translate(2px,2px) scale(.98);box-shadow:2px 2px 0 var(--ink)}
-    .btn.dark{background:var(--ink);color:white}
-    .btn.dark:hover{background:#245548}
 
-    .deck{scroll-snap-type:y proximity}
-    .slide{
-      min-height:100vh;
-      display:grid;
-      align-items:center;
-      padding:130px 22px 56px;
-      scroll-snap-align:start;
-      position:relative;
+    /* Layer 2 – diagonal hatching for paper texture */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -3;
+      opacity: .045;
+      background-image: repeating-linear-gradient(
+        45deg,
+        rgba(23,61,52,1) 0px,
+        rgba(23,61,52,1) 1px,
+        transparent 1px,
+        transparent 18px
+      );
     }
-    .panel{
-      width:min(1180px,100%);
-      margin:0 auto;
-      display:grid;
-      grid-template-columns:1.08fr .92fr;
-      gap:28px;
-      align-items:center;
-    }
-    .panel.flip{grid-template-columns:.92fr 1.08fr}
-    .text-card{
-      background:rgba(255,253,247,.92);
-      border:3px solid var(--ink);
-      border-radius:var(--radius);
-      padding:clamp(24px,4vw,48px);
-      box-shadow:12px 12px 0 rgba(23,61,52,.95);
-      position:relative;
-      overflow:hidden;
-    }
-    .text-card:before{
-      content:"";position:absolute;right:-45px;top:-45px;width:140px;height:140px;background:var(--gold);border:3px solid var(--ink);border-radius:42px;transform:rotate(18deg);opacity:.24
-    }
-    .kicker{font-size:13px;letter-spacing:.16em;text-transform:uppercase;font-weight:900;color:var(--orange);margin-bottom:16px}
-    h1,h2{font-family:"Space Grotesk",Inter,sans-serif;letter-spacing:-.06em;line-height:.92;margin:0 0 20px;color:var(--ink)}
-    h1{font-size:clamp(54px,8vw,112px)}
-    h2{font-size:clamp(42px,6vw,84px)}
-    p{font-size:clamp(17px,1.45vw,21px);line-height:1.65;color:#4c665e;margin:0 0 18px;font-weight:560}
-    .quote{font-family:"Space Grotesk",Inter,sans-serif;font-size:clamp(24px,3vw,42px);line-height:1.05;color:var(--ink);font-weight:800;margin:18px 0 26px;letter-spacing:-.04em}
-    .visual{
-      background:var(--paper);
-      border:3px solid var(--ink);
-      border-radius:var(--radius);
-      padding:12px;
-      box-shadow:12px 12px 0 rgba(23,61,52,.95);
-      transform:rotate(1deg);
-      position:relative;
-      overflow:hidden;
-    }
-    .panel.flip .visual{transform:rotate(-1deg)}
-    .visual img{
-      width:100%;
-      display:block;
-      border-radius:24px;
-      aspect-ratio:16/10;
-      object-fit:cover;
-    }
-    .caption{
-      position:absolute;left:28px;bottom:28px;background:rgba(255,253,247,.9);border:3px solid var(--ink);border-radius:20px;padding:10px 14px;font-weight:900;box-shadow:5px 5px 0 var(--ink)
-    }
-    .buttons{display:flex;gap:14px;flex-wrap:wrap;margin-top:26px}
-    .badge-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
-    .badge{border:2px solid var(--ink);border-radius:999px;background:#fff;padding:8px 13px;font-size:13px;font-weight:900;color:var(--ink)}
 
-    .floaty{position:absolute;pointer-events:none;font-size:34px;filter:drop-shadow(3px 4px 0 rgba(23,61,52,.16));animation:float 4s ease-in-out infinite}
-    .f1{left:8%;top:18%;animation-delay:.2s}.f2{right:8%;top:28%;animation-delay:1s}.f3{left:10%;bottom:14%;animation-delay:1.8s}.f4{right:10%;bottom:10%;animation-delay:2.4s}
-    @keyframes float{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-16px) rotate(5deg)}}
-
-    .slide-content{opacity:0;transform:translateY(44px) scale(.985);transition:opacity .75s ease, transform .75s cubic-bezier(.2,.8,.2,1)}
-    .slide.in-view .slide-content{opacity:1;transform:translateY(0) scale(1)}
-    .slide.in-view .visual{animation:popIn .75s cubic-bezier(.2,.8,.2,1) both}
-    @keyframes popIn{0%{transform:translateY(50px) scale(.96) rotate(0)}100%{}}
-
-    .progress{
-      position:fixed;
-      right:18px;
-      top:50%;
-      transform:translateY(-50%);
-      z-index:30;
-      display:flex;
-      flex-direction:column;
-      gap:9px;
+    /* Layer 3 – radial vignette to pull focus inward */
+    .bg-vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -2;
+      background: radial-gradient(ellipse 80% 70% at 50% 40%, transparent 30%, rgba(23,61,52,.12) 100%);
     }
-    .dot{width:14px;height:14px;border:2px solid var(--ink);background:white;border-radius:999px;box-shadow:2px 2px 0 var(--ink);transition:.2s ease}
-    .dot.active{height:30px;background:var(--gold)}
 
-    .confetti{
-      position:fixed;
-      width:10px;height:10px;
-      border-radius:3px;
-      pointer-events:none;
-      z-index:1000;
-      animation:confetti .8s ease-out forwards;
+    /* Layer 4 – top amber glow, bottom teal glow */
+    .bg-glow-top {
+      position: fixed;
+      top: -180px; left: 50%;
+      transform: translateX(-50%);
+      width: 900px; height: 500px;
+      background: radial-gradient(ellipse, rgba(214,181,76,.18) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: -2;
     }
-    @keyframes confetti{to{transform:translate(var(--x),var(--y)) rotate(360deg);opacity:0}}
-
-    footer{padding:70px 22px;background:var(--ink);color:white;text-align:center;border-top:4px solid #0d251f}
-    footer h2{color:white;margin-bottom:16px}footer p{color:rgba(255,255,255,.72);max-width:650px;margin:0 auto 28px}
+    .bg-glow-bottom {
+      position: fixed;
+      bottom: -200px; left: 50%;
+      transform: translateX(-50%);
+      width: 800px; height: 500px;
+      background: radial-gradient(ellipse, rgba(79,143,134,.14) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: -2;
+    }
 
 
 
-    @keyframes waterDrift{to{background-position:0 84px,0 76px,0 0}}
-    .canal-boat{
-      position:fixed;
-      left:50%;
-      top:18%;
-      z-index:2;
-      width:72px;
-      height:42px;
-      transform:translate(-50%,0);
-      pointer-events:none;
-      filter:drop-shadow(5px 8px 0 rgba(23,61,52,.18));
-      transition:top .35s ease;
-      animation:boatBob 2.4s ease-in-out infinite;
-    }
-    .canal-boat:before{
-      content:"";position:absolute;left:8px;right:8px;bottom:4px;height:20px;background:var(--orange);border:3px solid var(--ink);border-radius:0 0 28px 28px;
-    }
-    .canal-boat:after{
-      content:"";position:absolute;left:30px;top:2px;width:5px;height:25px;background:var(--ink);border-radius:99px;box-shadow:10px 7px 0 -2px #fff,10px 7px 0 0 var(--ink);
-    }
-    @keyframes boatBob{0%,100%{margin-top:0;transform:translate(-50%,0) rotate(-2deg)}50%{margin-top:-7px;transform:translate(-50%,0) rotate(2deg)}}
-    .games-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:28px}
-    .game-card{background:#fff;border:3px solid var(--ink);border-radius:28px;padding:22px;box-shadow:8px 8px 0 var(--ink);transition:.22s ease;position:relative;overflow:hidden;min-height:210px}
-    .game-card:hover{transform:translate(-4px,-5px) rotate(-1deg);box-shadow:13px 13px 0 var(--ink)}
-    .game-card:nth-child(2):hover{transform:translate(-4px,-5px) rotate(1deg)}
-    .game-icon{font-size:44px;margin-bottom:18px;display:inline-block;animation:float 4s ease-in-out infinite}
-    .game-card h3{font-family:"Space Grotesk",Inter,sans-serif;font-size:28px;line-height:1;letter-spacing:-.05em;margin:0 0 12px;color:var(--ink)}
-    .game-card p{font-size:15px;line-height:1.55;margin:0;color:#4c665e}
-    .game-label{display:inline-block;margin-top:16px;border:2px solid var(--ink);border-radius:999px;background:var(--soft);padding:7px 11px;font-size:12px;font-weight:900}
 
 
-    .logo{display:none}
-    .logo-img{
-      width:52px;
-      height:52px;
-      object-fit:contain;
-      display:block;
-      transition:transform .25s ease, filter .25s ease;
-      filter:drop-shadow(2px 3px 0 rgba(23,61,52,.18));
-    }
-    .brand span{
-      font-family:"Space Grotesk",Inter,sans-serif;
-      font-size:22px;
-      letter-spacing:-.05em;
-    }
-    .brand:hover .logo-img{
-      transform:rotate(-8deg) scale(1.08);
-    }
-    .brand:hover{
-      transform:translateY(-2px);
+    /* ─── Canal + boat canvas ────────────────────── */
+    #canal-canvas {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
     }
 
-    .canal-line::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:repeating-radial-gradient(circle at 50% 0%, rgba(255,255,255,.24) 0px, rgba(255,255,255,.24) 4px, transparent 5px, transparent 22px);
-      animation:rippleMove 8s linear infinite;
-      opacity:.7;
+    /* ─── Clouds ─────────────────────────────────── */
+    .cloud {
+      position: fixed;
+      width: 180px; height: 60px;
+      background: white;
+      border-radius: 999px;
+      opacity: .16;
+      z-index: -3;
+      pointer-events: none;
+      filter: blur(.2px);
     }
-    @keyframes rippleMove{
-      from{transform:translateY(0);}
-      to{transform:translateY(120px);}
+    .cloud::before, .cloud::after {
+      content: ""; position: absolute; background: white; border-radius: 50%;
+    }
+    .cloud::before { width: 72px;  height: 72px;  left: 32px;  top: -28px; }
+    .cloud::after  { width: 92px;  height: 92px;  right: 20px; top: -42px; }
+    .cloud1 { top: 120px; left: -260px; animation: cloudMove 70s linear infinite; }
+    .cloud2 { top: 340px; left: -320px; animation: cloudMove 95s linear infinite; }
+    .cloud3 { top: 640px; left: -360px; animation: cloudMove 80s linear infinite; }
+    @keyframes cloudMove { to { transform: translateX(calc(100vw + 600px)); } }
+
+    /* ─── Cursor glow ────────────────────────────── */
+    #cursor-glow {
+      position: fixed;
+      width: 320px; height: 320px;
+      border-radius: 50%;
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(214,181,76,.14), transparent 68%);
+      transform: translate(-50%, -50%);
+      z-index: -2;
+      opacity: .9;
     }
 
-    .cloud{
-      position:fixed;
-      width:180px;
-      height:60px;
-      background:white;
-      border-radius:999px;
-      opacity:.16;
-      z-index:-3;
-      pointer-events:none;
-      filter:blur(.2px);
-    }
-    .cloud::before,.cloud::after{
-      content:"";
-      position:absolute;
-      background:white;
-      border-radius:50%;
-    }
-    .cloud::before{width:72px;height:72px;left:32px;top:-28px}
-    .cloud::after{width:92px;height:92px;right:20px;top:-42px}
-    .cloud1{top:120px;left:-260px;animation:cloudMove 70s linear infinite}
-    .cloud2{top:340px;left:-320px;animation:cloudMove 95s linear infinite}
-    .cloud3{top:640px;left:-360px;animation:cloudMove 80s linear infinite}
-    @keyframes cloudMove{to{transform:translateX(calc(100vw + 600px))}}
+    /* ─── Links / base ───────────────────────────── */
+    a { text-decoration: none; color: inherit; }
 
-    .visual img{transition:transform .7s cubic-bezier(.2,.8,.2,1)}
-    .visual:hover img{transform:scale(1.045)}
-    .links a.active{color:var(--orange)}
-
-    #cursor-glow{
-      position:fixed;
-      width:320px;
-      height:320px;
-      border-radius:50%;
-      pointer-events:none;
-      background:radial-gradient(circle, rgba(214,181,76,.14), transparent 68%);
-      transform:translate(-50%,-50%);
-      z-index:-2;
-      opacity:.9;
+    /* ─── Focus-visible ──────────────────────────── */
+    :focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 3px;
+      border-radius: 6px;
     }
 
-    .game-card{
-      opacity:0;
-      transform:translateY(36px);
+    /* ─── Nav ────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 50;
+      width: min(1120px, calc(100% - 28px));
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px;
+      border: 3px solid var(--ink);
+      border-radius: 26px;
+      background: rgba(255,253,247,.86);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 10px 0 rgba(23,61,52,.12);
     }
-    .slide.in-view .game-card{
-      opacity:1;
-      transform:translateY(0);
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 900;
+      letter-spacing: -.04em;
+      line-height: 1;
+      transition: transform .25s ease;
     }
-    .slide.in-view .game-card:nth-child(1){transition:opacity .5s ease, transform .5s ease, box-shadow .22s ease}
-    .slide.in-view .game-card:nth-child(2){transition:opacity .7s ease, transform .7s ease, box-shadow .22s ease}
-    .slide.in-view .game-card:nth-child(3){transition:opacity .9s ease, transform .9s ease, box-shadow .22s ease}
+    .brand:hover { transform: translateY(-2px); }
+    .logo-img {
+      width: 52px; height: 52px;
+      object-fit: contain;
+      display: block;
+      transition: transform .25s ease, filter .25s ease;
+      filter: drop-shadow(2px 3px 0 rgba(23,61,52,.18));
+    }
+    .brand:hover .logo-img { transform: rotate(-8deg) scale(1.08); }
+    .brand span {
+      font-family: "Space Grotesk", Inter, sans-serif;
+      font-size: 22px;
+      letter-spacing: -.05em;
+    }
 
-    .stats{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:12px;
-      margin:24px 0 8px;
+    /* Desktop links */
+    .links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 14px;
+      font-weight: 900;
     }
-    .stat{
-      border:2px solid var(--ink);
-      background:#fff;
-      border-radius:22px;
-      padding:14px 12px;
-      box-shadow:5px 5px 0 var(--ink);
+    .links a { position: relative; padding: 8px 0; }
+    .links a::after {
+      content: "";
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 3px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: .22s ease;
+      border-radius: 999px;
     }
-    .stat strong{
-      display:block;
-      font-family:"Space Grotesk",Inter,sans-serif;
-      font-size:28px;
-      line-height:1;
-      color:var(--orange);
+    .links a:hover::after, .links a.active::after { transform: scaleX(1); }
+    .links a.active { color: var(--orange); }
+
+    /* Shared button */
+    .nav-cta, .btn {
+      border: 3px solid var(--ink);
+      border-radius: 22px;
+      background: var(--gold);
+      color: var(--ink);
+      font-weight: 900;
+      padding: 13px 20px;
+      box-shadow: 6px 6px 0 var(--ink);
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
-    .stat span{
-      display:block;
-      margin-top:6px;
-      font-size:12px;
-      font-weight:900;
-      color:var(--ink);
-      text-transform:uppercase;
-      letter-spacing:.05em;
+    .nav-cta:hover, .btn:hover {
+      transform: translate(-3px,-3px) rotate(-1deg);
+      box-shadow: 10px 10px 0 var(--ink);
+      background: #efd06a;
+    }
+    .nav-cta:active, .btn:active {
+      transform: translate(2px,2px) scale(.98);
+      box-shadow: 2px 2px 0 var(--ink);
+    }
+    .btn.dark { background: var(--ink); color: white; }
+    .btn.dark:hover { background: #245548; }
+
+    /* ─── Mobile hamburger ───────────────────────── */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 44px; height: 44px;
+      padding: 10px;
+      border: 3px solid var(--ink);
+      border-radius: 14px;
+      background: var(--paper);
+      box-shadow: 4px 4px 0 var(--ink);
+      cursor: pointer;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .hamburger:hover {
+      transform: translate(-2px,-2px);
+      box-shadow: 6px 6px 0 var(--ink);
+    }
+    .hamburger span {
+      display: block;
+      height: 3px;
+      background: var(--ink);
+      border-radius: 99px;
+      transition: transform .25s ease, opacity .25s ease;
+    }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(8px) rotate(45deg);  }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0;                                 }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+    /* Mobile drawer */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 49;
+      padding: 100px 22px 32px;
+      background: rgba(255,253,247,.97);
+      backdrop-filter: blur(20px);
+      border-bottom: 3px solid var(--ink);
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: 0 12px 0 rgba(23,61,52,.12);
+      transform: translateY(-110%);
+      transition: transform .3s cubic-bezier(.2,.8,.2,1);
+    }
+    .mobile-menu.open {
+      transform: translateY(0);
+    }
+    .mobile-menu a {
+      font-size: 28px;
+      font-family: "Space Grotesk", Inter, sans-serif;
+      font-weight: 700;
+      letter-spacing: -.05em;
+      padding: 10px 0;
+      border-bottom: 2px solid rgba(23,61,52,.10);
+      display: block;
+      transition: color .18s ease, padding-left .18s ease;
+    }
+    .mobile-menu a:hover { color: var(--orange); padding-left: 8px; }
+    .mobile-menu a.active { color: var(--orange); }
+    .mobile-menu .btn { margin-top: 14px; width: 100%; justify-content: center; }
+
+    /* ─── Scroll deck ────────────────────────────── */
+    .deck { scroll-snap-type: y proximity; }
+    .slide {
+      min-height: 100vh;
+      display: grid;
+      align-items: center;
+      padding: 130px 22px 56px;
+      scroll-snap-align: start;
+      position: relative;
+    }
+    .panel {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.08fr .92fr;
+      gap: 28px;
+      align-items: center;
+    }
+    .panel.flip { grid-template-columns: .92fr 1.08fr; }
+
+    /* ─── Text card ──────────────────────────────── */
+    .text-card {
+      background: rgba(255,253,247,.92);
+      border: 3px solid var(--ink);
+      border-radius: var(--radius);
+      padding: clamp(24px, 4vw, 48px);
+      box-shadow: 12px 12px 0 rgba(23,61,52,.95);
+      position: relative;
+      z-index: 2; /* above canvas (z-index:1) */
+      overflow: hidden;
+    }
+    .text-card::before {
+      content: "";
+      position: absolute;
+      right: -45px; top: -45px;
+      width: 140px; height: 140px;
+      background: var(--gold);
+      border: 3px solid var(--ink);
+      border-radius: 42px;
+      transform: rotate(18deg);
+      opacity: .24;
     }
 
-    @media(max-width:900px){
-      .links{display:none}.panel,.panel.flip{grid-template-columns:1fr}.games-grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr}.canal-line{width:36px}.canal-boat{width:56px}.slide{padding-top:110px}.progress{display:none}.visual,.panel.flip .visual{transform:none}.text-card,.visual{box-shadow:8px 8px 0 rgba(23,61,52,.95)}
-      .nav{border-radius:22px}.brand span:last-child{font-size:15px}.nav-cta{padding:11px 13px}
+    /* ─── Typography ─────────────────────────────── */
+    .kicker {
+      font-size: 13px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      font-weight: 900;
+      color: var(--orange);
+      margin-bottom: 16px;
+    }
+    h1, h2 {
+      font-family: "Space Grotesk", Inter, sans-serif;
+      letter-spacing: -.06em;
+      line-height: .92;
+      margin: 0 0 20px;
+      color: var(--ink);
+    }
+    h1 { font-size: clamp(54px, 8vw, 112px); }
+    h2 { font-size: clamp(42px, 6vw, 84px); }
+    p {
+      font-size: clamp(17px, 1.45vw, 21px);
+      line-height: 1.65;
+      color: #4c665e;
+      margin: 0 0 18px;
+      font-weight: 600; /* was 560 — non-standard variable-font value */
+    }
+    .quote {
+      font-family: "Space Grotesk", Inter, sans-serif;
+      font-size: clamp(24px, 3vw, 42px);
+      line-height: 1.05;
+      color: var(--ink);
+      font-weight: 800;
+      margin: 18px 0 26px;
+      letter-spacing: -.04em;
+    }
+
+    /* ─── Visual / image card ────────────────────── */
+    .visual {
+      background: var(--paper);
+      border: 3px solid var(--ink);
+      border-radius: var(--radius);
+      padding: 12px;
+      box-shadow: 12px 12px 0 rgba(23,61,52,.95);
+      transform: rotate(1deg);
+      position: relative;
+      z-index: 2; /* above canvas (z-index:1) */
+      overflow: hidden;
+    }
+    .panel.flip .visual { transform: rotate(-1deg); }
+    .visual img {
+      width: 100%;
+      display: block;
+      border-radius: 24px;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      transition: transform .7s cubic-bezier(.2,.8,.2,1);
+    }
+    .visual:hover img { transform: scale(1.045); }
+
+    /* figcaption replaces the old .caption div — single source of truth */
+    .visual figcaption {
+      position: absolute;
+      left: 28px; bottom: 28px;
+      background: rgba(255,253,247,.9);
+      border: 3px solid var(--ink);
+      border-radius: 20px;
+      padding: 10px 14px;
+      font-weight: 900;
+      font-size: 14px;
+      box-shadow: 5px 5px 0 var(--ink);
+    }
+
+    /* ─── Buttons / badges ───────────────────────── */
+    .buttons   { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 26px; }
+    .badge-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+    .badge {
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      background: #fff;
+      padding: 8px 13px;
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--ink);
+    }
+
+    /* ─── Floaty emojis ──────────────────────────── */
+    .floaty {
+      position: absolute;
+      pointer-events: none;
+      font-size: 34px;
+      filter: drop-shadow(3px 4px 0 rgba(23,61,52,.16));
+      animation: float 4s ease-in-out infinite;
+      z-index: 1; /* behind cards (z-index:5), in front of canal (z-index:-1) */
+    }
+    .f1 { left:  8%;  top: 18%;   animation-delay: .2s;  }
+    .f2 { right: 8%;  top: 28%;   animation-delay: 1s;   }
+    .f3 { left:  10%; bottom: 14%; animation-delay: 1.8s; }
+    .f4 { right: 10%; bottom: 10%; animation-delay: 2.4s; }
+    @keyframes float {
+      0%, 100% { transform: translateY(0)     rotate(-3deg); }
+      50%       { transform: translateY(-16px) rotate(5deg);  }
+    }
+
+    /* ─── Slide reveal ───────────────────────────── */
+    .slide-content {
+      opacity: 0;
+      transform: translateY(44px) scale(.985);
+      transition: opacity .75s ease, transform .75s cubic-bezier(.2,.8,.2,1);
+    }
+    .slide.in-view .slide-content { opacity: 1; transform: translateY(0) scale(1); }
+    .slide.in-view .visual { animation: popIn .75s cubic-bezier(.2,.8,.2,1) both; }
+    @keyframes popIn {
+      0%   { transform: translateY(50px) scale(.96) rotate(0); }
+      100% {}
+    }
+
+    /* ─── Progress dots ──────────────────────────── */
+    .progress {
+      position: fixed;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+    .dot {
+      width: 14px; height: 14px;
+      border: 2px solid var(--ink);
+      background: white;
+      border-radius: 999px;
+      box-shadow: 2px 2px 0 var(--ink);
+      transition: .2s ease;
+    }
+    .dot.active { height: 30px; background: var(--gold); }
+
+    /* ─── Haarlemse Mug click effect ────────────── */
+    .mug {
+      position: fixed;
+      pointer-events: none;
+      z-index: 1000;
+      width: 28px;
+      height: 28px;
+      transform-origin: center;
+      animation: mugFly var(--dur, .9s) ease-out forwards;
+      will-change: transform, opacity;
+    }
+    @keyframes mugFly {
+      0%   { transform: translate(0,0) rotate(var(--r0)) scale(1);   opacity: 1; }
+      60%  { opacity: 1; }
+      100% { transform: translate(var(--x), var(--y)) rotate(var(--r1)) scale(.5); opacity: 0; }
+    }
+
+    /* ─── Games grid ─────────────────────────────── */
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 28px;
+    }
+    .game-card {
+      background: #fff;
+      border: 3px solid var(--ink);
+      border-radius: 28px;
+      padding: 22px;
+      box-shadow: 8px 8px 0 var(--ink);
+      transition: transform .22s ease, box-shadow .22s ease, opacity .5s ease;
+      position: relative;
+      overflow: hidden;
+      min-height: 210px;
+      opacity: 0;
+      transform: translateY(36px);
+    }
+    .game-card:hover { transform: translate(-4px,-5px) rotate(-1deg); box-shadow: 13px 13px 0 var(--ink); }
+    .game-card:nth-child(2):hover { transform: translate(-4px,-5px) rotate(1deg); }
+
+    .slide.in-view .game-card { opacity: 1; transform: translateY(0); }
+    .slide.in-view .game-card:nth-child(1) { transition: opacity .5s ease, transform .5s ease, box-shadow .22s ease; }
+    .slide.in-view .game-card:nth-child(2) { transition: opacity .7s ease, transform .7s ease, box-shadow .22s ease; }
+    .slide.in-view .game-card:nth-child(3) { transition: opacity .9s ease, transform .9s ease, box-shadow .22s ease; }
+
+    .game-icon  { font-size: 44px; margin-bottom: 18px; display: inline-block; animation: float 4s ease-in-out infinite; }
+    .game-card h3 {
+      font-family: "Space Grotesk", Inter, sans-serif;
+      font-size: 28px; line-height: 1;
+      letter-spacing: -.05em;
+      margin: 0 0 12px;
+      color: var(--ink);
+    }
+    .game-card p   { font-size: 15px; line-height: 1.55; margin: 0; color: #4c665e; }
+    .game-label {
+      display: inline-block;
+      margin-top: 16px;
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      background: var(--soft);
+      padding: 7px 11px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    /* ─── Stats ──────────────────────────────────── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 24px 0 8px;
+    }
+    .stat {
+      border: 2px solid var(--ink);
+      background: #fff;
+      border-radius: 22px;
+      padding: 14px 12px;
+      box-shadow: 5px 5px 0 var(--ink);
+    }
+    .stat strong {
+      display: block;
+      font-family: "Space Grotesk", Inter, sans-serif;
+      font-size: 28px; line-height: 1;
+      color: var(--orange);
+    }
+    .stat span {
+      display: block;
+      margin-top: 6px;
+      font-size: 12px; font-weight: 900;
+      color: var(--ink);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    /* ─── Footer ─────────────────────────────────── */
+    footer {
+      padding: 70px 22px;
+      background: var(--ink);
+      color: white;
+      text-align: center;
+      border-top: 4px solid #0d251f;
+    }
+    footer h2 { color: white; margin-bottom: 16px; }
+    footer p   { color: rgba(255,255,255,.72); max-width: 650px; margin: 0 auto 28px; }
+    .footer-buttons { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+    .linkedin-btn { background: #fff; color: var(--ink); }
+    .linkedin-btn:hover { background: #f0f0e8; }
+
+    /* ─── Responsive ─────────────────────────────── */
+    @media (max-width: 900px) {
+      .links   { display: none; }
+      .hamburger { display: flex; }
+      .mobile-menu { display: flex; }
+
+      .panel, .panel.flip { grid-template-columns: 1fr; }
+      .games-grid          { grid-template-columns: 1fr; }
+      .stats               { grid-template-columns: 1fr; }
+      .canal-line          { width: 36px; }
+
+      .slide               { padding-top: 110px; }
+      .progress            { display: none; }
+      .visual, .panel.flip .visual { transform: none; }
+      .text-card, .visual  { box-shadow: 8px 8px 0 rgba(23,61,52,.95); }
+      .nav    { border-radius: 22px; }
+      .brand span:last-child { font-size: 15px; }
+      .nav-cta { padding: 11px 13px; }
     }
   </style>
 </head>
 <body>
-  <div id="cursor-glow" aria-hidden="true"></div>
-  <div class="cloud cloud1" aria-hidden="true"></div>
+
+  <div id="cursor-glow"    aria-hidden="true"></div>
+  <div class="bg-vignette"    aria-hidden="true"></div>
+  <div class="bg-glow-top"    aria-hidden="true"></div>
+  <div class="bg-glow-bottom" aria-hidden="true"></div>
+  <canvas id="canal-canvas" aria-hidden="true"></canvas>
   <div class="cloud cloud2" aria-hidden="true"></div>
   <div class="cloud cloud3" aria-hidden="true"></div>
-  <div class="canal-line" aria-hidden="true"></div>
-  <div class="canal-boat" aria-hidden="true"></div>
+
+
+  <!-- ─── Nav ─────────────────────────────────────── -->
   <nav class="nav">
-    <a class="brand" href="#top"><img src="assets/logo-icon.png" alt="Haarlem Games Logo" class="logo-img"><span>Haarlem Games</span></a>
-    <div class="links">
-      <a href="#top">Home</a>
-      <a href="#bridge">Journey</a>
-      <a href="#studio">Studio</a>
-      <a href="#games">Games</a>
-      <a href="#world">World</a>
+    <a class="brand" href="#top">
+      <img src="assets/logo-icon.png" alt="Haarlem Games Logo" class="logo-img" width="52" height="52">
+      <span>Haarlem Games</span>
+    </a>
+
+    <div class="links" role="list">
+      <a href="#top"    role="listitem">Home</a>
+      <a href="#bridge" role="listitem">Journey</a>
+      <a href="#studio" role="listitem">Studio</a>
+      <a href="#games"  role="listitem">Games</a>
+      <a href="#world"  role="listitem">World</a>
     </div>
+
+    <!-- Mobile hamburger -->
+    <button class="hamburger" id="hamburger-btn" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open navigation menu">
+      <span></span><span></span><span></span>
+    </button>
+
     <a class="nav-cta" href="#bridge">Explore ↓</a>
   </nav>
 
+  <!-- Mobile drawer -->
+  <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation">
+    <a href="#top">Home</a>
+    <a href="#bridge">Journey</a>
+    <a href="#studio">Studio</a>
+    <a href="#games">Games</a>
+    <a href="#world">World</a>
+    <a class="btn dark" href="#bridge">Start the journey ↓</a>
+  </nav>
+
+  <!-- Progress dots -->
   <div class="progress" aria-hidden="true">
-    <span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    <span class="dot active"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
   </div>
 
+  <!-- ─── Main content ──────────────────────────────── -->
   <main class="deck">
+
+    <!-- 0 · Hero -->
     <section class="slide" id="top">
-      <span class="floaty f1">🌤️</span><span class="floaty f2">🛶</span><span class="floaty f3">🎮</span>
+      <span class="floaty f1" aria-hidden="true">🌤️</span>
+      <span class="floaty f2" aria-hidden="true">🛶</span>
+      <span class="floaty f3" aria-hidden="true">🎮</span>
       <div class="panel slide-content">
         <div class="text-card">
-          <div class="kicker">Independent Browser Game Studio · Haarlem</div>
-          <h1>Explore Haarlem and discover how games are made.</h1>
+          <div class="kicker"> MADE IN HAARLEM · PLAYED EVERYWHERE ·</div>
+          <h1> Crafting Games with the Heart of Haarlem </h1>
           <p>From the canals of Haarlem to players around the world. Haarlem Games is where ideas, creativity, and Dutch craftsmanship come together to create playful experiences.</p>
           <div class="buttons">
             <a class="btn dark" href="#bridge">Start the journey ↓</a>
             <a class="btn" href="#studio">See the studio</a>
           </div>
-          <div class="badge-row"><span class="badge">Made in Haarlem</span><span class="badge">Browser Games</span><span class="badge">Playful Ideas</span></div>
+          <div class="badge-row">
+          <span class="badge">Web Games</span>
+          <span class="badge">Built with AI</span>
+          <span class="badge">Quick & Playful</span>
+          </div>
         </div>
         <figure class="visual">
-          <img src="assets/haarlem-above.png" alt="Illustrated view of Haarlem from above at sunset">
-          <figcaption class="caption">Start above Haarlem</figcaption>
+          <img
+            src="assets/haarlem-above.png"
+            alt="Illustrated view of Haarlem from above at sunset"
+            width="800" height="500"
+            loading="eager"
+          >
+          <figcaption>Start above Haarlem</figcaption>
         </figure>
       </div>
     </section>
 
+    <!-- 1 · Inspiration -->
     <section class="slide" id="bridge">
-      <span class="floaty f1">💡</span><span class="floaty f2">🌉</span><span class="floaty f4">🚲</span>
+      <span class="floaty f1" aria-hidden="true">💡</span>
+      <span class="floaty f2" aria-hidden="true">🌉</span>
+      <span class="floaty f4" aria-hidden="true">🚲</span>
       <div class="panel flip slide-content">
         <figure class="visual">
-          <img src="assets/brug-haarlem.png" alt="Illustrated Gravestenenbrug in Haarlem with a boat on the canal">
-          <figcaption class="caption">Inspiration around every corner</figcaption>
+          <img
+            src="assets/brug-haarlem.png"
+            alt="Illustrated Gravestenenbrug in Haarlem with a boat on the canal"
+            width="800" height="500"
+            loading="lazy"
+          >
+          <figcaption>Inspiration around every corner</figcaption>
         </figure>
         <div class="text-card">
           <div class="kicker">01 · Inspiration</div>
-          <h2>Inspiration Around Every Corner</h2>
-          <p>Haarlem is more than a city. It is filled with stories, history, bridges, canals, tiny details, and strange little ideas waiting to become games.</p>
+          <h2>Inspiration around every corner</h2>
+          <p>Haarlem is more than a city. It is filled with stories, history, bridges, canals, tiny details, and little ideas waiting to become games.</p>
           <div class="quote">Every game begins with a simple question: what if?</div>
           <a class="btn" href="#studio">Follow the canal ↓</a>
         </div>
       </div>
     </section>
 
+    <!-- 2 · Creation -->
     <section class="slide" id="studio">
-      <span class="floaty f2">✏️</span><span class="floaty f3">☕</span><span class="floaty f4">🕹️</span>
+      <span class="floaty f2" aria-hidden="true">✏️</span>
+      <span class="floaty f3" aria-hidden="true">☕</span>
+      <span class="floaty f4" aria-hidden="true">🕹️</span>
       <div class="panel slide-content">
         <div class="text-card">
           <div class="kicker">02 · Creation</div>
-          <h2>Turning Ideas Into Playable Worlds</h2>
+          <h2>Turning ideas Into Playable Worlds</h2>
           <p>A sketch becomes a prototype. A prototype becomes a game. A game becomes an adventure.</p>
           <p>From level design and gameplay loops to art direction and player feedback, every project is built with one goal in mind: creating games that are simple, fun, and memorable.</p>
           <div class="quote">Polish is love.</div>
-          <div class="stats"><div class="stat"><strong>8+</strong><span>Years Experience</span></div><div class="stat"><strong>1600+</strong><span>Games Launched</span></div><div class="stat"><strong>100M+</strong><span>Gameplays Distributed</span></div></div>
+          <div class="stats">
+            <div class="stat"><strong>8+</strong><span>Years Experience</span></div>
+            <div class="stat"><strong>1,600+</strong><span>Games Launched</span></div>
+            <div class="stat"><strong>100M+</strong><span>Gameplays Distributed</span></div>
+          </div>
           <a class="btn dark" href="#games">Visit Games Quarter ↓</a>
         </div>
         <figure class="visual">
-          <img src="assets/haarlem-studio.png" alt="Illustrated Haarlem Games studio with a developer crafting a game">
-          <figcaption class="caption">From idea to playable</figcaption>
+          <img
+            src="assets/haarlem-studio.png"
+            alt="Illustrated Haarlem Games studio with a developer crafting a game"
+            width="800" height="500"
+            loading="lazy"
+          >
+          <figcaption>From idea to playable</figcaption>
         </figure>
       </div>
     </section>
 
-
+    <!-- 3 · Games -->
     <section class="slide" id="games">
-      <span class="floaty f1">🎮</span><span class="floaty f2">🦄</span><span class="floaty f3">⌨️</span><span class="floaty f4">💘</span>
+      <span class="floaty f1" aria-hidden="true">🎮</span>
+      <span class="floaty f2" aria-hidden="true">🦄</span>
+      <span class="floaty f3" aria-hidden="true">⌨️</span>
+      <span class="floaty f4" aria-hidden="true">💘</span>
       <div class="panel slide-content">
         <div class="text-card">
           <div class="kicker">03 · Games Quarter</div>
           <h2>Playful Ideas, Built in Haarlem</h2>
           <p>This is where the city turns into games. Each title starts as a small spark, then becomes a playable browser experience made to be shared, tested, and improved.</p>
           <div class="games-grid">
-            <article class="game-card"><span class="game-icon">⌨️</span><h3>Turbo Typer</h3><p>A fast typing challenge made for speed, focus, and satisfying keyboard flow.</p><span class="game-label">Typing Game</span></article>
-            <article class="game-card"><span class="game-icon">💘</span><h3>Married at First Sight Love Tester</h3><p>A playful compatibility game where profiles, choices, and chaos decide the match.</p><span class="game-label">Love Tester</span></article>
-            <article class="game-card"><span class="game-icon">🦄</span><h3>Block Blaster Unicorns</h3><p>A colorful block-blasting browser game with sparkle, strategy, and unicorn energy.</p><span class="game-label">Puzzle Arcade</span></article>
+            <article class="game-card">
+              <span class="game-icon" aria-hidden="true">⌨️</span>
+              <h3>Turbo Typer</h3>
+              <p>A fast typing challenge made for speed, focus, and satisfying keyboard flow.</p>
+              <span class="game-label">Typing Game</span>
+            </article>
+            <article class="game-card">
+              <span class="game-icon" aria-hidden="true">💘</span>
+              <h3>Married at First Sight Love Tester</h3>
+              <p>A playful compatibility game where profiles, choices, and chaos decide the match.</p>
+              <span class="game-label">Love Tester</span>
+            </article>
+            <article class="game-card">
+              <span class="game-icon" aria-hidden="true">🦄</span>
+              <h3>Block Blaster Unicorns</h3>
+              <p>A colorful block-blasting browser game with sparkle, strategy, and unicorn energy.</p>
+              <span class="game-label">Puzzle Arcade</span>
+            </article>
           </div>
-          <div class="buttons"><a class="btn dark" href="#world">Send them into the world ↓</a></div>
+          <div class="buttons">
+            <a class="btn dark" href="#world">Send them into the world ↓</a>
+          </div>
         </div>
         <figure class="visual">
-          <img src="assets/grote-markt.png" alt="Illustrated Grote Markt in Haarlem as a playful games square">
-          <figcaption class="caption">Games Quarter</figcaption>
+          <img
+            src="assets/grote-markt.png"
+            alt="Illustrated Grote Markt in Haarlem as a playful games square"
+            width="800" height="500"
+            loading="lazy"
+          >
+          <figcaption>Games Quarter</figcaption>
         </figure>
       </div>
     </section>
 
+    <!-- 4 · Launch -->
     <section class="slide" id="world">
-      <span class="floaty f1">🌍</span><span class="floaty f2">🚀</span><span class="floaty f3">🌊</span>
+      <span class="floaty f1" aria-hidden="true">🌍</span>
+      <span class="floaty f2" aria-hidden="true">🚀</span>
+      <span class="floaty f3" aria-hidden="true">🌊</span>
       <div class="panel flip slide-content">
         <figure class="visual">
-          <img src="assets/molen-adriaan.png" alt="Illustrated Molen De Adriaan in Haarlem at sunset with a boat on the water">
-          <figcaption class="caption">From Haarlem to the world</figcaption>
+          <img
+            src="assets/molen-adriaan.png"
+            alt="Illustrated Molen De Adriaan in Haarlem at sunset with a boat on the water"
+            width="800" height="500"
+            loading="lazy"
+          >
+          <figcaption>From Haarlem to the world</figcaption>
         </figure>
         <div class="text-card">
           <div class="kicker">04 · Launch</div>
@@ -485,18 +861,25 @@
         </div>
       </div>
     </section>
+
   </main>
 
   <footer>
     <h2>Haarlem Games</h2>
     <p>Crafting games with the heart of Haarlem. Made in Haarlem. Played everywhere.</p>
-    <a class="btn" href="#top">Back to the bridge ↑</a>
+    <div class="footer-buttons">
+      <a class="btn" href="#top">Back to the bridge ↑</a>
+      <a class="btn linkedin-btn" href="https://www.linkedin.com/company/haarlem-games/" target="_blank" rel="noopener noreferrer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.354V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.284zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        Follow on LinkedIn
+      </a>
+    </div>
   </footer>
 
   <script>
+    /* ── Intersection observer: slide reveals + progress dots ── */
     const slides = [...document.querySelectorAll('.slide')];
-    const dots = [...document.querySelectorAll('.dot')];
-    const boat = document.querySelector('.canal-boat');
+    const dots   = [...document.querySelectorAll('.dot')];
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -512,20 +895,277 @@
 
 
 
-    function moveBoat(){
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = max > 0 ? window.scrollY / max : 0;
-      const top = 16 + progress * 68;
-      boat.style.top = top + '%';
+    /* ══════════════════════════════════════════════
+       CANVAS: curvy canal + Dutch canal boat
+       The canvas is fixed, full-viewport, z-index:1.
+       Content panels are in normal flow (z-index auto,
+       which in the root stacking context paints ABOVE
+       a positioned z-index:1 element only when they
+       themselves have position+z-index set higher, or
+       when the canvas is below them in paint order.
+       We use z-index:2 on .text-card / .visual so they
+       always cover the canvas. Canal + boat live purely
+       on the canvas so there is zero stacking-context
+       conflict.
+    ══════════════════════════════════════════════ */
+    const canal = document.getElementById('canal-canvas');
+    const ctx   = canal.getContext('2d');
+
+    let W, H, t = 0;
+
+    function resize() {
+      W = canal.width  = window.innerWidth;
+      H = canal.height = window.innerHeight;
     }
-    window.addEventListener('scroll', moveBoat, { passive:true });
-    moveBoat();
+    resize();
+    window.addEventListener('resize', resize);
 
+    /* Scroll progress 0→1 */
+    function scrollProgress() {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      return max > 0 ? window.scrollY / max : 0;
+    }
 
-    const navLinks = [...document.querySelectorAll('.links a')];
-    const glow = document.getElementById('cursor-glow');
+    /* ── Curvy canal centre-line as a sine wave ──
+       The canal sways left/right across the screen
+       while always staying roughly centred.         */
+    function canalX(y) {
+      const cx   = W * 0.72;
+      const amp  = W * 0.08;      // sway amplitude
+      const freq = (2 * Math.PI) / H; // one full wave per screen height
+      return cx + Math.sin(y * freq * 1.4 + t * 0.3) * amp;
+    }
 
-    function updateActiveNav(){
+    const CW = 150; // canal width in px
+
+    /* ── Draw canal ── */
+    function drawCanal() {
+      /* Build left & right edges of the canal */
+      ctx.beginPath();
+      for (let y = 0; y <= H; y += 4) {
+        const x = canalX(y);
+        if (y === 0) ctx.moveTo(x - CW / 2, y);
+        else          ctx.lineTo(x - CW / 2, y);
+      }
+      for (let y = H; y >= 0; y -= 4) {
+        ctx.lineTo(canalX(y) + CW / 2, y);
+      }
+      ctx.closePath();
+
+      /* Water fill – teal gradient top→bottom */
+      const grad = ctx.createLinearGradient(0, 0, 0, H);
+      grad.addColorStop(0,   'rgba(79,143,134,0.30)');
+      grad.addColorStop(0.5, 'rgba(79,143,134,0.72)');
+      grad.addColorStop(1,   'rgba(79,143,134,0.30)');
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      /* Left bank edge */
+      ctx.beginPath();
+      for (let y = 0; y <= H; y += 4) {
+        const x = canalX(y) - CW / 2;
+        y === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = 'rgba(23,61,52,0.22)';
+      ctx.lineWidth   = 3;
+      ctx.stroke();
+
+      /* Right bank edge */
+      ctx.beginPath();
+      for (let y = 0; y <= H; y += 4) {
+        const x = canalX(y) + CW / 2;
+        y === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      /* Animated ripple highlights */
+      for (let i = 0; i < 6; i++) {
+        const ry    = ((i / 6 + t * 0.04) % 1) * H;
+        const rx    = canalX(ry);
+        const alpha = 0.12 + 0.1 * Math.sin(t * 2 + i);
+        ctx.beginPath();
+        ctx.ellipse(rx, ry, CW * 0.28, 2.5, 0, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+        ctx.fill();
+      }
+    }
+
+    /* ── Draw Dutch canal boat ──
+       Boat position: follows scroll down the canvas.
+       Boat x: follows the canal centre-line.
+       Boat tilts slightly with the canal curve.      */
+    function drawBoat(progress) {
+      const by    = H * (0.15 + progress * 0.70); // 15%→85% of viewport
+      const bx    = canalX(by);
+
+      /* tilt = slope of canal at this y */
+      const dy    = 6;
+      const slope = (canalX(by + dy) - canalX(by - dy)) / (dy * 2);
+      const tilt  = Math.atan(slope);
+
+      /* Bob */
+      const bob   = Math.sin(t * 1.8) * 3;
+
+      ctx.save();
+      ctx.translate(bx, by + bob);
+      ctx.rotate(tilt);
+
+      const s = 1;   // scale – boat is drawn in a ~110×90 local space
+
+      /* ── Wake ── */
+      for (let w = 0; w < 2; w++) {
+        const wo = w * 12;
+        const wa = (0.5 - w * 0.2) * (0.5 + 0.5 * Math.sin(t * 2));
+        ctx.beginPath();
+        ctx.ellipse(0, 36 * s + wo, (32 + wo) * s, (4 + w) * s, 0, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(255,255,255,${wa})`;
+        ctx.lineWidth   = 1.5;
+        ctx.stroke();
+      }
+
+      /* ── Hull ── */
+      ctx.beginPath();
+      ctx.moveTo(-46 * s, 10 * s);
+      ctx.quadraticCurveTo(-50 * s, 24 * s,  0,       26 * s);
+      ctx.quadraticCurveTo( 50 * s, 24 * s,  46 * s,  10 * s);
+      ctx.lineTo(38 * s, 2 * s);
+      ctx.quadraticCurveTo(0, 6 * s, -38 * s, 2 * s);
+      ctx.closePath();
+      ctx.fillStyle   = '#e88945';
+      ctx.fill();
+      ctx.strokeStyle = '#173d34';
+      ctx.lineWidth   = 2;
+      ctx.stroke();
+
+      /* Hull highlight */
+      ctx.beginPath();
+      ctx.moveTo(-36 * s, 4 * s);
+      ctx.quadraticCurveTo(0, 8 * s, 36 * s, 4 * s);
+      ctx.strokeStyle = 'rgba(255,255,255,0.30)';
+      ctx.lineWidth   = 1.8;
+      ctx.stroke();
+
+      /* ── Deck / gunwale ── */
+      ctx.beginPath();
+      ctx.roundRect(-38 * s, -2 * s, 76 * s, 6 * s, 3 * s);
+      ctx.fillStyle   = '#d6b54c';
+      ctx.fill();
+      ctx.strokeStyle = '#173d34';
+      ctx.lineWidth   = 1.8;
+      ctx.stroke();
+
+      /* ── Cabin ── */
+      ctx.beginPath();
+      ctx.roundRect(-22 * s, -22 * s, 44 * s, 22 * s, 4 * s);
+      ctx.fillStyle   = '#fffdf7';
+      ctx.fill();
+      ctx.strokeStyle = '#173d34';
+      ctx.lineWidth   = 2;
+      ctx.stroke();
+
+      /* Cabin roof */
+      ctx.beginPath();
+      ctx.moveTo(-25 * s, -20 * s);
+      ctx.quadraticCurveTo(0, -30 * s, 25 * s, -20 * s);
+      ctx.fillStyle   = '#d6b54c';
+      ctx.fill();
+      ctx.strokeStyle = '#173d34';
+      ctx.lineWidth   = 2;
+      ctx.stroke();
+
+      /* Cabin windows */
+      for (const wx of [-14, 6]) {
+        ctx.beginPath();
+        ctx.roundRect(wx * s, -18 * s, 10 * s, 8 * s, 2.5 * s);
+        ctx.fillStyle   = '#a8d8d4';
+        ctx.fill();
+        ctx.strokeStyle = '#173d34';
+        ctx.lineWidth   = 1.5;
+        ctx.stroke();
+      }
+
+      /* ── Mast ── */
+      ctx.beginPath();
+      ctx.moveTo(0, -22 * s);
+      ctx.lineTo(0, -58 * s);
+      ctx.strokeStyle = '#173d34';
+      ctx.lineWidth   = 2.5;
+      ctx.lineCap     = 'round';
+      ctx.stroke();
+
+      /* ── Sail (billows with sine) ── */
+      const billow = Math.sin(t * 1.1) * 4;
+      ctx.beginPath();
+      ctx.moveTo(0, -55 * s);
+      ctx.quadraticCurveTo((16 + billow) * s, -38 * s, 14 * s, -22 * s);
+      ctx.lineTo(0, -22 * s);
+      ctx.closePath();
+      ctx.fillStyle   = 'rgba(255,253,247,0.92)';
+      ctx.fill();
+      ctx.strokeStyle = '#173d34';
+      ctx.lineWidth   = 1.5;
+      ctx.stroke();
+
+      /* ── Dutch flag (red / white / blue, horizontal stripes) ── */
+      const fw = 20 * s, fh = 13 * s;
+      const fx = 1 * s,  fy = -58 * s;
+      const flagWave = Math.sin(t * 2.5) * 3 * s;
+
+      /* Draw flag as 3 curved stripes */
+      const stripes = [
+        { color: '#AE1C28', y: fy },             /* red   */
+        { color: '#FFFFFF', y: fy + fh / 3 },    /* white */
+        { color: '#21468B', y: fy + (fh * 2)/3 } /* blue  */
+      ];
+      stripes.forEach(({ color, y: sy }) => {
+        ctx.beginPath();
+        ctx.moveTo(fx, sy);
+        ctx.quadraticCurveTo(fx + fw / 2, sy + flagWave, fx + fw, sy);
+        ctx.lineTo(fx + fw, sy + fh / 3);
+        ctx.quadraticCurveTo(fx + fw / 2, sy + fh / 3 + flagWave, fx, sy + fh / 3);
+        ctx.closePath();
+        ctx.fillStyle = color;
+        ctx.fill();
+      });
+      /* Flag outline */
+      ctx.beginPath();
+      ctx.moveTo(fx, fy);
+      ctx.quadraticCurveTo(fx + fw / 2, fy + flagWave, fx + fw, fy);
+      ctx.lineTo(fx + fw, fy + fh);
+      ctx.quadraticCurveTo(fx + fw / 2, fy + fh + flagWave, fx, fy + fh);
+      ctx.closePath();
+      ctx.strokeStyle = '#173d34';
+      ctx.lineWidth   = 1;
+      ctx.stroke();
+
+      /* ── Fender (bow bumper) ── */
+      ctx.beginPath();
+      ctx.ellipse(-44 * s, 14 * s, 3 * s, 5 * s, 0, 0, Math.PI * 2);
+      ctx.fillStyle   = '#4f8f86';
+      ctx.fill();
+      ctx.strokeStyle = '#173d34';
+      ctx.lineWidth   = 1.2;
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    /* ── Main animation loop ── */
+    function render() {
+      ctx.clearRect(0, 0, W, H);
+      t += 0.016;
+      const p = scrollProgress();
+      drawCanal();
+      drawBoat(p);
+      requestAnimationFrame(render);
+    }
+    render();
+
+    function moveBoat() {} // no-op: canvas handles it live
+
+    /* ── Active nav link ── */
+    const navLinks    = [...document.querySelectorAll('.links a, .mobile-menu a')];
+    function updateActiveNav() {
       let current = slides[0]?.id || '';
       slides.forEach(section => {
         if (window.scrollY >= section.offsetTop - 220) current = section.id;
@@ -534,28 +1174,120 @@
         link.classList.toggle('active', link.getAttribute('href') === '#' + current);
       });
     }
-    window.addEventListener('scroll', updateActiveNav, { passive:true });
+
+    /* ── rAF-throttled scroll handler ── */
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          moveBoat();
+          updateActiveNav();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+
+    moveBoat();
     updateActiveNav();
 
+    /* ── Cursor glow ── */
+    const glow = document.getElementById('cursor-glow');
     window.addEventListener('mousemove', (e) => {
       if (!glow) return;
       glow.style.left = e.clientX + 'px';
-      glow.style.top = e.clientY + 'px';
+      glow.style.top  = e.clientY + 'px';
     });
 
+    /* ── Haarlemse Mug click effect ── */
+    const SKIP_TAGS = new Set(['A', 'BUTTON', 'INPUT', 'TEXTAREA', 'SELECT', 'LABEL']);
+
+    // Inline SVG of a stylised mosquito (mug), brand-coloured
+    function makeMugSVG(color) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="28" height="28">
+        <!-- body -->
+        <ellipse cx="16" cy="17" rx="4" ry="7" fill="${color}" stroke="#173d34" stroke-width="1.5"/>
+        <!-- head -->
+        <circle cx="16" cy="9" r="3" fill="${color}" stroke="#173d34" stroke-width="1.5"/>
+        <!-- proboscis -->
+        <line x1="16" y1="12" x2="16" y2="6" stroke="#173d34" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="16" y1="6"  x2="16" y2="2"  stroke="#173d34" stroke-width=".9" stroke-linecap="round"/>
+        <!-- antennae -->
+        <line x1="14" y1="7" x2="10" y2="3" stroke="#173d34" stroke-width=".9" stroke-linecap="round"/>
+        <line x1="18" y1="7" x2="22" y2="3" stroke="#173d34" stroke-width=".9" stroke-linecap="round"/>
+        <!-- wings left -->
+        <ellipse cx="10" cy="14" rx="5" ry="2.5" fill="rgba(79,143,134,.45)" stroke="#173d34" stroke-width="1" transform="rotate(-20 10 14)"/>
+        <ellipse cx="9"  cy="18" rx="4" ry="2"   fill="rgba(79,143,134,.3)"  stroke="#173d34" stroke-width=".8" transform="rotate(-15 9 18)"/>
+        <!-- wings right -->
+        <ellipse cx="22" cy="14" rx="5" ry="2.5" fill="rgba(79,143,134,.45)" stroke="#173d34" stroke-width="1" transform="rotate(20 22 14)"/>
+        <ellipse cx="23" cy="18" rx="4" ry="2"   fill="rgba(79,143,134,.3)"  stroke="#173d34" stroke-width=".8" transform="rotate(15 23 18)"/>
+        <!-- legs -->
+        <line x1="13" y1="18" x2="6"  y2="23" stroke="#173d34" stroke-width=".9" stroke-linecap="round"/>
+        <line x1="13" y1="21" x2="5"  y2="26" stroke="#173d34" stroke-width=".9" stroke-linecap="round"/>
+        <line x1="19" y1="18" x2="26" y2="23" stroke="#173d34" stroke-width=".9" stroke-linecap="round"/>
+        <line x1="19" y1="21" x2="27" y2="26" stroke="#173d34" stroke-width=".9" stroke-linecap="round"/>
+        <line x1="13" y1="23" x2="7"  y2="29" stroke="#173d34" stroke-width=".9" stroke-linecap="round"/>
+        <line x1="19" y1="23" x2="25" y2="29" stroke="#173d34" stroke-width=".9" stroke-linecap="round"/>
+      </svg>`;
+    }
+
+    const mugColors = ['#d6b54c', '#e88945', '#4f8f86', '#173d34', '#fffdf7'];
+
     document.addEventListener('click', (e) => {
-      const colors = ['#d6b54c','#e88945','#4f8f86','#fffdf7'];
-      for (let i = 0; i < 8; i++) {
-        const bit = document.createElement('span');
-        bit.className = 'confetti';
-        bit.style.left = e.clientX + 'px';
-        bit.style.top = e.clientY + 'px';
-        bit.style.background = colors[i % colors.length];
-        bit.style.border = '1px solid #173d34';
-        bit.style.setProperty('--x', (Math.random() * 140 - 70) + 'px');
-        bit.style.setProperty('--y', (Math.random() * 140 - 100) + 'px');
-        document.body.appendChild(bit);
-        setTimeout(() => bit.remove(), 850);
+      if (SKIP_TAGS.has(e.target.tagName)) return;
+
+      const count = 6 + Math.floor(Math.random() * 4); // 6–9 mugs per click
+      for (let i = 0; i < count; i++) {
+        const mug = document.createElement('div');
+        mug.className = 'mug';
+        mug.innerHTML = makeMugSVG(mugColors[i % mugColors.length]);
+
+        const angle = (Math.PI * 2 / count) * i + (Math.random() - .5) * .8;
+        const dist  = 60 + Math.random() * 90;
+        const dur   = .7 + Math.random() * .5;
+
+        mug.style.left = (e.clientX - 14) + 'px';
+        mug.style.top  = (e.clientY - 14) + 'px';
+        mug.style.setProperty('--x',  Math.cos(angle) * dist + 'px');
+        mug.style.setProperty('--y',  Math.sin(angle) * dist + 'px');
+        mug.style.setProperty('--r0', (Math.random() * 60 - 30) + 'deg');
+        mug.style.setProperty('--r1', (Math.random() * 360 - 180) + 'deg');
+        mug.style.setProperty('--dur', dur + 's');
+
+        document.body.appendChild(mug);
+        setTimeout(() => mug.remove(), dur * 1000 + 50);
+      }
+    });
+
+    /* ── Mobile hamburger ── */
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const mobileMenu   = document.getElementById('mobile-menu');
+
+    hamburgerBtn.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('open');
+      hamburgerBtn.setAttribute('aria-expanded', isOpen);
+      hamburgerBtn.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+
+    // Close drawer when any link inside it is tapped
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        hamburgerBtn.setAttribute('aria-expanded', 'false');
+        hamburgerBtn.setAttribute('aria-label', 'Open navigation menu');
+        document.body.style.overflow = '';
+      });
+    });
+
+    // Close drawer on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+        mobileMenu.classList.remove('open');
+        hamburgerBtn.setAttribute('aria-expanded', 'false');
+        hamburgerBtn.setAttribute('aria-label', 'Open navigation menu');
+        document.body.style.overflow = '';
+        hamburgerBtn.focus();
       }
     });
   </script>
