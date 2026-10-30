@@ -1,0 +1,125 @@
+/* act-play: alleen selectors met prefix .act-play (levels 3, 8, 13). */
+.act-play-layer { position: absolute; inset: 0; z-index: 12; pointer-events: none; touch-action: none; overflow: hidden; }
+.act-play-layer.is-hot { pointer-events: auto; }
+.act-play-layer.is-paused * { animation-play-state: paused !important; }
+.act-play-marker { position: absolute; width: 2px; height: 2px; margin: -1px 0 0 -1px; visibility: hidden; pointer-events: none; }
+
+/* plekken (zachte silhouetten) */
+.act-play-slot { position: absolute; transform: translate(-50%, -50%) rotate(var(--rot, 0deg)); min-width: 44px; min-height: 44px; margin: 0; padding: 0; border: 0; border-radius: 16px; background: transparent; cursor: pointer; pointer-events: none; touch-action: none; }
+.act-play-slot .act-play-sil { display: block; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; filter: brightness(0) invert(1) drop-shadow(0 0 6px rgba(255, 255, 255, .95)); opacity: .5; animation: act-play-soft 2.2s ease-in-out infinite; pointer-events: none; }
+.act-play-slot.is-active { box-shadow: 0 0 0 3px rgba(255, 157, 77, .9), 0 0 16px rgba(255, 157, 77, .7); background: rgba(255, 255, 255, .22); }
+.act-play-slot.is-active .act-play-sil, .act-play-slot.is-near .act-play-sil { opacity: .9; }
+.act-play-slot.is-near { background: rgba(255, 224, 120, .45); box-shadow: 0 0 0 4px #ffc23c, 0 0 20px #ffc23c; }
+.act-play-spot { pointer-events: auto; background: rgba(255, 255, 255, .12); box-shadow: 0 0 0 3px rgba(255, 255, 255, .6); }
+.act-play-spot.is-active { box-shadow: 0 0 0 3px rgba(255, 255, 255, .8), 0 0 14px rgba(255, 255, 255, .6); background: rgba(255, 255, 255, .14); }
+.act-play-spot.is-active:hover { background: rgba(255, 224, 120, .35); }
+@keyframes act-play-soft { 0%, 100% { opacity: .38; } 50% { opacity: .62; } }
+.act-play-placed { animation: act-play-place .38s cubic-bezier(.2, 1.35, .4, 1); }
+@keyframes act-play-place { 0% { transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(.35); opacity: .2; } 100% { transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(1); opacity: 1; } }
+.act-play-grow { animation: act-play-grow .4s cubic-bezier(.2, 1.4, .4, 1); transform-origin: 50% 100%; }
+@keyframes act-play-grow { 0% { transform: translate(-50%, -50%) scale(.6, .4); } 60% { transform: translate(-50%, -50%) scale(1.1, 1.15); } 100% { transform: translate(-50%, -50%) scale(1); } }
+.act-play-placed.is-lit { filter: drop-shadow(0 0 8px #ff9d4d); transition: opacity .4s; }
+.act-play-fire { transition: none; }
+
+/* tray in het paneel */
+.act-play-tray { display: flex; flex-wrap: nowrap; justify-content: center; align-items: center; gap: 6px; padding: 4px 6px; min-height: 66px; }
+.act-play-chip { position: relative; flex: 1 1 0; min-width: 48px; max-width: 76px; aspect-ratio: 1 / 1; padding: 4px; display: flex; align-items: center; justify-content: center; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; background: rgba(255, 253, 249, .95); border: 3px solid var(--cream-50, #fffdf9); border-radius: 18px; box-shadow: 0 3px 0 rgba(73, 55, 47, .2), 0 6px 12px rgba(73, 55, 47, .16); transition: transform .12s, border-color .12s; }
+.act-play-chip:hover { transform: translateY(-2px); }
+.act-play-chip.is-held { border-color: var(--orange, #ff9d4d); transform: translateY(-5px) scale(1.07); box-shadow: 0 0 0 3px rgba(255, 157, 77, .5), 0 8px 14px rgba(73, 55, 47, .25); }
+.act-play-chip.is-dragging { opacity: .35; }
+.act-play-chip.is-new { animation: act-play-chipin .4s cubic-bezier(.2, 1.4, .4, 1); }
+@keyframes act-play-chipin { 0% { transform: scale(.3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+.act-play-chip-img { display: block; max-width: 86%; max-height: 86%; width: auto; height: auto; object-fit: contain; pointer-events: none; }
+.act-play-chip-img.kind-banner { max-width: 94%; }
+.act-play-chip-img.kind-match { transform: rotate(-38deg) scale(1.4); }
+.act-play-chip-img.kind-log { transform: rotate(-14deg) scale(1.12); }
+.act-play-chip-img.kind-umbrella, .act-play-chip-img.kind-flag { max-height: 94%; }
+.act-play-ghost { position: fixed; z-index: 60; transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(1.08); pointer-events: none !important; filter: drop-shadow(0 10px 8px rgba(0, 0, 0, .3)); }
+.act-play-ghost img { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+@media (min-aspect-ratio: 6 / 5) and (min-width: 600px), (max-height: 520px) and (min-aspect-ratio: 6 / 5) {
+  .act-play-tray { flex-wrap: wrap; }
+  .act-play-chip { flex: 0 0 auto; width: 64px; max-width: none; min-width: 0; }
+}
+
+/* voortgangs-pictogrammen */
+.act-play-pips { display: flex; justify-content: center; align-items: center; gap: 5px; margin: 0 auto; padding: 6px 12px; max-width: 96%; box-sizing: border-box; background: rgba(255, 253, 249, .88); border: 3px solid var(--cream-50, #fffdf9); border-radius: 999px; box-shadow: 0 3px 0 rgba(73, 55, 47, .18); }
+.act-play-tray[data-game="camp"] .act-play-pips { background: rgba(26, 30, 56, .82); }
+.act-play-pip { flex: 0 1 34px; min-width: 0; width: 34px; height: 34px; object-fit: contain; filter: grayscale(1) brightness(1.5); opacity: .35; transition: opacity .2s; }
+.act-play-pip.is-on { filter: none; opacity: 1; animation: act-play-pippop .4s cubic-bezier(.2, 1.5, .4, 1); }
+@keyframes act-play-pippop { 0% { transform: scale(.4); } 100% { transform: scale(1); } }
+
+/* deel B: apporteren */
+.act-play-target { position: absolute; transform: translate(-50%, -50%); padding: 0; margin: 0; border: 0; border-radius: 50%; background: radial-gradient(circle, rgba(255, 255, 255, .85) 56%, rgba(255, 255, 255, 0) 72%); min-width: 60px; min-height: 60px; cursor: pointer; pointer-events: auto; touch-action: none; animation: act-play-targetin .35s cubic-bezier(.2, 1.4, .4, 1), act-play-beat 1.6s ease-in-out .4s infinite; }
+.act-play-stoke { background: transparent; border: 3px dashed rgba(255, 255, 255, .8); }
+.act-play-target-img { display: block; width: 100%; height: 100%; pointer-events: none; }
+@keyframes act-play-targetin { 0% { transform: translate(-50%, -50%) scale(.2); opacity: 0; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+@keyframes act-play-beat { 0%, 100% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.07); } }
+.act-play-wiggle { animation: act-play-wiggle .4s ease-in-out; }
+@keyframes act-play-wiggle { 0%, 100% { transform: translate(-50%, -50%) rotate(0); } 25% { transform: translate(-50%, -50%) rotate(-8deg) scale(1.08); } 75% { transform: translate(-50%, -50%) rotate(8deg) scale(1.08); } }
+.act-play-ball { position: absolute; transform: translate(-50%, -50%); height: auto; pointer-events: none; filter: drop-shadow(0 4px 4px rgba(0, 0, 0, .25)); }
+.act-play-cakefly { position: absolute; transform: translate(-50%, -50%); height: auto; pointer-events: none; }
+
+/* deel B: vuurvliegjes */
+.act-play-fly { position: absolute; transform: translate(-50%, -50%); width: 56px; height: 56px; min-width: 44px; min-height: 44px; padding: 0; margin: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; pointer-events: auto; touch-action: none; animation: act-play-flyin .6s both; }
+.act-play-fly-img { display: block; width: 100%; height: 100%; pointer-events: none; filter: drop-shadow(0 0 8px #fff3a0) drop-shadow(0 0 18px #ffe066); animation: act-play-twinkle 2.4s ease-in-out infinite; }
+.act-play-fly.is-caught { pointer-events: none; }
+@keyframes act-play-flyin { 0% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes act-play-twinkle { 0%, 100% { opacity: .7; } 50% { opacity: 1; } }
+.act-play-jar { position: absolute; transform: translate(-50%, -50%); pointer-events: none; --glow: 0; }
+.act-play-jar::before { content: ""; position: absolute; left: -45%; top: -25%; width: 190%; height: 150%; border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 238, 140, calc(var(--glow) * .75)), rgba(255, 238, 140, 0)); pointer-events: none; }
+.act-play-jar-img { position: relative; display: block; width: 100%; height: 100%; }
+.act-play-jar-fill { position: absolute; inset: 0; }
+.act-play-jar-fly { position: absolute; width: 30%; height: auto; transform: translate(-50%, -50%); filter: drop-shadow(0 0 5px #fff3a0); animation: act-play-twinkle 1.8s ease-in-out infinite; }
+.act-play-jar.is-full { animation: act-play-jarpop .5s ease-out; }
+@keyframes act-play-jarpop { 0%, 100% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.14); } }
+.act-play-glow { position: absolute; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 150, 60, .55), rgba(255, 120, 40, .24) 36%, rgba(255, 110, 30, 0) 68%); pointer-events: none; transition: opacity .25s; }
+
+/* deel B: keepy-uppy */
+.act-play-halo { position: absolute; transform: translate(-50%, -50%); border: 4px dashed rgba(255, 255, 255, .85); border-radius: 50%; opacity: .45; pointer-events: none; transition: opacity .12s; }
+.act-play-halo.is-ready { opacity: 1; border-style: solid; border-color: #ffc23c; box-shadow: 0 0 18px #ffc23c, inset 0 0 12px rgba(255, 194, 60, .5); animation: act-play-halo .5s ease-in-out infinite; }
+@keyframes act-play-halo { 0%, 100% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.1); } }
+.act-play-bump { position: absolute; transform: translate(-50%, -50%); padding: 0; margin: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; pointer-events: auto; touch-action: none; }
+.act-play-wobble { animation: act-play-wobble .3s ease-in-out; }
+@keyframes act-play-wobble { 0%, 100% { filter: none; } 50% { filter: brightness(1.15) drop-shadow(0 0 10px #fff); } }
+
+/* effecten */
+.act-play-spark { position: absolute; transform: translate(-50%, -50%); height: auto; pointer-events: none; animation: act-play-spark .7s ease-out forwards; }
+@keyframes act-play-spark { 0% { opacity: 0; transform: translate(-50%, -50%) scale(.2) rotate(0); } 25% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -80%) scale(1.15) rotate(50deg); } }
+.act-play-bit { position: absolute; border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; animation: act-play-bit .85s cubic-bezier(.16, .72, .3, 1) forwards; }
+@keyframes act-play-bit { 0% { opacity: 0; transform: translate(-50%, -50%) scale(.3); } 15% { opacity: 1; } 100% { opacity: 0; transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% + var(--dy, 0px))) scale(.8); } }
+@media (prefers-reduced-motion: reduce) { .act-play-slot .act-play-sil { opacity: .55; } .act-play-halo.is-ready { box-shadow: 0 0 10px #ffc23c; } }
+
+.act-play-lampon { filter: drop-shadow(0 0 10px #ffd27a) drop-shadow(0 0 22px rgba(255, 190, 90, .8)); }
+.act-play-staron { filter: drop-shadow(0 0 8px #fff3a0) drop-shadow(0 0 18px #ffe066); animation: act-play-place .38s cubic-bezier(.2, 1.35, .4, 1), act-play-twinkle 2.4s ease-in-out .4s infinite; }
+.act-play-starfish, .act-play-chip-img.kind-starfish { filter: drop-shadow(0 2px 2px rgba(80, 40, 10, .35)); }
+.act-play-soot { animation: act-play-sootin .6s ease-out both; }
+@keyframes act-play-sootin { 0% { opacity: 0; } 100% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .act-play-soot { animation: none; } }
+
+/* voortgangs-pictogrammen: nooit krimpen tot onzichtbaar; op smalle panelen op twee regels */
+.act-play-pips { flex-wrap: wrap; gap: 4px 5px; border-radius: 26px; max-width: 100%; }
+.act-play-pip { flex: 0 0 auto; width: 30px; height: 30px; opacity: .5; }
+.act-play-pip.is-on { opacity: 1; }
+@media (max-width: 420px) { .act-play-pip { width: 26px; height: 26px; } }
+
+/* 2026-10-06 verjaardag: na drie vangsten is de taart de actieve handeling (gloed + groot tikvlak). Statisch bij reduced motion. */
+.act-play-cakehot { animation: act-play-cakeglow 1.1s ease-in-out infinite; z-index: 6 !important; }
+@keyframes act-play-cakeglow { 0%, 100% { filter: drop-shadow(0 0 4px #fff6c8) drop-shadow(0 0 12px #ffd34d); scale: 1; } 50% { filter: drop-shadow(0 0 8px #fff6c8) drop-shadow(0 0 24px #ffd34d) drop-shadow(0 0 30px rgba(255, 160, 190, .8)); scale: 1.07; } }
+.act-play-cakebtn { position: absolute; transform: translate(-50%, -50%); padding: 0; margin: 0; border: 0; border-radius: 50%; background: transparent; min-width: 88px; min-height: 88px;
+  cursor: pointer; pointer-events: auto; touch-action: none; -webkit-tap-highlight-color: transparent; z-index: 8; }
+.act-play-cakebtn:focus-visible { outline: 4px solid var(--color-focus, #1a5fb4); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .act-play-cakehot { animation: none !important; filter: drop-shadow(0 0 8px #fff6c8) drop-shadow(0 0 20px #ffd34d); } }
+
+/* 2026-10-06 strand: lege kasteelplekken pulseren zacht (hier tikken); ritme-koppen met combo. Statisch bij reduced motion. */
+.act-play-spot.is-active { animation: act-play-spotpulse 1.3s ease-in-out infinite; }
+@keyframes act-play-spotpulse { 0%, 100% { box-shadow: 0 0 0 3px rgba(255, 255, 255, .8), 0 0 10px rgba(255, 210, 90, .5); } 50% { box-shadow: 0 0 0 4px rgba(255, 226, 122, 1), 0 0 22px rgba(255, 194, 60, .85); } }
+.act-play-halo.is-ready { border-color: #ff8a1f; box-shadow: 0 0 20px #ff8a1f, inset 0 0 14px rgba(255, 138, 31, .55); }
+.act-play-combo { position: absolute; transform: translate(-50%, -50%); pointer-events: none; font-weight: 900; font-size: clamp(34px, 10vw, 52px); line-height: 1; font-family: var(--font-display, inherit); color: #fff; -webkit-text-stroke: 3px #e0681a; paint-order: stroke fill;
+  text-shadow: 0 3px 0 #c4530f, 0 0 12px rgba(255, 160, 60, .8); white-space: nowrap; z-index: 14; }
+.act-play-combo:empty { display: none; }
+.act-play-combo.is-pop { animation: act-play-combopop .35s cubic-bezier(.2, 1.6, .4, 1); }
+.act-play-combo.is-hot { color: #fff3a8; }
+.act-play-combo.is-broke { color: #d9d2cc; -webkit-text-stroke-color: #8b7d72; text-shadow: none; animation: act-play-combobreak .8s ease-in forwards; }
+@keyframes act-play-combopop { 0% { transform: translate(-50%, -50%) scale(.4); } 100% { transform: translate(-50%, -50%) scale(1); } }
+@keyframes act-play-combobreak { 0% { opacity: 1; transform: translate(-50%, -50%) rotate(0); } 30% { transform: translate(-50%, -50%) rotate(-12deg); } 100% { opacity: 0; transform: translate(-50%, 10%) rotate(-20deg); } }
+@media (prefers-reduced-motion: reduce) { .act-play-spot.is-active, .act-play-combo { animation: none !important; } .act-play-combo.is-broke { opacity: 0; } }

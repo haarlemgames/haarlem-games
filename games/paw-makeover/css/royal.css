@@ -1,0 +1,156 @@
+/* Glanzende knoppen/panelen uit de starter, herstijld naar de trimsalon-palet.
+   Geen hardcoded kleuren: alles komt uit tokens in theme.css (alleen zwart/wit-transparanties voor glans en schaduw). */
+html { background: var(--color-bg); overflow-x: clip; }
+body { overflow-x: clip; font-family: var(--font); color: var(--color-text); background: var(--play-background); background-size: var(--play-background-size); background-color: var(--color-bg); }
+body[data-state="home"], body[data-state="preview"] { background-image: var(--home-background); background-size: var(--home-background-size); background-position: center top; background-repeat: repeat, repeat, repeat, no-repeat, no-repeat; }
+#app { max-width: 560px; min-height: 100dvh; overflow-x: clip; background: none; }
+
+
+/* ---------- echte achtergrondafbeeldingen (WS.art.bg) ----------
+   Laag .bg-layer (vast, achter alles): .bg-blur = dezelfde afbeelding vergroot en wazig (vult brede schermen),
+   .bg-sharp = scherpe afbeelding met beeldverhouding 941:1672 en brandpunt (--bg-fx/--bg-fy = fractie van de afbeelding die
+   in het midden van het scherm moet vallen: de arch/vloer). home-beeld voor home en onthulling; play-beeld voor de rest. */
+.bg-layer { --bg-img: var(--play-background); --bg-fx: .56; --bg-fy: .5; --bg-ar: 0.5628; display: none; position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; background: var(--color-bg); }
+body[data-state="home"] .bg-layer, body[data-state="preview"] .bg-layer, body[data-state="reveal"] .bg-layer { --bg-img: var(--home-background); --bg-fy: .52; }
+html[data-bg-art~="home"] body:is([data-state="home"], [data-state="preview"], [data-state="reveal"]) .bg-layer,
+html[data-bg-art~="play"] body:not([data-state="home"], [data-state="preview"], [data-state="reveal"]) .bg-layer { display: block; }
+html[data-bg-art~="home"] body:is([data-state="home"], [data-state="preview"], [data-state="reveal"]) { background: transparent; }
+html[data-bg-art~="play"] body:not([data-state="home"], [data-state="preview"], [data-state="reveal"]) { background: transparent; }
+.bg-blur { position: absolute; inset: -8%; background-image: var(--bg-img); background-size: cover; background-position: center; filter: blur(22px) saturate(1.05); }
+.bg-sharp { --bgw: clamp(calc(100dvh * var(--bg-ar)), 100vw, calc(100dvh * var(--bg-ar) * 1.25)); --bgh: calc(var(--bgw) / var(--bg-ar));
+  position: absolute; width: var(--bgw); height: var(--bgh); background-image: var(--bg-img); background-size: 100% 100%;
+  left: clamp(calc(100vw - var(--bgw)), calc(50vw - var(--bgw) * var(--bg-fx)), 0px); top: clamp(calc(100dvh - var(--bgh)), calc(50dvh - var(--bgh) * var(--bg-fy)), 0px); }
+@media (min-aspect-ratio: 7 / 10) { /* tablet/desktop/landscape: schermvullend (cover) rond het brandpunt; geen kolom met harde rand */
+  .bg-blur { display: none; }
+  .bg-sharp { inset: 0; width: auto; height: auto; left: 0; top: 0; background-size: cover; background-position: calc(var(--bg-fx) * 100%) calc(var(--bg-fy) * 100%); }
+}
+@media (max-height: 480px) and (min-aspect-ratio: 3 / 2) { /* korte landscape: vloer in beeld */
+  body[data-state="home"] .bg-layer { --bg-fy: .66; }
+}
+
+/* ---------- knoppen ---------- */
+.btn { position: relative; background: var(--btn-bg); border: 3px solid var(--btn-border); color: var(--btn-text); font-weight: 800; text-shadow: 0 1px 0 rgba(255, 255, 255, .55);
+  box-shadow: inset 0 3px 0 var(--btn-shine), inset 0 -3px 0 rgba(0, 0, 0, .07), 0 4px 0 var(--btn-edge), 0 8px 14px var(--btn-glow); }
+.btn:hover:not(:disabled) { border-color: var(--btn-border); filter: brightness(1.04); }
+.btn:active:not(:disabled) { transform: translateY(3px); box-shadow: inset 0 3px 0 var(--btn-shine), 0 1px 0 var(--btn-edge); }
+.btn:disabled { filter: saturate(.55); opacity: .6; }
+.btn-primary { background: var(--primary-bg); border-color: var(--primary-border); box-shadow: inset 0 3px 0 var(--btn-shine), inset 0 -3px 0 rgba(0, 0, 0, .08), 0 5px 0 var(--primary-edge), 0 9px 16px var(--primary-glow); }
+.btn-primary:active:not(:disabled) { box-shadow: inset 0 3px 0 var(--btn-shine), 0 1px 0 var(--primary-edge); }
+.btn-primary::after { content: ""; position: absolute; right: 14px; top: 8px; width: 18px; height: 6px; border-radius: 50%; background: rgba(255, 255, 255, .65); transform: rotate(15deg); pointer-events: none; }
+.btn-danger { background: var(--danger-bg); color: var(--color-danger); border-color: var(--color-danger); text-shadow: none; box-shadow: inset 0 3px 0 var(--btn-shine), 0 4px 0 var(--color-danger); }
+.btn-icon { border-radius: 16px; }
+.btn .icon { filter: drop-shadow(0 1px 0 rgba(255, 255, 255, .5)); }
+:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 3px; box-shadow: 0 0 0 6px var(--color-surface); }
+.btn:focus-visible { box-shadow: inset 0 3px 0 var(--btn-shine), 0 4px 0 var(--btn-edge), 0 0 0 6px var(--color-surface); }
+
+h1, h2 { font-weight: 900; color: var(--color-text); text-shadow: 0 2px 0 rgba(255, 255, 255, .75); }
+h1 { font-size: clamp(30px, 8vw, 42px); }
+
+/* ---------- home ---------- */
+[data-screen="home"] { position: relative; min-height: calc(100dvh - 32px); gap: 10px; align-items: center; padding: 6px 0 14px; isolation: isolate; }
+.home-brand { position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; gap: 10px; margin: 4px 58px 0; padding: 8px 18px 10px; background: var(--plaque-bg); border: 4px solid var(--plaque-border); border-radius: 28px;
+  box-shadow: inset 0 2px 0 var(--btn-shine), 0 5px 0 var(--plaque-edge), 0 14px 22px rgba(73, 55, 47, .18); max-width: calc(100% - 116px); }
+.home-brand h1 { margin: 0; font-size: clamp(24px, 7.4vw, 40px); line-height: 1.05; text-align: center; text-wrap: balance; }
+.brand-paw { width: clamp(26px, 8vw, 38px); height: auto; flex: none; color: var(--peach-500); filter: drop-shadow(0 2px 0 rgba(255, 255, 255, .8)); }
+.home-settings { position: absolute; top: 4px; right: 0; z-index: 3; width: 52px; height: 52px; min-width: 52px; padding: 0; border-radius: 50%; }
+.home-settings .icon-gear { width: 30px; height: 30px; color: var(--color-text); }
+#btn-play { position: relative; z-index: 3; width: min(100%, 330px); min-height: 72px; font-size: 28px; border-radius: 26px; }
+#save-banner { position: relative; z-index: 3; font-size: 14px; color: var(--color-text); background: var(--cream-100); }
+
+/* salon-decor (alleen CSS; verdwijnt als WS.art.bg.home een echte achtergrond levert) */
+.home-art { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+html[data-bg-art~="home"] .home-art { display: none; }
+.salon-window { position: absolute; left: 3%; top: 17%; width: 28%; max-width: 150px; aspect-ratio: 3 / 4; border: 6px solid var(--window-frame); border-radius: 18px 18px 8px 8px; background: linear-gradient(var(--sky), var(--cream-50)); box-shadow: 0 6px 0 var(--peach-200), 0 12px 18px rgba(73, 55, 47, .15), inset 0 0 0 3px var(--mint-100); overflow: hidden; }
+.salon-window i { position: absolute; background: var(--window-frame); }
+.salon-window i:first-child { left: 50%; top: 0; bottom: 0; width: 5px; transform: translateX(-50%); }
+.salon-window i:last-child { top: 45%; left: 0; right: 0; height: 5px; }
+.salon-window::after { content: ""; position: absolute; inset: 0; background: linear-gradient(115deg, rgba(255, 255, 255, .7) 0 18%, transparent 18% 32%, rgba(255, 255, 255, .35) 32% 42%, transparent 42%); }
+.salon-towel { position: absolute; left: 6%; top: 44%; width: 15%; max-width: 80px; height: 15%; min-height: 70px; border-radius: 4px 4px 14px 14px; background: repeating-linear-gradient(90deg, var(--towel-a) 0 12px, var(--towel-b) 12px 24px); box-shadow: 0 6px 10px rgba(73, 55, 47, .18); }
+.salon-towel::before { content: ""; position: absolute; left: -6px; right: -6px; top: -7px; height: 9px; border-radius: 6px; background: var(--shelf-edge); }
+.salon-shelf { position: absolute; right: 3%; height: 10px; border-radius: 5px; background: linear-gradient(var(--shelf-wood), var(--shelf-edge)); box-shadow: 0 6px 8px rgba(73, 55, 47, .2); }
+.shelf-top { top: 27%; width: 42%; max-width: 220px; }
+.shelf-low { top: 38%; width: 34%; max-width: 180px; }
+.salon-shelf > span { position: absolute; bottom: 100%; display: block; }
+.bottle { width: 20px; height: 44px; border-radius: 7px 7px 5px 5px; box-shadow: inset 4px 0 0 rgba(255, 255, 255, .45); }
+.bottle::before { content: ""; position: absolute; left: 6px; top: -9px; width: 8px; height: 10px; border-radius: 3px; background: var(--cream-50); box-shadow: 0 1px 0 var(--shelf-edge); }
+.b1 { left: 8%; background: var(--bottle-1); } .b2 { left: 26%; height: 54px; background: var(--bottle-2); } .b3 { left: 44%; height: 38px; width: 24px; background: var(--bottle-3); } .b4 { left: 12%; height: 40px; background: var(--bottle-4); }
+.jar { right: 8%; width: 32px; height: 26px; border-radius: 8px; background: var(--cream-50); border: 3px solid var(--mint-300); }
+.jar::before { content: ""; position: absolute; left: -3px; right: -3px; top: -9px; height: 8px; border-radius: 4px; background: var(--peach-300); }
+.j2 { right: 10%; background: var(--cream-50); border-color: var(--peach-200); }
+.brush-prop { right: 30%; width: 16px; height: 36px; border-radius: 8px 8px 3px 3px; background: linear-gradient(var(--peach-400) 0 55%, var(--shelf-edge) 55%); transform: rotate(12deg); }
+
+/* held: echte hond op een podium */
+.home-hero { --dw: min(78vw, 44dvh, 360px); position: relative; z-index: 1; flex: 1 1 auto; width: 100%; min-height: calc(var(--dw) * 1.2 + 24px); display: flex; align-items: flex-end; justify-content: center; }
+.home-dog { position: relative; z-index: 2; width: var(--dw); aspect-ratio: 5 / 6; margin-bottom: 6px; overflow: hidden; filter: drop-shadow(0 8px 10px rgba(73, 55, 47, .25)); }
+.home-dog img { position: absolute; width: 166.667%; height: 138.889%; left: -33.333%; top: -25%; max-width: none; user-select: none; pointer-events: none; }
+.home-podium { position: absolute; z-index: 1; left: 50%; bottom: calc(6px + var(--dw) * 1.2 * .042 - 22px); width: calc(var(--dw) * 1.0); height: calc(var(--dw) * .2); transform: translateX(-50%); border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(73, 55, 47, .34), rgba(73, 55, 47, .14) 45%, transparent 70%); }
+.home-podium::before { content: ""; position: absolute; left: 50%; top: 50%; width: 150%; height: 190%; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(ellipse, var(--peach-200), transparent 68%); opacity: .75; z-index: -1; }
+.spark { position: absolute; z-index: 3; width: 22px; height: 22px; background: radial-gradient(circle, var(--cream-50), var(--spark) 55%, var(--spark-glow)); clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); animation: twinkle 2.6s ease-in-out infinite; }
+.spark-one { left: 12%; top: 12%; } .spark-two { right: 12%; top: 26%; width: 28px; height: 28px; animation-delay: .8s; } .spark-three { left: 8%; bottom: 36%; width: 16px; height: 16px; animation-delay: 1.4s; } .spark-four { right: 16%; bottom: 30%; width: 18px; height: 18px; animation-delay: 2s; }
+@keyframes twinkle { 0%, 100% { transform: scale(.7) rotate(0); opacity: .75; } 50% { transform: scale(1.15) rotate(14deg); opacity: 1; } }
+
+/* ---------- instellingen ---------- */
+[data-screen="settings"] { padding-top: 20px; gap: 20px; }
+[data-screen="settings"] h1 { text-align: center; padding-bottom: 14px; border-bottom: 3px solid var(--panel-ring); }
+.toggle { min-height: 74px; justify-content: space-between; padding-right: 105px; text-align: left; }
+.toggle::after { content: var(--switch-on); position: absolute; right: 14px; width: 70px; padding: 8px 0; border: 2px solid var(--btn-border); background: var(--primary-bg); border-radius: 14px; text-align: center; box-shadow: inset 0 2px 0 var(--btn-shine); }
+.toggle[aria-checked="false"] { opacity: 1; text-decoration: none; }
+.toggle[aria-checked="false"]::after { content: var(--switch-off); background: var(--danger-bg); color: var(--color-muted); }
+
+/* ---------- overlays en kaarten ---------- */
+.overlay { background: var(--overlay-bg); backdrop-filter: blur(3px); padding: 24px 16px; }
+.card { background: var(--panel-bg); border: 4px solid var(--panel-border); border-radius: 26px; color: var(--color-text);
+  box-shadow: 0 0 0 3px var(--panel-ring), inset 0 0 0 3px var(--panel-inset), 0 10px 0 var(--panel-edge), 0 20px 40px rgba(0, 0, 0, .3); padding: 24px 20px; max-height: calc(100dvh - 48px); overflow: auto; }
+.card h2 { padding: 8px 5px 12px; font-size: 30px; border-bottom: 3px solid var(--panel-ring); margin-bottom: 4px; }
+.pause-copy { color: var(--color-muted); font-size: 1rem; }
+.modal-close { align-self: flex-end; min-width: 44px; min-height: 44px; margin: -8px -4px -16px; border-radius: 50%; background: var(--close-bg); }
+.reward-art svg { display: none; }
+.reward-art { font-size: 0; min-height: 120px; background-color: transparent; background-image: var(--art-sparkle), var(--reward-bg); background-repeat: no-repeat; background-position: center; background-size: contain, auto; border: 3px solid var(--mint-300); border-radius: 16px; padding: 14px; }
+body[data-modal="unlock"] .reward-art { background-image: var(--art-hat), var(--reward-bg); }
+body[data-modal="preview"] .reward-art { background-image: var(--art-dog), var(--reward-bg); background-size: auto 285%, auto; background-position: 50% 40%, center; }
+.goal-copy { background: var(--goal-bg); border-radius: 14px; padding: 14px; color: var(--color-text); font-size: 1.05rem; }
+.level-kicker { font-size: 13px; letter-spacing: 2px; color: var(--kicker); font-weight: 800; }
+.stars { color: var(--sun); }
+
+@media (max-height: 480px) { /* lage landscape (740x360, 640x360): alle knoppen zonder scrollen */
+  .overlay { padding: 8px; }
+  .card { padding: 10px 14px 12px; gap: 6px; max-height: calc(100dvh - 16px); width: min(100%, 560px); border-width: 3px; box-shadow: 0 0 0 2px var(--panel-ring), inset 0 0 0 2px var(--panel-inset), 0 6px 0 var(--panel-edge), 0 12px 24px rgba(0, 0, 0, .3); }
+  .card h2 { font-size: 22px; padding: 2px 4px 6px; margin: 0; }
+  .card .btn { min-height: 44px; padding-block: 4px; }
+  [data-screen="paused"] .card { display: grid; grid-template-columns: 1fr 1fr; column-gap: 8px; row-gap: 6px; }
+  [data-screen="paused"] .card h2, [data-screen="paused"] .card p { grid-column: 1 / -1; }
+  .pause-copy { font-size: .9rem; }
+  #template-modal .card { position: relative; display: grid; grid-template-columns: minmax(0, 36%) minmax(0, 1fr); column-gap: 14px; align-items: center; text-align: left; }
+  #template-modal .modal-close { position: absolute; top: 6px; right: 6px; margin: 0; z-index: 3; }
+  #template-modal .reward-art { grid-column: 1; grid-row: 1 / span 4; align-self: stretch; min-height: 130px; }
+  #template-modal .level-kicker, #template-modal h2, #template-modal .goal-copy, #template-modal .modal-action { grid-column: 2; }
+  #template-modal h2 { padding-right: 44px; }
+  #template-modal .goal-copy { padding: 8px 12px; font-size: .95rem; }
+  [data-screen="settings"] { padding-top: 0; gap: 8px; }
+  [data-screen="settings"] h1 { font-size: 24px; padding-bottom: 4px; margin: 0; }
+  .toggle { min-height: 52px; }
+  .toggle::after { padding: 4px 0; }
+}
+@media (max-height: 600px) { [data-screen="home"] { padding-top: 4px; } .card h2 { font-size: 24px; padding: 4px; } .reward-art { min-height: 70px; } }
+@media (max-height: 480px) {
+  .salon-window, .salon-towel { display: none; }
+  [data-screen="home"] { gap: 6px; padding-bottom: 6px; }
+  .home-brand { padding: 4px 14px 6px; margin-top: 0; }
+  .home-brand h1 { font-size: 26px; }
+  .home-hero { --dw: min(60vw, 33dvh); min-height: calc(var(--dw) * 1.2 + 18px); }
+  #btn-play { min-height: 56px; font-size: 22px; }
+}
+@media (max-height: 480px) and (min-aspect-ratio: 3 / 2) { /* korte landscape: hond links, titel en Play rechts */
+  [data-screen="home"] { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr auto auto auto 1fr; column-gap: 12px; row-gap: 10px; align-items: center; justify-items: center; }
+  .home-art { display: none; }
+  .home-hero { grid-column: 1; grid-row: 1 / -1; --dw: min(40vw, 66dvh); align-self: stretch; }
+  .home-brand { grid-column: 2; grid-row: 2; margin: 0; max-width: 100%; }
+  #save-banner { grid-column: 2; grid-row: 3; }
+  #btn-play { grid-column: 2; grid-row: 4; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } .spark { transform: none; opacity: .95; } }
+
+/* ---------- leesbaarheid op de echte achtergronden: titels krijgen een zachte plaquette ---------- */
+html[data-bg-art] [data-screen="settings"] h1 { background: rgba(255, 253, 249, .86); border-radius: 18px; border-bottom: 0; padding-top: 6px; }
+html[data-bg-art] [data-screen="reveal"] h1 { align-self: center; padding: 2px 24px 4px; border-radius: 999px; background: rgba(255, 253, 249, .86); box-shadow: 0 2px 0 var(--panel-ring); }

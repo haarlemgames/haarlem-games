@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta name="build" content="paw-makeover-v3 2026-10-05">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Paw Makeover</title>
+  <link rel="stylesheet" href="css/theme.css?v=20261005w">
+  <link rel="stylesheet" href="css/ui.css?v=20261005w">
+  <link rel="stylesheet" href="css/royal.css?v=20261005w">
+  <link rel="stylesheet" href="css/story.css?v=20261005w">
+  <link rel="stylesheet" href="css/act-clean.css?v=20261005w">
+  <link rel="stylesheet" href="css/act-dress.css?v=20261029-idle">
+  <link rel="stylesheet" href="css/act-play.css?v=20261005w">
+  <link rel="stylesheet" href="css/act-shower.css?v=20261005w">
+  <link rel="stylesheet" href="css/act-bed.css?v=20261005w">
+</head>
+<body data-state="home">
+  <div class="bg-layer" aria-hidden="true"><div class="bg-blur"></div><div class="bg-sharp"></div></div>
+  <div class="scene-bg" aria-hidden="true"></div>
+  <div id="app">
+    <!-- HOME: alleen titel/logo, instellingen en Play. Alle decoratie is CSS-art (aria-hidden). -->
+    <section class="screen" data-screen="home">
+      <div class="home-art" aria-hidden="true">
+        <div class="salon-window"><i></i><i></i></div>
+        <div class="salon-towel"></div>
+        <div class="salon-shelf shelf-top"><span class="bottle b1"></span><span class="bottle b2"></span><span class="bottle b3"></span><span class="jar"></span></div>
+        <div class="salon-shelf shelf-low"><span class="brush-prop"></span><span class="bottle b4"></span><span class="jar j2"></span></div>
+      </div>
+      <div class="home-brand">
+        <svg class="brand-paw" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><g fill="currentColor"><ellipse cx="32" cy="42" rx="14" ry="11"/><ellipse cx="14" cy="28" rx="6" ry="8"/><ellipse cx="26" cy="16" rx="6" ry="8.5"/><ellipse cx="38" cy="16" rx="6" ry="8.5"/><ellipse cx="50" cy="28" rx="6" ry="8"/></g></svg>
+        <h1><span data-i18n="title"></span></h1>
+      </div>
+      <div class="home-hero" aria-hidden="true">
+        <div class="home-podium"></div>
+        <div class="home-dog"><img data-art="dog" alt=""></div>
+        <span class="spark spark-one"></span><span class="spark spark-two"></span><span class="spark spark-three"></span><span class="spark spark-four"></span>
+      </div>
+      <p id="save-banner" class="notice" hidden></p>
+      <button id="btn-play" class="btn btn-primary"><span data-i18n="play"></span></button>
+      <h2 data-feature="levelSelect"><span data-i18n="levels"></span></h2>
+      <ol data-feature="levelSelect" id="level-list" class="levels"></ol>
+      <button id="btn-settings" class="btn home-settings" data-i18n-aria="settings">
+        <svg class="icon icon-gear" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6a.5.5 0 0 0 .1-.6l-2-3.5a.5.5 0 0 0-.6-.2l-2.5 1a7.4 7.4 0 0 0-1.7-1l-.4-2.6a.5.5 0 0 0-.5-.4h-4a.5.5 0 0 0-.5.4l-.4 2.6a7.4 7.4 0 0 0-1.7 1l-2.5-1a.5.5 0 0 0-.6.2l-2 3.5a.5.5 0 0 0 .1.6L4.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6a.5.5 0 0 0-.1.6l2 3.5c.1.2.4.3.6.2l2.5-1c.5.4 1.1.7 1.7 1l.4 2.6c0 .2.2.4.5.4h4c.3 0 .5-.2.5-.4l.4-2.6c.6-.3 1.2-.6 1.7-1l2.5 1c.2.1.5 0 .6-.2l2-3.5a.5.5 0 0 0-.1-.6L19.4 13zM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7z"/></svg>
+      </button>
+    </section>
+
+    <!-- GAME: speelveld + onderpaneel van de activity; eindbalk na afloop -->
+    <section class="screen" data-screen="game" hidden>
+      <header class="hud">
+        <button id="btn-pause" class="btn btn-icon" data-i18n-aria="pause"><img src="assets/icons/pause.svg" alt="" class="icon"></button>
+        <div class="hud-info" aria-live="polite">
+          <span id="hud-theme" class="theme-chip"></span>
+          <span id="hud-level" class="hud-level"></span>
+        </div>
+        <button id="btn-sound" class="btn btn-icon" data-i18n-aria="mute" aria-pressed="true"><img id="sound-icon" src="assets/icons/sound.svg" alt="" class="icon"></button>
+      </header>
+      <div id="progress" role="progressbar" data-testid="progress" aria-valuemin="0" aria-valuenow="0" aria-valuemax="100"><span class="progress-fill"></span></div>
+      <div class="stage-slot">
+        <div id="stage" class="stage"></div>
+        <div id="act-overlay" class="act-overlay"></div>
+      </div>
+      <div class="side">
+        <div id="act-panel" class="act-panel"></div>
+        <div id="act-end" class="act-end" role="group" hidden>
+          <p id="end-note" class="end-note" aria-live="polite"></p>
+          <div class="end-actions">
+            <button id="btn-end-home" class="btn btn-icon btn-small" data-i18n-aria="home"><img src="assets/icons/home.svg" alt="" class="icon"></button>
+            <button id="btn-end-retry" class="btn btn-icon btn-small" data-i18n-aria="retry"><img src="assets/icons/retry.svg" alt="" class="icon"></button>
+            <button id="btn-end-next" class="btn btn-primary btn-next" data-testid="next" data-i18n-aria="next"><img src="assets/icons/next.svg" alt="" class="icon"></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" data-screen="settings" hidden>
+      <h1><span data-i18n="settings"></span></h1>
+      <button id="set-music" class="btn toggle" role="switch" aria-checked="true"></button>
+      <button id="set-sfx" class="btn toggle" role="switch" aria-checked="true"></button>
+      <p hidden id="save-status" class="muted"></p>
+      <button data-feature="resetProgress" id="btn-reset" class="btn btn-danger"><span data-i18n="reset"></span></button>
+      <button id="btn-back" class="btn btn-primary"><span data-i18n="back"></span></button>
+    </section>
+
+    <div class="overlay" data-screen="paused" role="dialog" aria-modal="true" aria-labelledby="t-paused" hidden>
+      <div class="card">
+        <h2 id="t-paused"><span data-i18n="paused"></span></h2>
+        <p id="pause-copy" class="pause-copy"><span data-i18n="pausedCopy"></span></p>
+        <button id="btn-resume" class="btn btn-primary"><img src="assets/icons/play.svg" alt="" class="icon"><span data-i18n="resume"></span></button>
+        <button id="btn-retry-paused" class="btn"><img src="assets/icons/retry.svg" alt="" class="icon"><span data-i18n="retry"></span></button>
+        <button id="btn-settings-paused" class="btn"><span data-i18n="settings"></span></button>
+        <button id="btn-home-paused" class="btn"><img src="assets/icons/home.svg" alt="" class="icon"><span data-i18n="home"></span></button>
+      </div>
+    </div>
+  </div>
+
+  <script>window.STUDIO_CONFIG={locale:'en',titleKey:'title',levelPreview:false,unlocks:true,levelSelect:false,resetProgress:false};</script>
+  <script src="locales/en.js"></script>
+  <script src="locales/nl.js"></script>
+  <script src="js/i18n.js?v=20261005w"></script>
+  <script src="js/storage.js?v=20261005w"></script>
+  <script src="js/story.js?v=20261005w"></script>
+  <script src="js/anchors.js?v=20261005w"></script>
+  <script src="js/art-manifest.js?v=20261005w"></script>
+  <script src="js/dog-masks.js?v=20261005w"></script>
+  <script src="js/machine.js?v=20261005w"></script>
+  <script src="js/soundgen.js?v=20261005w"></script>
+  <script src="js/audio-map.js?v=20261005w"></script>
+  <script src="js/audio.js?v=20261005w"></script>
+  <script src="js/scene.js?v=20261005w"></script>
+  <script src="js/groom.js?v=20261005w"></script>
+  <script src="js/act-clean.js?v=20261005w"></script>
+  <script src="js/act-dress.js?v=20261029-idle"></script>
+  <script src="js/act-play.js?v=20261005w"></script>
+  <script src="js/act-shower.js?v=20261005w"></script>
+  <script src="js/act-bed.js?v=20261005w"></script>
+  <script src="js/template.js?v=20261005w"></script>
+  <script src="js/shell.js?v=20261005w"></script>
+</body>
+</html>

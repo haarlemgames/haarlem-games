@@ -1,0 +1,147 @@
+/* Thema-tokens Paw Makeover: gezellige trimsalon in mintgroen, perzik en crème met warme accenten.
+   Een nieuw palet = alleen dit bestand aanpassen: royal.css en makeover.css bevatten geen eigen kleurwaarden
+   (behalve zwart/wit-transparanties voor glans en schaduw). */
+:root {
+  /* --- palet (ART-BRIEF §7) --- */
+  --mint-50: #effaf4;
+  --mint-100: #d9f3e8;
+  --mint-200: #bff2dc;
+  --mint-300: #a5e8cd;
+  --mint-400: #7fd3b0;
+  --mint-500: #5cc29c;
+  --mint-600: #3fa883;
+  --mint-700: #2e8466;
+  --peach-100: #ffe3d3;
+  --peach-200: #ffd0b8;
+  --peach-300: #ffb899;
+  --peach-400: #ff9d7a;
+  --peach-500: #f08a62;
+  --cream-50: #fffdf9;
+  --cream-100: #fff3e0;
+  --cream-200: #f0dfc4;
+  --sun: #ffc23c;
+  --orange: #ff9d4d;
+  --orange-deep: #c85f1a;
+  --brown: #49372f;
+  --brown-soft: #6f5a4d;
+  --sky: #cdeefb;
+
+  /* --- basis (starter-namen blijven bestaan) --- */
+  --color-bg: var(--cream-100);
+  --color-surface: var(--cream-50);
+  --color-text: var(--brown);
+  --color-muted: var(--brown-soft);
+  --color-line: var(--cream-200);
+  --color-accent: var(--orange);
+  --color-accent-shadow: var(--orange-deep);
+  --color-danger: #b3261e;
+  --color-focus: #1a5fb4;
+  --hint-ring: var(--orange);
+  --hint-glow: rgba(255, 157, 77, .5);
+  --color-cell: #fbe6c2;
+  --color-cell-target: var(--sun);
+  --radius: 18px;
+  --tap-min: 48px;
+  --gap: 12px;
+  --font: "Trebuchet MS", "Avenir Next", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* --- scrollbalken --- */
+  --scroll-track: rgba(255, 253, 249, .7);
+  --scroll-thumb: linear-gradient(90deg, var(--mint-400), var(--mint-500));
+  --scroll-thumb-active: linear-gradient(90deg, var(--mint-500), var(--mint-600));
+  --scroll-thumb-solid: var(--mint-500);
+  --scroll-border: var(--cream-50);
+
+  /* --- glanzende knoppen --- */
+  --btn-bg: linear-gradient(var(--mint-300), var(--mint-400) 52%, var(--mint-500));
+  --btn-border: var(--cream-50);
+  --btn-edge: var(--mint-700);
+  --btn-text: var(--brown);
+  --btn-shine: rgba(255, 255, 255, .7);
+  --btn-glow: rgba(46, 132, 102, .28);
+  --primary-bg: linear-gradient(#ffdca8, var(--orange) 55%, #f4852b);
+  --primary-border: #fff3d6;
+  --primary-edge: #b4551a;
+  --primary-glow: rgba(200, 95, 26, .35);
+  --danger-bg: linear-gradient(var(--cream-50), var(--peach-100));
+
+  /* --- panelen en overlays --- */
+  --panel-bg: linear-gradient(var(--cream-50), var(--cream-100));
+  --panel-border: var(--mint-400);
+  --panel-ring: var(--peach-200);
+  --panel-edge: var(--mint-600);
+  --panel-inset: var(--cream-50);
+  --overlay-bg: rgba(73, 55, 47, .55);
+  --hud-bg: rgba(255, 253, 249, .8);
+  --chip-bg: var(--mint-100);
+  --chip-text: var(--brown);
+  --kicker: var(--mint-700);
+  --goal-bg: var(--mint-100);
+  --reward-bg: radial-gradient(var(--cream-50), var(--cream-100));
+  --close-bg: linear-gradient(var(--peach-300), var(--peach-500));
+
+  /* --- voortgang en stappen --- */
+  --progress-track: var(--cream-200);
+  --progress-fill: linear-gradient(var(--mint-300), var(--mint-500));
+  --step-todo: rgba(255, 253, 249, .6);
+  --step-active: var(--peach-200);
+  --step-done: var(--mint-300);
+  --success: var(--mint-600);
+
+  /* --- speelveld (hond-stage) --- */
+  --stage-bg: rgba(255, 253, 249, .55);
+  --stage-border: var(--cream-50);
+  --stage-glow: rgba(255, 255, 255, .85);
+  --zone-line: var(--peach-500);
+  --zone-fill: var(--peach-300);
+  --item-bg: var(--cream-50);
+  --item-border: var(--cream-200);
+  --item-selected: var(--mint-100);
+  --item-selected-border: var(--mint-600);
+
+  /* --- achtergronden: home = sfeervolle salon (CSS-illustratie), play = rustig en laag contrast.
+        Een echte afbeelding: --home-background:url(...) en --home-background-size:cover (stage.js doet dit via WS.art.bg). --- */
+  --wall-top: #c9f3e1;
+  --wall-bottom: #9fdcc0;
+  --tile-line: rgba(255, 255, 255, .5);
+  --floor-top: #ffe0c8;
+  --floor-bottom: #ffc7a3;
+  --baseboard: var(--cream-50);
+  --home-background:
+    linear-gradient(180deg, transparent 0 77%, var(--baseboard) 77% 78.4%, var(--floor-top) 78.4%, var(--floor-bottom) 100%),
+    linear-gradient(var(--tile-line) 2px, transparent 2px),
+    linear-gradient(90deg, var(--tile-line) 2px, transparent 2px),
+    radial-gradient(ellipse 80% 50% at 50% 40%, rgba(255, 255, 255, .45), transparent 70%),
+    linear-gradient(180deg, var(--wall-top), var(--wall-bottom));
+  --home-background-size: auto, 44px 44px, 44px 44px, auto, auto;
+  --play-background:
+    linear-gradient(rgba(127, 211, 176, .13) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(127, 211, 176, .13) 2px, transparent 2px),
+    linear-gradient(180deg, #f1fbf6, #fbf4e6);
+  --play-background-size: 56px 56px, 56px 56px, auto;
+
+  /* --- salon-illustratie op home --- */
+  --shelf-wood: #e8b98f;
+  --shelf-edge: #c08858;
+  --window-frame: var(--cream-50);
+  --towel-a: var(--peach-300);
+  --towel-b: var(--cream-50);
+  --bottle-1: var(--mint-400);
+  --bottle-2: var(--peach-300);
+  --bottle-3: var(--sun);
+  --bottle-4: #a8d8f0;
+  --podium-top: var(--peach-200);
+  --podium-side: var(--peach-300);
+  --podium-ring: var(--mint-300);
+  --plaque-bg: linear-gradient(var(--cream-50), var(--cream-100));
+  --plaque-border: var(--peach-300);
+  --plaque-edge: var(--peach-500);
+  --spark: #fff8c9;
+  --spark-glow: var(--sun);
+
+  /* --- bijsnijden van het 800x800 hondcanvas (fracties) voor stage en voor/na-kaarten --- */
+  --cx: .16;
+  --cy: .09;
+  --cw: .68;
+  --ch: .83;
+}

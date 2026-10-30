@@ -1,0 +1,13 @@
+{
+  "shower.field": "Dog. Arrow keys move and paint with the tool, Shift for bigger steps, Space or Enter for a big splash.",
+  "shower.steps": "Bath steps",
+  "shower.step.wet": "Wet with the shower",
+  "shower.step.shampoo": "Shampoo",
+  "shower.step.rinse": "Rinse off the foam",
+  "shower.step.towel": "Dry with the towel",
+  "shower.step.dryer": "Fluff with the hair dryer",
+  "shower.state.done": "done",
+  "shower.state.current": "now",
+  "shower.state.todo": "later",
+  "shower.done": "All clean and fluffy"
+}

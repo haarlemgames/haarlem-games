@@ -1,0 +1,126 @@
+/* act-bed: pyjama + bedritueel + slapen. Alle selectors beginnen met .act-bed. */
+.act-bed-root { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.act-bed-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* objecten en tikvlakken (knoppen) */
+.act-bed-obj, .act-bed-hit { position: absolute; box-sizing: border-box; margin: 0; padding: 0; border: 0; background: none; min-height: 44px; transform: translate(-50%, -50%);
+  pointer-events: auto; touch-action: none; cursor: pointer; -webkit-tap-highlight-color: transparent; font: inherit; color: inherit; }
+div.act-bed-obj { pointer-events: none; }
+.act-bed-obj img { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; user-select: none; -webkit-user-drag: none; filter: drop-shadow(0 4px 4px rgba(30, 25, 70, .35)); }
+.act-bed-obj.is-drag-able { cursor: grab; }
+.act-bed-obj.is-drag { cursor: grabbing; z-index: 20 !important; }
+.act-bed-obj.is-drag img { filter: drop-shadow(0 10px 8px rgba(30, 25, 70, .4)); }
+.act-bed-obj.is-set { pointer-events: none; }
+.act-bed-obj:focus-visible, .act-bed-hit:focus-visible { outline: 4px solid var(--color-focus, #1a5fb4); outline-offset: 3px; border-radius: 14px; }
+.act-bed-hit { background: transparent; border-radius: 22px; }
+.act-bed-hit-bed { border-radius: 40% 40% 30% 30%; }
+.act-bed-hit-img { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+.act-bed-spark .act-bed-hit-img { animation: act-bed-pulse 1.1s ease-in-out infinite; filter: drop-shadow(0 0 8px #ffe27a) drop-shadow(0 0 3px #fff); }
+@keyframes act-bed-pulse { 0%, 100% { transform: scale(.78); opacity: .8; } 50% { transform: scale(1.12); opacity: 1; } }
+
+/* stappen */
+.act-bed-obj.is-dim img { opacity: .8; filter: grayscale(.5) brightness(.9) drop-shadow(0 0 5px rgba(255, 255, 255, .9)) drop-shadow(0 2px 3px rgba(30, 25, 70, .3)); }
+.act-bed-obj.is-dim img { animation: act-bed-twinkle 2.2s ease-in-out infinite; }
+.act-bed-obj.is-lit img { filter: drop-shadow(0 0 8px #ffe27a) drop-shadow(0 0 20px #ffd34d) brightness(1.08); animation: act-bed-lit .6s ease-out; }
+@keyframes act-bed-twinkle { 0%, 100% { opacity: .62; } 50% { opacity: 1; } }
+@keyframes act-bed-lit { 0% { transform: scale(.7); } 60% { transform: scale(1.25); } 100% { transform: scale(1); } }
+.act-bed-lamp-on img { transition: filter .25s; }
+.act-bed-lamp-on.is-off img { filter: brightness(.45) saturate(.6); }
+.act-bed-obj.is-bump img { animation: act-bed-bump .35s ease-out; }
+@keyframes act-bed-bump { 0% { transform: scale(1); } 40% { transform: scale(1.12) rotate(-3deg); } 100% { transform: scale(1); } }
+.act-bed-obj.is-tuck img { animation: act-bed-squish .4s ease-out; }
+@keyframes act-bed-squish { 0% { transform: scale(1); } 40% { transform: scale(1.03, .94); } 100% { transform: scale(1); } }
+.act-bed-obj.is-placed img { animation: act-bed-bump .5s ease-out; }
+.act-bed-target { opacity: .9; }
+.act-bed-target img { animation: act-bed-pulse 1.2s ease-in-out infinite; filter: drop-shadow(0 0 8px #ffe27a); }
+.act-bed-tooth-paste.is-squeezed img { transform: scaleX(.88) scaleY(1.08); }
+.act-bed-tooth-brush { transition: opacity .35s; }
+.act-bed-tooth-brush.is-out { opacity: 0; }
+.act-bed-paste { position: absolute; left: 1%; top: 4%; width: 20%; height: 40%; border-radius: 6px; transform: rotate(-6deg); pointer-events: none;
+  background: repeating-linear-gradient(115deg, #fff 0 4px, #ff7a90 4px 8px, #4aa8f0 8px 12px); box-shadow: 0 1px 3px rgba(0, 0, 0, .3); }
+.act-bed-foam { z-index: 7; }
+.act-bed-foam img { filter: none; opacity: .92; }
+.act-bed-foam.is-pop { animation: act-bed-popout .5s ease-in forwards; }
+@keyframes act-bed-popout { to { transform: translate(-50%, -80%) scale(1.8); opacity: 0; } }
+.act-bed-card { position: absolute; transform: translate(-50%, -50%); box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 8px;
+  background: var(--cream-50, #fffdf9); border: 4px solid #b9a7ff; border-radius: 24px; box-shadow: 0 6px 14px rgba(40, 30, 90, .3); pointer-events: none; }
+.act-bed-card[hidden] { display: none; }
+.act-bed-card > img { width: 62%; height: auto; max-height: 62%; object-fit: contain; }
+.act-bed-card.is-flip { animation: act-bed-flip .4s ease-out; }
+@keyframes act-bed-flip { 0% { transform: translate(-50%, -50%) rotateY(90deg) scale(.8); } 100% { transform: translate(-50%, -50%) rotateY(0) scale(1); } }
+.act-bed-dots { display: flex; gap: 6px; }
+.act-bed-dots span { width: 10px; height: 10px; border-radius: 50%; background: #dcd3f5; }
+.act-bed-dots span.is-on { background: var(--orange, #ff9d4d); }
+
+/* dimmer (lamp uit) */
+.act-bed-dim { position: absolute; inset: 0; z-index: 30; background: rgba(12, 16, 52, .78); opacity: 0; transition: opacity .28s ease; pointer-events: none; }
+.act-bed-dim.is-on { opacity: 1; }
+
+/* hint (hand, geen tekst) */
+.act-bed-hint { position: absolute; inset: 0; z-index: 40; pointer-events: none; }
+.act-bed-hint-ring { position: absolute; left: var(--x0); top: var(--y0); width: 44px; height: 44px; margin: -22px 0 0 -22px; border: 3px solid var(--hint-ring, #ff9d4d); border-radius: 50%; box-shadow: 0 0 12px var(--hint-glow, rgba(255, 157, 77, .5)); }
+.act-bed-hint-hand { position: absolute; left: var(--x0); top: var(--y0); width: 52px; height: auto; margin: -8px 0 0 -14px; filter: drop-shadow(0 3px 3px rgba(73, 55, 47, .35)); }
+.act-bed-hint-target { position: absolute; width: 28px; height: 28px; margin: -14px 0 0 -14px; border: 3px dashed var(--hint-ring, #ff9d4d); border-radius: 50%; opacity: .8; }
+.act-bed-hint.is-tap .act-bed-hint-hand { animation: act-bed-tapdown 1.1s ease-in-out infinite; }
+.act-bed-hint.is-tap .act-bed-hint-ring { animation: act-bed-ring 1.1s ease-out infinite; }
+.act-bed-hint.is-drag .act-bed-hint-hand, .act-bed-hint.is-drag .act-bed-hint-ring { animation: act-bed-drag 1.9s ease-in-out infinite; }
+@keyframes act-bed-tapdown { 0%, 100% { transform: translateY(0); } 45% { transform: translateY(8px) scale(.94); } }
+@keyframes act-bed-ring { 0% { transform: scale(.6); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+@keyframes act-bed-drag { 0% { transform: translate(0, 0); opacity: 0; } 12% { opacity: 1; } 75% { opacity: 1; transform: translate(var(--dx), var(--dy)); } 100% { opacity: 0; transform: translate(var(--dx), var(--dy)); } }
+.act-bed-hint.is-static .act-bed-hint-hand, .act-bed-hint.is-static .act-bed-hint-ring { animation: none !important; }
+
+/* rail (onderpaneel): stappen als pictogrammen */
+.act-bed-rail { display: flex; flex-wrap: wrap; gap: 8px 10px; justify-content: center; align-items: center; align-self: center; max-width: 100%; padding: 6px 12px; background: rgba(255, 253, 249, .9); border: 3px solid var(--cream-50, #fffdf9); border-radius: 26px; box-shadow: 0 3px 8px rgba(73, 55, 47, .18); }
+.act-bed-chip { position: relative; flex: none; width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; background: #fff; border: 3px solid var(--cream-200, #f0dfc4); opacity: .6; transition: transform .2s, opacity .2s; }
+.act-bed-chip img { width: 72%; height: 72%; object-fit: contain; pointer-events: none; }
+.act-bed-chip.is-now { opacity: 1; border-color: var(--orange, #ff9d4d); transform: scale(1.1); box-shadow: 0 0 0 3px rgba(255, 157, 77, .3); }
+.act-bed-chip.is-done { opacity: 1; border-color: var(--mint-500, #5cc29c); }
+.act-bed-tick { display: none; position: absolute; right: -5px; bottom: -5px; width: 22px; height: 22px; border-radius: 50%; background: var(--mint-500, #5cc29c); border: 2px solid #fff; box-sizing: border-box; }
+.act-bed-tick::after { content: ""; position: absolute; left: 6px; top: 2px; width: 5px; height: 10px; border: solid #fff; border-width: 0 3px 3px 0; transform: rotate(40deg); }
+.act-bed-chip.is-done .act-bed-tick { display: block; }
+
+/* slottableau (scene-props in laag 'dog') */
+.act-bed-lamp-off { filter: brightness(.5) saturate(.6); }
+.act-bed-zzz { animation: act-bed-float 3.2s ease-in-out infinite; }
+.act-bed-moon { animation: act-bed-fadein .9s ease-out both; }
+.act-bed-blanket-sleep, .act-bed-teddy-sleep { animation: act-bed-settle .5s ease-out; }
+@keyframes act-bed-float { 0%, 100% { translate: 0 0; opacity: .85; } 50% { translate: 2% -6%; opacity: 1; } }
+@keyframes act-bed-fadein { from { opacity: 0; } to { opacity: 1; } }
+@keyframes act-bed-settle { from { opacity: 0; } to { opacity: 1; } }
+
+.act-bed-root.is-paused * { animation-play-state: paused !important; }
+@media (prefers-reduced-motion: reduce) {
+  .act-bed-root *, .act-bed-prop, .act-bed-zzz, .act-bed-moon, .act-bed-blanket-sleep, .act-bed-teddy-sleep { animation: none !important; transition: none !important; }
+  .act-bed-chip, .act-bed-dim { transition: none !important; }
+}
+.act-bed-star-lit { filter: drop-shadow(0 0 8px #ffe27a) drop-shadow(0 0 20px #ffd34d) brightness(1.1); }
+
+.act-bed-eyes { transition: opacity .3s ease; }
+.act-bed-hit-head { border-radius: 46%; }
+.act-bed-chip[data-step="hop"] img { transform: scale(1.6); transform-origin: 50% 68%; }
+
+@media (min-aspect-ratio: 6 / 5) and (min-width: 600px), (max-height: 520px) and (min-aspect-ratio: 6 / 5) {
+  .act-bed-chip { width: 46px; height: 46px; }
+  .act-bed-rail { padding: 6px 8px; gap: 6px 8px; }
+}
+
+.act-bed-bed { scale: 1.15; }
+
+/* voorrand van het hondenbed: hond ligt/staat IN het bed (alleen de voorste rand wordt over de hond getekend) */
+.act-bed-bedfront { clip-path: polygon(11.9% 61%, 18.8% 60.6%, 25% 68.1%, 32.5% 72.5%, 42.5% 74.8%, 50% 75.3%, 57.5% 74.8%, 67.5% 72.5%, 75% 68.1%, 81.3% 60.6%, 88.1% 61%, 88.1% 87.5%, 11.9% 87.5%); pointer-events: none; }
+
+/* deken over de slapende hond: gebogen bovenrand (ligt over de rug), kop blijft vrij */
+.act-bed-blanket-sleep { clip-path: inset(0 round 38% 38% 10% 10% / 60% 60% 10% 10%); filter: drop-shadow(0 3px 3px rgba(40, 30, 90, .35)); }
+
+/* 2026-10-06 doorstroming: actieve handeling licht op (bed, deken, lamp, ...); grote tikhand op het bed. Statisch bij reduced motion. */
+.act-bed-bed.is-target { filter: drop-shadow(0 0 6px #fff6c8) drop-shadow(0 0 16px #ffd34d) drop-shadow(0 0 26px rgba(255, 196, 77, .75)); animation: act-bed-glow 1.2s ease-in-out infinite; }
+@keyframes act-bed-glow { 0%, 100% { filter: drop-shadow(0 0 4px #fff6c8) drop-shadow(0 0 10px #ffd34d) brightness(1); } 50% { filter: drop-shadow(0 0 8px #fff6c8) drop-shadow(0 0 22px #ffd34d) drop-shadow(0 0 30px rgba(255, 196, 77, .8)) brightness(1.08); } }
+.act-bed-obj.is-active img { animation: act-bed-glow 1.2s ease-in-out infinite; }
+.act-bed-hit-bed { cursor: pointer; }
+.act-bed-hint.is-big .act-bed-hint-hand { width: 76px; margin: -10px 0 0 -20px; }
+.act-bed-hint.is-big .act-bed-hint-ring { width: 72px; height: 72px; margin: -36px 0 0 -36px; border-width: 4px; }
+.act-bed-spark .act-bed-hit-img { filter: drop-shadow(0 0 10px #ffe27a) drop-shadow(0 0 4px #fff) brightness(1.15); }
+@media (prefers-reduced-motion: reduce) {
+  .act-bed-bed.is-target { animation: none !important; filter: drop-shadow(0 0 8px #fff6c8) drop-shadow(0 0 20px #ffd34d); }
+  .act-bed-obj.is-active img { animation: none !important; filter: drop-shadow(0 0 8px #fff6c8) drop-shadow(0 0 18px #ffd34d); }
+}

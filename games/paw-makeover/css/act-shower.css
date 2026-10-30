@@ -1,0 +1,84 @@
+/* act-shower: agent shower. Alleen selectors met prefix .act-shower. */
+.act-shower-root { position: absolute; inset: 0; pointer-events: none; }
+.act-shower-field { position: absolute; inset: 0; pointer-events: auto; touch-action: none; cursor: none; outline: none; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+.act-shower-field:focus-visible { box-shadow: inset 0 0 0 4px #fff, inset 0 0 0 7px #5b7fe8; border-radius: 14px; }
+.act-shower-fx { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 2; }
+.act-shower-fxbit { position: absolute; height: auto; pointer-events: none; transform: translate(-50%, -50%); }
+.act-shower-drop { animation: act-shower-fall .6s cubic-bezier(.4, 0, .9, .6) forwards; }
+.act-shower-bubble { animation: act-shower-rise 1s ease-out forwards; }
+.act-shower-wind { animation: act-shower-blow .7s ease-out forwards; }
+.act-shower-spark { animation: act-shower-pop .7s cubic-bezier(.16, .72, .3, 1) forwards; }
+@keyframes act-shower-fall { 0% { opacity: 0; transform: translate(-50%, -50%) translate(0, -14px); } 15% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -50%) translate(var(--dx, 0), 52px); } }
+@keyframes act-shower-rise { 0% { opacity: 0; transform: translate(-50%, -50%) scale(.4); } 25% { opacity: .95; } 100% { opacity: 0; transform: translate(-50%, -50%) translate(var(--dx, 0), -46px) scale(1.15); } }
+@keyframes act-shower-blow { 0% { opacity: 0; transform: translate(-50%, -50%) scale(.4); } 30% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -50%) translate(var(--dx, 0), -22px) scale(1.1) rotate(60deg); } }
+@keyframes act-shower-pop { 0% { opacity: 0; transform: translate(-50%, -50%) scale(.3); } 30% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) scale(1); } }
+.act-shower-paused .act-shower-fxbit { animation-play-state: paused; }
+
+/* verflagen op de hond (in scene.spots, geclipt met het silhouet) */
+.act-shower-paint { position: absolute; inset: 0; pointer-events: none; -webkit-mask-size: 100% 100%; mask-size: 100% 100%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; }
+.act-shower-cv { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.act-shower-cv-wet { mix-blend-mode: multiply; }
+.act-shower-cv-foam { transition: opacity .4s ease; }
+.act-shower-cv-foam.act-shower-fadeout { opacity: 0; }
+.act-shower-markers { position: absolute; inset: 0; pointer-events: none; }
+.act-shower-marker { position: absolute; transform: translate(-50%, -50%); aspect-ratio: 1; transition: opacity .25s; }
+.act-shower-marker-img { opacity: calc(.1 + var(--m, 1) * .9); }
+.act-shower-marker-img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.act-shower-marker::after { content: ""; position: absolute; inset: -6%; border: 3px dashed #4a6fe0; border-radius: 50%; opacity: calc(var(--m, 1)); animation: act-shower-spin 6s linear infinite; box-shadow: 0 0 0 2px #fff, inset 0 0 0 2px #fff; }
+.act-shower-marker.is-clean { opacity: 0; }
+@keyframes act-shower-spin { to { transform: rotate(360deg); } }
+
+/* toetsenbord-cursor */
+.act-shower-kcursor { position: absolute; transform: translate(-50%, -50%); border: 4px dashed #fff; border-radius: 50%; box-shadow: 0 0 0 3px #5b7fe8, inset 0 0 0 3px #5b7fe855; pointer-events: none; z-index: 3; }
+.act-shower-kcursor.is-latched { border-style: solid; background: rgba(91, 127, 232, .22); }
+
+/* hond: pluizen met de föhn (op .dog-body, via scene.body) */
+.act-shower-fluff { transition: scale .2s ease, filter .2s ease; }
+.act-shower-fluff.act-shower-drying { animation: act-shower-wobble .22s ease-in-out infinite alternate; }
+@keyframes act-shower-wobble { from { rotate: -.7deg; } to { rotate: .7deg; } }
+@media (prefers-reduced-motion: reduce) { .act-shower-fluff.act-shower-drying { animation: none; } .act-shower-marker::after { animation: none; } .act-shower-cv-foam { transition: none; } }
+
+/* wasmand */
+.act-shower-basket { position: absolute; left: 14%; bottom: 3%; width: clamp(64px, 20%, 120px); height: auto; transform: translate(-50%, 0) translate(0, 0); z-index: 4; filter: drop-shadow(0 4px 4px #49372f44); pointer-events: none; }
+.act-shower-flyer { position: absolute; width: clamp(40px, 14%, 76px); height: auto; transform: translate(-50%, -50%); z-index: 5; pointer-events: none; filter: drop-shadow(0 3px 3px #49372f44); }
+
+/* paneel: stappen-pictogrammen */
+.act-shower-steps { display: flex; align-items: center; justify-content: center; gap: 2px; padding: 4px 6px; flex-wrap: nowrap; }
+.act-shower-badge { --p: 0; position: relative; flex: none; width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; background: conic-gradient(#68c99f calc(var(--p) * 1%), #fffdf9d9 0); box-shadow: 0 3px 0 rgba(73, 55, 47, .18), 0 6px 12px rgba(73, 55, 47, .15); opacity: .72; transition: transform .2s, opacity .2s; }
+.act-shower-badge::before { content: ""; position: absolute; inset: 5px; border-radius: 50%; background: #fffdf9; }
+.act-shower-badge-img { position: relative; width: 30px; height: 30px; display: block; }
+.act-shower-badge.is-current { opacity: 1; transform: scale(1.22); box-shadow: 0 0 0 3px #fff, 0 0 0 6px #5b7fe8, 0 6px 12px rgba(73, 55, 47, .2); }
+.act-shower-badge.is-done { opacity: 1; background: #68c99f; }
+.act-shower-badge.is-done::before { background: #effaf4; }
+.act-shower-badge.is-pop { animation: act-shower-badgepop .5s ease-out; }
+.act-shower-badge-check { display: none; position: absolute; right: -2px; bottom: -2px; width: 20px; height: 20px; border-radius: 50%; background: #3fae7e; border: 2px solid #fff; }
+.act-shower-badge-check::after { content: ""; position: absolute; left: 5px; top: 2px; width: 5px; height: 9px; border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: rotate(40deg); }
+.act-shower-badge.is-done .act-shower-badge-check { display: block; }
+.act-shower-sep { flex: none; width: clamp(8px, 4vw, 22px); height: 4px; border-radius: 3px; background: rgba(255, 253, 249, .85); box-shadow: 0 1px 2px rgba(73, 55, 47, .25); }
+@keyframes act-shower-badgepop { 0% { transform: scale(1.2); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .act-shower-badge, .act-shower-badge.is-pop { animation: none; transition: none; } }
+.act-shower-live { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (max-width: 380px) { .act-shower-badge { width: 46px; height: 46px; } .act-shower-badge-img { width: 26px; height: 26px; } }
+.act-shower-steps { flex-wrap: wrap; row-gap: 8px; }
+@media (max-height: 520px) and (min-aspect-ratio: 6 / 5) { .act-shower-badge { width: 40px; height: 40px; } .act-shower-badge::before { inset: 4px; } .act-shower-badge-img { width: 22px; height: 22px; } .act-shower-sep { width: 4px; } .act-shower-badge-check { width: 16px; height: 16px; } .act-shower-badge-check::after { left: 3.5px; top: 1px; width: 4px; height: 8px; } .act-shower-badge.is-current { transform: scale(1.15); } }
+.act-shower-puffs { position: absolute; inset: 0; pointer-events: none; }
+.act-shower-puff { position: absolute; height: auto; transform: translate(-50%, -50%) rotate(var(--r, 0deg)) scale(var(--k, 1)); transition: transform .35s cubic-bezier(.2, 1.6, .4, 1); opacity: .95; }
+.act-shower-puff.is-pop { animation: act-shower-puffpop .35s ease-out forwards; }
+@keyframes act-shower-puffpop { 0% { opacity: 1; transform: translate(-50%, -50%) scale(var(--k, 1)); } 40% { opacity: 1; transform: translate(-50%, -50%) scale(calc(var(--k, 1) * 1.35)); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(calc(var(--k, 1) * 1.7)); } }
+.act-shower-bubble-pop { animation: act-shower-bpop .45s ease-out forwards; }
+@keyframes act-shower-bpop { 0% { opacity: 1; transform: translate(-50%, -50%) scale(.6); } 60% { opacity: .9; transform: translate(-50%, -50%) scale(1.5); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.9); } }
+.act-shower-ring { position: absolute; width: 14%; aspect-ratio: 1; border: 4px solid #fff; border-radius: 50%; box-shadow: 0 0 0 2px #5b7fe8, 0 0 12px #fff; transform: translate(-50%, -50%) scale(.3); animation: act-shower-ringgrow .6s ease-out forwards; pointer-events: none; }
+@keyframes act-shower-ringgrow { 0% { opacity: 1; transform: translate(-50%, -50%) scale(.3); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.3); } }
+.act-shower-paused .act-shower-puff, .act-shower-paused .act-shower-ring { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .act-shower-puff { transition: none; } }
+.act-shower-marker:not(.is-clean) { animation: act-shower-pulse 1.6s ease-in-out infinite; }
+.act-shower-marker.is-hot::after { border-width: 5px; animation: act-shower-spin 6s linear infinite, act-shower-hot .8s ease-in-out infinite alternate; }
+@keyframes act-shower-pulse { 0%, 100% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.07); } }
+@keyframes act-shower-hot { from { box-shadow: 0 0 0 2px #fff, 0 0 0 6px #4a6fe055; } to { box-shadow: 0 0 0 2px #fff, 0 0 18px 8px #4a6fe0aa; } }
+@media (prefers-reduced-motion: reduce) { .act-shower-marker:not(.is-clean), .act-shower-marker.is-hot::after { animation: none; } }
+
+/* 2026-10-06 (director: "blauwe strepen zijn raar"): geen blauwe stippelring meer om de detailplekken (L9); de vieze plek zelf
+   licht zacht goud op (pulseert al via .act-shower-marker), bij stilstand (.is-hot) feller. Zelfde "hier doen"-taal als bed/taart. */
+.act-shower-marker::after { content: none; display: none; }
+.act-shower-marker-img { filter: drop-shadow(0 0 4px #fff6c8) drop-shadow(0 0 10px rgba(255, 196, 60, .9)); }
+.act-shower-marker.is-hot .act-shower-marker-img { filter: drop-shadow(0 0 6px #fff6c8) drop-shadow(0 0 18px #ffb21e) drop-shadow(0 0 26px rgba(255, 160, 30, .8)); }

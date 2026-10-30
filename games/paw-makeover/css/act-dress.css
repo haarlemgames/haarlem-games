@@ -1,0 +1,85 @@
+/* act-dress: kledingkeuze-paneel (herbruikbaar door bed). Uitsluitend selectors met prefix .act-dress. */
+.act-dress-idle { position: absolute; inset: 0; transform-origin: 50% 95%; animation: act-dress-breathe 4.8s ease-in-out infinite; }
+.act-dress-idle-eyes { z-index: 4; opacity: 0; pointer-events: none; }
+.act-dress-idle-eyes.is-ready { animation: act-dress-blink 4.8s linear infinite; }
+@keyframes act-dress-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.003); } }
+@keyframes act-dress-blink { 0%, 15%, 22%, 100% { opacity: 0; } 17%, 20% { opacity: 1; } }
+.act-dress-idle.is-paused, .act-dress-idle.is-paused * { animation-play-state: paused !important; }
+@media (prefers-reduced-motion: reduce) {
+  .act-dress-idle, .act-dress-idle-eyes.is-ready { animation: none; }
+  .act-dress-idle-eyes { opacity: 0; }
+}
+.act-dress { display: grid; gap: 6px; min-height: 0; --dress-card-h: clamp(60px, 10.5dvh, 92px); }
+.act-dress-tabs { display: flex; gap: 6px; justify-content: center; }
+.act-dress-tab { position: relative; flex: 1 1 0; max-width: 84px; min-height: 46px; padding: 4px; display: flex; align-items: center; justify-content: center; font: inherit; color: var(--color-text);
+  background: var(--cream-50); border: 3px solid var(--cream-200); border-radius: 14px; cursor: pointer; touch-action: manipulation; }
+.act-dress-tab.is-active { background: var(--peach-100); border-color: var(--orange); box-shadow: 0 2px 0 var(--orange-deep); }
+.act-dress-tab:disabled { opacity: .6; cursor: default; }
+.act-dress-tab-img { width: 30px; height: 30px; pointer-events: none; }
+.act-dress-dot { position: absolute; right: 5px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--mint-500); border: 2px solid var(--cream-50); opacity: 0; transform: scale(.4); transition: opacity .15s, transform .15s; }
+.act-dress-tab.has-item .act-dress-dot { opacity: 1; transform: none; }
+.act-dress-cards { display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); gap: 6px; padding: 3px; border-radius: 18px; }
+.act-dress-cards.is-hint { animation: act-dress-glow 1.6s ease-in-out infinite; }
+@keyframes act-dress-glow { 0%, 100% { box-shadow: 0 0 0 2px rgba(255, 157, 77, .25); } 50% { box-shadow: 0 0 0 4px rgba(255, 157, 77, .75), 0 0 14px var(--hint-glow); } }
+.act-dress-card { position: relative; height: var(--dress-card-h); min-width: 44px; padding: 4px; display: flex; align-items: center; justify-content: center; font: inherit;
+  background: var(--cream-50); border: 3px solid var(--mint-300); border-radius: 16px; cursor: pointer; touch-action: manipulation; transition: transform .12s, background .12s, border-color .12s; }
+.act-dress-card:active:not(:disabled) { transform: scale(.95); }
+.act-dress-card.is-on { background: var(--peach-100); border-color: var(--orange); box-shadow: 0 3px 0 var(--orange-deep); }
+.act-dress-card-img { max-width: 100%; max-height: 100%; width: auto; height: 100%; object-fit: contain; pointer-events: none; user-select: none; }
+.act-dress-card.is-final { cursor: default; background: var(--cream-50); border-color: var(--mint-300); box-shadow: none; }
+.act-dress-badge { position: absolute; right: -6px; top: -8px; width: clamp(28px, 4.4dvh, 36px); height: clamp(28px, 4.4dvh, 36px); filter: drop-shadow(0 2px 2px rgba(73, 55, 47, .3));
+  animation: act-dress-badge-in .35s cubic-bezier(.2, 1.4, .4, 1) var(--d, 0ms) both; }
+@keyframes act-dress-badge-in { 0% { opacity: 0; transform: scale(.2) rotate(-20deg); } 100% { opacity: 1; transform: none; } }
+.act-dress-bar { display: flex; gap: 8px; align-items: stretch; }
+.act-dress-remove, .act-dress-confirm { min-height: 50px; display: flex; align-items: center; justify-content: center; font: inherit; color: var(--color-text); cursor: pointer; touch-action: manipulation; border-radius: 16px; }
+.act-dress-remove { flex: 0 0 56px; background: var(--cream-50); border: 3px solid var(--cream-200); }
+.act-dress-confirm { flex: 1 1 auto; background: var(--primary-bg); border: 3px solid var(--primary-border); box-shadow: 0 3px 0 var(--primary-edge), 0 6px 12px var(--primary-glow); }
+.act-dress-confirm:disabled, .act-dress-remove:disabled { opacity: .45; cursor: default; box-shadow: none; }
+.act-dress-confirm:active:not(:disabled) { transform: translateY(2px); }
+.act-dress-confirm.is-ready { animation: act-dress-pulse 1.4s ease-in-out infinite; }
+@keyframes act-dress-pulse { 0%, 100% { box-shadow: 0 3px 0 var(--primary-edge), 0 0 0 0 rgba(255, 157, 77, 0); } 50% { box-shadow: 0 3px 0 var(--primary-edge), 0 0 0 6px rgba(255, 157, 77, .55); } }
+.act-dress-btn-img { width: 30px; height: 30px; pointer-events: none; }
+.act-dress button:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 2px; }
+.act-dress.is-paused * { animation-play-state: paused !important; }
+@media (prefers-reduced-motion: reduce) {
+  .act-dress-cards.is-hint { animation: none; box-shadow: 0 0 0 3px var(--orange); }
+  .act-dress-confirm.is-ready { animation: none; outline: 3px dashed var(--orange-deep); outline-offset: 2px; }
+  .act-dress-badge { animation: none; }
+}
+/* kleine hoogte (portret 360x640): compacter */
+@media (max-height: 700px) { .act-dress { --dress-card-h: clamp(56px, 10dvh, 70px); gap: 5px; } .act-dress-tab { min-height: 44px; } .act-dress-remove, .act-dress-confirm { min-height: 46px; } }
+/* landschap: paneel staat rechts naast het speelveld */
+@media (min-aspect-ratio: 6 / 5) and (min-width: 600px), (max-height: 520px) and (min-aspect-ratio: 6 / 5) {
+  .act-dress { --dress-card-h: clamp(54px, 15dvh, 96px); }
+  .act-dress-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .act-dress-tab-img { width: 26px; height: 26px; }
+}
+
+/* modeshow na bevestigen: hondreacties per verdict, effecten, flits */
+.act-dress-hop { animation: act-dress-hop 1.1s ease-out; }
+.act-dress-wag { animation: act-dress-wag 1s ease-in-out; transform-origin: 50% 85%; }
+.act-dress-nod { animation: act-dress-nod .9s ease-in-out; transform-origin: 50% 85%; }
+.act-dress-oops { animation: act-dress-oops .8s ease-in-out; transform-origin: 50% 85%; }
+@keyframes act-dress-hop { 0%, 100% { transform: none; } 15% { transform: translateY(-7%) scale(1.04); } 30% { transform: none; } 50% { transform: translateY(-9%) rotate(-4deg) scale(1.05); } 70% { transform: translateY(-3%) rotate(3deg); } 85% { transform: none; } }
+@keyframes act-dress-wag { 0%, 100% { transform: none; } 15% { transform: rotate(-4deg); } 35% { transform: rotate(4deg); } 55% { transform: rotate(-3deg); } 75% { transform: rotate(3deg); } }
+@keyframes act-dress-nod { 0%, 100% { transform: none; } 30% { transform: translateY(2.5%) scale(1.01, .98); } 60% { transform: translateY(-.5%); } }
+@keyframes act-dress-oops { 0%, 100% { transform: none; } 12% { transform: translateX(-3%) rotate(-3deg) scale(1.03); } 30% { transform: translateX(3%) rotate(3deg) scale(1.03); } 48% { transform: translateX(-2%) rotate(-2deg); } 66% { transform: translateX(1.5%); } }
+.act-dress-fx { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 35; }
+.act-dress-flash { position: absolute; inset: 0; background: #fff; opacity: 0; animation: act-dress-flash .4s ease-out; }
+@keyframes act-dress-flash { 0% { opacity: .75; } 100% { opacity: 0; } }
+.act-dress-float { position: absolute; width: clamp(24px, 7%, 40px); height: auto; transform: translate(-50%, -50%); opacity: 0; animation: act-dress-float 1.4s ease-out var(--d, 0ms) both; }
+.act-dress-float.is-oops { width: clamp(40px, 12%, 64px); animation: act-dress-puff 1.2s ease-out var(--d, 0ms) both; }
+@keyframes act-dress-float { 0% { opacity: 0; transform: translate(-50%, -30%) scale(.3); } 20% { opacity: 1; transform: translate(-50%, -80%) scale(1.1); } 100% { opacity: 0; transform: translate(calc(-50% + var(--dx, 0px)), -420%) scale(.8); } }
+@keyframes act-dress-puff { 0% { opacity: 0; transform: translate(-50%, 0) scale(.2); } 25% { opacity: 1; transform: translate(-50%, -90%) scale(1.15); } 70% { opacity: 1; transform: translate(-50%, -100%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -130%) scale(.9); } }
+.act-dress-remove.is-again { background: var(--cream-50); border-color: var(--mint-400); }
+body[data-state="paused"] .act-dress-fx * { animation-play-state: paused !important; }
+
+/* outfit-show: geen knoppen, na 2 s (act-dress.js CONFIRM_DELAY) gaat het vanzelf naar de volgende scene */
+.act-dress.is-result .act-dress-bar { visibility: hidden; }
+
+/* themed scrollbar (oranje op crème) */
+.act-dress-cards, .overlay, html { scrollbar-width: thin; scrollbar-color: var(--orange, #ff9d4d) var(--cream-100, #fff3e0); }
+.act-dress-cards::-webkit-scrollbar, .overlay::-webkit-scrollbar, html::-webkit-scrollbar { width: 12px; height: 12px; }
+.act-dress-cards::-webkit-scrollbar-track, .overlay::-webkit-scrollbar-track, html::-webkit-scrollbar-track { background: var(--cream-100, #fff3e0); border-radius: 8px; }
+.act-dress-cards::-webkit-scrollbar-thumb, .overlay::-webkit-scrollbar-thumb, html::-webkit-scrollbar-thumb { background: var(--orange, #ff9d4d); border: 3px solid var(--cream-100, #fff3e0); border-radius: 8px; }
+.act-dress-cards { overflow-y: auto; max-height: calc(var(--dress-card-h) * 2 + 24px); }

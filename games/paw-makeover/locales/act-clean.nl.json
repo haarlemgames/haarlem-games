@@ -1,0 +1,19 @@
+{
+  "clean.panelAria": "Schoonmaakgereedschap",
+  "clean.layerAria": "Hond",
+  "clean.tool.wipe": "Doekje",
+  "clean.tool.wash": "Spons",
+  "clean.tool.brush": "Borstel",
+  "clean.tool.pick": "Pincet",
+  "clean.tool.comb": "Kam",
+  "clean.tool.fluff": "Pluizenborstel",
+  "clean.state.done": "klaar",
+  "clean.state.active": "nu",
+  "clean.state.todo": "straks",
+  "clean.aria.wipe": "Veeg vuilplek {n} van {total}",
+  "clean.aria.pick": "Pluk klis {n} van {total}",
+  "clean.aria.wash": "Schrob plakplek {n} van {total}",
+  "clean.aria.brush": "Borstel gebied {n} van {total}",
+  "clean.aria.comb": "Kam gebied {n} van {total}",
+  "clean.aria.fluff": "Pluis gebied {n} van {total}"
+}

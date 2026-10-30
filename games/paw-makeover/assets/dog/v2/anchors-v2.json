@@ -1,0 +1,516 @@
+{
+  "_doc": "Anchors v2 voor de HAPPY pose (dog-base.png) per hond; alle waarden in px op het 800x800-canvas. Gemeten op de echte exports (zie anchors-preview-v2.png). hat = middelpunt van de onderrand van een hoed (op de kruin/voorhoofd), tilt = graden kloksgewijs (kop-helling), headW = breedte van de kop op hoedhoogte. eyes = oogmiddens + straal. collar = polyline van halsband-midden (links, midden, rechts) + dikte; torso = polygoon waarbinnen kleding de romp bedekt (zonder wijzende arm, zonder buikpoot, zonder staart); feet = voetenlijn.",
+  "pup": {
+    "dir": "assets/dog",
+    "hat": {
+      "x": 413,
+      "y": 226,
+      "tilt": 18,
+      "headW": 200
+    },
+    "eyes": {
+      "l": [
+        360,
+        292
+      ],
+      "r": [
+        448,
+        325
+      ],
+      "rad": 26
+    },
+    "mouth": [
+      398,
+      396
+    ],
+    "collar": {
+      "pts": [
+        [
+          336,
+          428
+        ],
+        [
+          405,
+          454
+        ],
+        [
+          474,
+          442
+        ]
+      ],
+      "thick": 28
+    },
+    "torso": [
+      [
+        322,
+        452
+      ],
+      [
+        476,
+        446
+      ],
+      [
+        500,
+        466
+      ],
+      [
+        506,
+        520
+      ],
+      [
+        502,
+        545
+      ],
+      [
+        470,
+        553
+      ],
+      [
+        430,
+        556
+      ],
+      [
+        402,
+        557
+      ],
+      [
+        394,
+        578
+      ],
+      [
+        388,
+        604
+      ],
+      [
+        362,
+        600
+      ],
+      [
+        338,
+        584
+      ],
+      [
+        326,
+        562
+      ],
+      [
+        320,
+        534
+      ],
+      [
+        318,
+        490
+      ]
+    ],
+    "feet": 705,
+    "sad": {
+      "spots": [
+        [
+          478,
+          368,
+          22
+        ],
+        [
+          532,
+          340,
+          34
+        ],
+        [
+          362,
+          550,
+          40
+        ],
+        [
+          470,
+          528,
+          38
+        ],
+        [
+          335,
+          672,
+          36
+        ],
+        [
+          420,
+          680,
+          34
+        ]
+      ],
+      "zones": {
+        "head": [
+          400,
+          320,
+          130,
+          95
+        ],
+        "back": [
+          418,
+          500,
+          105,
+          48
+        ],
+        "tail": [
+          608,
+          560,
+          48,
+          60
+        ]
+      }
+    }
+  },
+  "shepherd": {
+    "dir": "assets/dog/german-shepherd",
+    "hat": {
+      "x": 450,
+      "y": 290,
+      "tilt": 16,
+      "headW": 150
+    },
+    "eyes": {
+      "l": [
+        363,
+        333
+      ],
+      "r": [
+        447,
+        363
+      ],
+      "rad": 24
+    },
+    "mouth": [
+      380,
+      395
+    ],
+    "collar": {
+      "pts": [
+        [
+          340,
+          444
+        ],
+        [
+          392,
+          467
+        ],
+        [
+          452,
+          469
+        ]
+      ],
+      "thick": 24
+    },
+    "torso": [
+      [
+        333,
+        478
+      ],
+      [
+        468,
+        470
+      ],
+      [
+        484,
+        486
+      ],
+      [
+        492,
+        512
+      ],
+      [
+        490,
+        534
+      ],
+      [
+        468,
+        527
+      ],
+      [
+        437,
+        521
+      ],
+      [
+        407,
+        528
+      ],
+      [
+        398,
+        548
+      ],
+      [
+        386,
+        562
+      ],
+      [
+        383,
+        585
+      ],
+      [
+        375,
+        600
+      ],
+      [
+        352,
+        596
+      ],
+      [
+        338,
+        578
+      ],
+      [
+        326,
+        562
+      ],
+      [
+        318,
+        546
+      ],
+      [
+        322,
+        520
+      ],
+      [
+        326,
+        500
+      ]
+    ],
+    "feet": 705,
+    "sad": {
+      "spots": [
+        [
+          448,
+          384,
+          26
+        ],
+        [
+          480,
+          280,
+          30
+        ],
+        [
+          240,
+          384,
+          28
+        ],
+        [
+          344,
+          496,
+          32
+        ],
+        [
+          448,
+          520,
+          34
+        ],
+        [
+          296,
+          680,
+          34
+        ],
+        [
+          440,
+          680,
+          34
+        ],
+        [
+          544,
+          624,
+          30
+        ]
+      ],
+      "zones": {
+        "head": [
+          440,
+          330,
+          120,
+          95
+        ],
+        "back": [
+          430,
+          520,
+          105,
+          50
+        ],
+        "tail": [
+          544,
+          624,
+          50,
+          55
+        ]
+      }
+    }
+  },
+  "bichon": {
+    "dir": "assets/dog/fluffy",
+    "hat": {
+      "x": 398,
+      "y": 220,
+      "tilt": 10,
+      "headW": 205
+    },
+    "eyes": {
+      "l": [
+        353,
+        303
+      ],
+      "r": [
+        450,
+        323
+      ],
+      "rad": 26
+    },
+    "mouth": [
+      385,
+      335
+    ],
+    "collar": {
+      "pts": [
+        [
+          343,
+          424
+        ],
+        [
+          397,
+          449
+        ],
+        [
+          460,
+          436
+        ]
+      ],
+      "thick": 24
+    },
+    "torso": [
+      [
+        318,
+        442
+      ],
+      [
+        470,
+        432
+      ],
+      [
+        497,
+        455
+      ],
+      [
+        500,
+        490
+      ],
+      [
+        498,
+        520
+      ],
+      [
+        450,
+        522
+      ],
+      [
+        392,
+        520
+      ],
+      [
+        386,
+        540
+      ],
+      [
+        384,
+        560
+      ],
+      [
+        386,
+        590
+      ],
+      [
+        360,
+        596
+      ],
+      [
+        336,
+        585
+      ],
+      [
+        322,
+        560
+      ],
+      [
+        320,
+        525
+      ],
+      [
+        318,
+        480
+      ]
+    ],
+    "feet": 705,
+    "sad": {
+      "spots": [
+        [
+          260,
+          364,
+          28
+        ],
+        [
+          460,
+          364,
+          28
+        ],
+        [
+          364,
+          532,
+          34
+        ],
+        [
+          380,
+          580,
+          32
+        ],
+        [
+          492,
+          516,
+          34
+        ],
+        [
+          572,
+          620,
+          32
+        ],
+        [
+          316,
+          660,
+          34
+        ],
+        [
+          460,
+          660,
+          34
+        ]
+      ],
+      "zones": {
+        "head": [
+          380,
+          300,
+          140,
+          110
+        ],
+        "back": [
+          420,
+          540,
+          95,
+          48
+        ],
+        "tail": [
+          570,
+          620,
+          52,
+          55
+        ]
+      }
+    }
+  },
+  "_corrections_2026-10-03_outfit-builder": [
+    "pup.torso: onderrand omhoog zodat buikpoot (x>=394,y>=557) niet geraakt wordt; linker belly-rand tot y~604 doorgetrokken (links van de buikpoot), links iets naar binnen (x>=318) langs de wijzende arm; extra punten voor ronder verloop.",
+    "shepherd.collar.pts: rechter/middelste punt zakte ~8px lager (halsband loopt naar rechts omlaag): [340,444],[392,467],[452,469].",
+    "shepherd.torso: rechterkant stak in lege ruimte/staart (x tot 527): nu langs de echte romprand (x<=492); linkerrand van x=312 naar x=326-333 (buiten wijzende arm); onderrand volgt de bovenrand van de gebogen onderarm (y~521-548) en loopt links van de buikpoot door tot y~600.",
+    "bichon.torso: rechterrand van x=525 naar x<=500 (staart); linkerrand naar x>=318 (buiten wijzende arm); onderrand rechts op y~520 (net boven de gebogen onderarm), links van de buikpoot door tot y~596.",
+    "Overige ankers (hat, eyes, mouth, pup/bichon collar, sad.*) visueel gecontroleerd met overlay en ongewijzigd."
+  ]
+}

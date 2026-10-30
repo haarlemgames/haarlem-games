@@ -1,0 +1,6 @@
+<!-- Pictogram "ogen dicht" voor de bedtijd-rail (aaien tot de hond slaapt). Eigen werk Claude Code 2026-10-06, zelfde lijnstijl als check.svg. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" stroke="#49372f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M5 14c3 5 7 7 11 7s8-2 11-7" fill="#ffe7c2"/>
+  <path d="M5 14c3 5 7 7 11 7s8-2 11-7"/>
+  <path d="M9 19.2l-1.8 3M16 21v3.4M23 19.2l1.8 3"/>
+</svg>

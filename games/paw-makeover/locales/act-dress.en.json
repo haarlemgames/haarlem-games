@@ -1,0 +1,17 @@
+{
+  "dress.tabs": "Clothing groups",
+  "dress.cat.head": "Head",
+  "dress.cat.face": "Face",
+  "dress.cat.neck": "Neck",
+  "dress.cat.body": "Body",
+  "dress.removeCat": "Take off ({cat})",
+  "dress.confirm": "Done, show the outfit",
+  "dress.badge.fit": "happy",
+  "dress.badge.ok": "neutral",
+  "dress.badge.off": "surprised",
+  "dress.result": "{item}: {mood}",
+  "dress.result.group": "Chosen outfit",
+  "dress.done": "Outfit confirmed",
+  "dress.again": "Try another outfit",
+  "dress.next": "Continue"
+}

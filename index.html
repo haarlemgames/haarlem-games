@@ -593,6 +593,7 @@
       padding: 14px 12px;
       box-shadow: 5px 5px 0 var(--ink);
     }
+    a.stat:hover { transform: translateY(-2px); }
     .stat strong {
       display: block;
       font-family: "Space Grotesk", Inter, sans-serif;
@@ -665,7 +666,7 @@
       <a href="#top"    role="listitem">Home</a>
       <a href="#bridge" role="listitem">Journey</a>
       <a href="#studio" role="listitem">Studio</a>
-      <a href="#games"  role="listitem">Games</a>
+      <a href="portfolio/" role="listitem">Portfolio</a>
       <a href="#world"  role="listitem">World</a>
     </div>
 
@@ -682,7 +683,7 @@
     <a href="#top">Home</a>
     <a href="#bridge">Journey</a>
     <a href="#studio">Studio</a>
-    <a href="#games">Games</a>
+    <a href="portfolio/">Portfolio</a>
     <a href="#world">World</a>
     <a class="btn dark" href="#bridge">Start the journey ↓</a>
   </nav>
@@ -772,9 +773,9 @@
             <div class="stat"><strong>101</strong><span>Game Ideas</span></div>
             <div class="stat"><strong>29</strong><span title="Game Design Documents">GDDs</span></div>
             <div class="stat"><strong>11</strong><span>Prototypes</span></div>
-            <div class="stat"><strong>3</strong><span>Finished Games</span></div>
+            <a class="stat" href="portfolio/" aria-label="Explore our 3 finished games"><strong>3</strong><span>Finished Games</span></a>
           </div>
-          <a class="btn dark" href="#games">Visit Games Quarter ↓</a>
+          <a class="btn dark" href="portfolio/">Visit Games Quarter →</a>
         </div>
         <figure class="visual">
           <img
@@ -791,7 +792,7 @@
     <!-- 3 · Games -->
     <section class="slide" id="games">
       <span class="floaty f1" aria-hidden="true">🎮</span>
-      <span class="floaty f2" aria-hidden="true">🦄</span>
+      <span class="floaty f2" aria-hidden="true">🐾</span>
       <span class="floaty f3" aria-hidden="true">⌨️</span>
       <span class="floaty f4" aria-hidden="true">💘</span>
       <div class="panel slide-content">
@@ -800,27 +801,25 @@
           <h2>Playful Ideas, Built in Haarlem</h2>
           <p>This is where the city turns into games. Each title starts as a small spark, then becomes a playable browser experience made to be shared, tested, and improved.</p>
           <div class="games-grid">
-            <article class="game-card">
+            <a class="game-card" href="games/turbo-typer/" aria-label="Play Turbo Typer">
               <span class="game-icon" aria-hidden="true">⌨️</span>
               <h3>Turbo Typer</h3>
               <p>A fast typing challenge made for speed, focus, and satisfying keyboard flow.</p>
-              <span class="game-label">Typing Game</span>
-            </article>
+              <span class="game-label">Play now →</span>
+            </a>
             <a class="game-card" href="games/the-marriage-experiment/" aria-label="Play The Marriage Experiment">
               <span class="game-icon" aria-hidden="true">💘</span>
               <h3>The Marriage Experiment</h3>
               <p>Meet a stranger at the altar, survive the honeymoon, and face Decision Day.</p>
               <span class="game-label">Play now →</span>
             </a>
-            <article class="game-card">
-              <span class="game-icon" aria-hidden="true">🦄</span>
-              <h3>Block Blaster Unicorns</h3>
-              <p>A colorful block-blasting browser game with sparkle, strategy, and unicorn energy.</p>
-              <span class="game-label">Puzzle Arcade</span>
-            </article>
+            <a class="game-card" href="games/paw-makeover/" aria-label="Play Paw Makeover">
+              <span class="game-icon" aria-hidden="true">🐾</span><h3>Paw Makeover</h3>
+              <p>Clean up, dress up, and give each pup a fresh new look.</p><span class="game-label">Play now →</span>
+            </a>
           </div>
           <div class="buttons">
-            <a class="btn dark" href="#world">Send them into the world ↓</a>
+            <a class="btn dark" href="portfolio/">Explore the portfolio →</a>
           </div>
         </div>
         <figure class="visual">

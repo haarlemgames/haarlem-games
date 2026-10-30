@@ -1,0 +1,57 @@
+[
+  {
+    "page": "portfolio",
+    "width": 1440,
+    "cards": 3,
+    "images": "loaded",
+    "overflow": false,
+    "playLinks": "200"
+  },
+  {
+    "page": "portfolio",
+    "width": 390,
+    "cards": 3,
+    "images": "loaded",
+    "overflow": false,
+    "playLinks": "200"
+  },
+  {
+    "page": "home",
+    "portfolioLinks": "passed"
+  },
+  {
+    "page": "paw-makeover",
+    "errors": [],
+    "poki": [],
+    "failed": [],
+    "buttons": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "page": "turbo-typer",
+    "errors": [],
+    "poki": [],
+    "failed": [],
+    "buttons": [
+      "EXIT"
+    ]
+  },
+  {
+    "page": "the-marriage-experiment",
+    "errors": [],
+    "poki": [],
+    "failed": [],
+    "buttons": [
+      "🔊",
+      "Apply for the experiment →",
+      "🏆 Achievements (0/25)",
+      "📖 Wedding Album"
+    ]
+  }
+]

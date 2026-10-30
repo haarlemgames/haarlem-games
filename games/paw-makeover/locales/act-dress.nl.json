@@ -1,0 +1,17 @@
+{
+  "dress.tabs": "Kledinggroepen",
+  "dress.cat.head": "Hoofd",
+  "dress.cat.face": "Gezicht",
+  "dress.cat.neck": "Hals",
+  "dress.cat.body": "Lijf",
+  "dress.removeCat": "Uitdoen ({cat})",
+  "dress.confirm": "Klaar, toon de outfit",
+  "dress.badge.fit": "blij",
+  "dress.badge.ok": "neutraal",
+  "dress.badge.off": "verbaasd",
+  "dress.result": "{item}: {mood}",
+  "dress.result.group": "Gekozen outfit",
+  "dress.done": "Outfit bevestigd",
+  "dress.again": "Andere outfit proberen",
+  "dress.next": "Verder"
+}

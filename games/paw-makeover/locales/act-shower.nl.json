@@ -1,0 +1,13 @@
+{
+  "shower.field": "Hond. Pijltjestoetsen bewegen en schilderen met het gereedschap, Shift voor grotere stappen, Spatie of Enter voor een grote klodder.",
+  "shower.steps": "Badstappen",
+  "shower.step.wet": "Nat maken met de douche",
+  "shower.step.shampoo": "Shampoo",
+  "shower.step.rinse": "Schuim afspoelen",
+  "shower.step.towel": "Afdrogen met de handdoek",
+  "shower.step.dryer": "Pluizen met de föhn",
+  "shower.state.done": "klaar",
+  "shower.state.current": "nu",
+  "shower.state.todo": "straks",
+  "shower.done": "Lekker schoon en pluizig"
+}

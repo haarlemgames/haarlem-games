@@ -1,0 +1,19 @@
+{
+  "clean.panelAria": "Cleaning tools",
+  "clean.layerAria": "Dog",
+  "clean.tool.wipe": "Cloth",
+  "clean.tool.wash": "Sponge",
+  "clean.tool.brush": "Brush",
+  "clean.tool.pick": "Tweezers",
+  "clean.tool.comb": "Comb",
+  "clean.tool.fluff": "Fluffing brush",
+  "clean.state.done": "done",
+  "clean.state.active": "now",
+  "clean.state.todo": "next",
+  "clean.aria.wipe": "Wipe dirty spot {n} of {total}",
+  "clean.aria.pick": "Pick off burr {n} of {total}",
+  "clean.aria.wash": "Scrub sticky spot {n} of {total}",
+  "clean.aria.brush": "Brush area {n} of {total}",
+  "clean.aria.comb": "Comb area {n} of {total}",
+  "clean.aria.fluff": "Fluff area {n} of {total}"
+}
