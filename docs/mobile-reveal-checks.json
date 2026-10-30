@@ -1,0 +1,56 @@
+[
+  {
+    "before": {
+      "sectionHeight": 2123,
+      "viewportHeight": 667,
+      "maximumVisibleRatio": 0.3141780499293453,
+      "revealed": false,
+      "opacity": "0"
+    }
+  },
+  {
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "allSectionsRevealed": true,
+    "gameCardsVisible": 3,
+    "errors": []
+  },
+  {
+    "viewport": {
+      "width": 375,
+      "height": 667
+    },
+    "allSectionsRevealed": true,
+    "gameCardsVisible": 3,
+    "errors": []
+  },
+  {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "allSectionsRevealed": true,
+    "gameCardsVisible": 3,
+    "errors": []
+  },
+  {
+    "viewport": {
+      "width": 414,
+      "height": 896
+    },
+    "allSectionsRevealed": true,
+    "gameCardsVisible": 3,
+    "errors": []
+  },
+  {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "allSectionsRevealed": true,
+    "gameCardsVisible": 3,
+    "errors": []
+  }
+]

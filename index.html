@@ -885,11 +885,11 @@
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('in-view');
-          const index = slides.indexOf(entry.target);
-          dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+
         }
       });
-    }, { threshold: 0.42 });
+    // Reveal on entry: tall mobile sections may never reach a percentage threshold.
+    }, { threshold: 0, rootMargin: '0px 0px -64px 0px' });
 
     slides.forEach(slide => observer.observe(slide));
 
@@ -1173,6 +1173,7 @@
       navLinks.forEach(link => {
         link.classList.toggle('active', link.getAttribute('href') === '#' + current);
       });
+      dots.forEach((dot, i) => dot.classList.toggle('active', slides[i]?.id === current));
     }
 
     /* ── rAF-throttled scroll handler ── */
