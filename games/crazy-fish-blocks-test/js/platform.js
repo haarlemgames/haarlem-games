@@ -1,0 +1,11 @@
+(function(root){"use strict";var host=(root.location&&root.location.hostname)||"";var cfg=root.STUDIO_CONFIG||{};var wanted=cfg.platform==="poki"||/[?&]poki=1/.test(root.location.search)||/(^|\.)poki\.com$|(^|\.)poki-gdn\.com$/.test(host);if(cfg.platform==="web")wanted=false;var sdk=null,ready=false,playing=false,hooks={onAdStart:null,onAdEnd:null};function adStart(){if(hooks.onAdStart)hooks.onAdStart();}
+function adEnd(){if(hooks.onAdEnd)hooks.onAdEnd();}
+function load(){if(!wanted||root.PokiSDK){if(root.PokiSDK)start();return;}
+var s=document.createElement("script");s.src="https://game-cdn.poki.com/scripts/v2/poki-sdk.js";s.onload=start;s.onerror=function(){sdk=null;};document.head.appendChild(s);}
+function start(){sdk=root.PokiSDK;if(!sdk)return;var go=function(){if(ready)return;ready=true;try{sdk.gameLoadingFinished();}catch(e){}
+var q=queue;queue=[];q.forEach(function(e){send(e);});};try{sdk.init().then(go).catch(go);}catch(e){go();}}
+var queue=[],log=[];function clean(v){return String(v).toLowerCase().replace(/[^a-z0-9-]+/g,"-").slice(0,40);}
+function send(e){try{if(sdk&&sdk.measure)sdk.measure(e[0],e[1],e[2]);}catch(err){}}
+var api={log:log,onPoki:wanted,measure:function(category,what,action){var e=[clean(category),clean(what),clean(action)];log.push(e);if(log.length>300)log.shift();if(sdk&&ready)send(e);else if(wanted&&queue.length<200)queue.push(e);},active:function(){return!!sdk;},setHooks:function(h){hooks.onAdStart=h.onAdStart||null;hooks.onAdEnd=h.onAdEnd||null;},gameplayStart:function(){if(sdk&&!playing){playing=true;try{sdk.gameplayStart();}catch(e){}}},gameplayStop:function(){if(sdk&&playing){playing=false;try{sdk.gameplayStop();}catch(e){}}},commercialBreak:function(next){if(!sdk){next();return;}
+api.gameplayStop();adStart();var done=false,finish=function(){if(done)return;done=true;adEnd();next();};try{sdk.commercialBreak().then(finish).catch(finish);}catch(e){finish();}},rewardedBreak:function(done){if(!sdk)return false;api.gameplayStop();adStart();try{sdk.rewardedBreak().then(function(ok){adEnd();done(!!ok);}).catch(function(){adEnd();done(false);});}catch(e){adEnd();done(false);}
+return true;}};root.WS=root.WS||{};root.WS.platform=api;load();if(root.WS.ads)root.WS.ads.provider=function(done){if(!api.rewardedBreak(done))root.WS.ads.placeholder(done);};})(typeof window!=="undefined"?window:globalThis);

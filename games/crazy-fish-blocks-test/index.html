@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#1b6fb8">
+  <title>Crazy Fish Blocks</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2714%27 fill=%27%23f0a41a%27/%3E%3Cellipse cx=%2729%27 cy=%2732%27 rx=%2719%27 ry=%2714%27 fill=%27%23fff%27/%3E%3Cpath d=%27M44 32 59 19Q56 32 59 45Z%27 fill=%27%23fff%27/%3E%3Ccircle cx=%2720%27 cy=%2728%27 r=%274%27 fill=%27%2323324f%27/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/ui.css">
+  <link rel="stylesheet" href="css/fish.css">
+</head>
+<body data-state="home">
+  <!-- Sprites worden door js/art.js ingevoegd (eigen vector-tekeningen, per id te vervangen). -->
+
+  <div class="sea" aria-hidden="true"><span class="ray r1"></span><span class="ray r2"></span><span class="ray r3"></span>
+    <i class="bub b1"></i><i class="bub b2"></i><i class="bub b3"></i><i class="bub b4"></i><i class="bub b5"></i><span class="weed w1"></span><span class="weed w2"></span><span class="sand"></span></div>
+
+  <div id="app">
+    <section class="screen" data-screen="home">
+      <div class="home-brand"><h1 id="logo" class="logo"><img class="logo-img" src="assets/art/branding/crazy-fish-blocks-logo.webp" width="1024" height="683" alt="Crazy Fish Blocks" decoding="async"></h1></div>
+      <div class="home-art" aria-hidden="true">
+        <div class="hf hf1" data-color="0"><svg><use href="#f0"/></svg></div>
+        <div class="hf hf2" data-color="1"><svg><use href="#f1"/></svg></div>
+        <div class="hf hf3" data-color="3"><svg><use href="#f3"/></svg></div>
+        <div class="hf hf4" data-color="2"><svg><use href="#f2"/></svg></div>
+        <div class="hf hf5" data-color="4"><svg><use href="#f4"/></svg></div>
+        <div class="hf hf6 bomb-hb"><svg><use href="#bomb"/></svg></div>
+        <div class="hf hf7"><svg viewBox="0 0 128 64"><use href="#shark-full"/></svg></div>
+      </div>
+      <p id="save-banner" class="notice" hidden></p>
+      <div class="home-coins coins" aria-hidden="true"><svg><use href="#coin"/></svg><b id="home-coins">0</b></div>
+      <button id="btn-tank" class="btn btn-blue btn-tank"><span class="tank-ico" aria-hidden="true"></span><span data-i18n="tank"></span><b id="tank-badge" class="tank-badge" hidden>0</b></button>
+      <button id="btn-play" class="btn btn-play"><span data-i18n="play"></span></button>
+      <button id="btn-ach" class="btn btn-round home-ach" data-i18n-aria="achievements"><svg aria-hidden="true"><use href="#trophy"/></svg></button>
+      <button id="btn-settings" class="btn btn-round home-settings" data-i18n-aria="settings"><span aria-hidden="true">⚙</span></button>
+    </section>
+
+    <section class="screen" data-screen="game" hidden>
+      <header class="hud">
+        <button id="btn-pause" class="btn btn-round" data-i18n-aria="pause"><img src="assets/icons/pause.svg" alt="" class="icon"></button>
+        <div class="score-box" aria-live="off">
+          <span class="score-label" data-i18n="score"></span>
+          <span id="hud-score" class="score-num">0</span>
+        </div>
+        <button id="btn-sound" class="btn btn-round" data-i18n-aria="mute" aria-pressed="true"><img id="sound-icon" src="assets/icons/sound.svg" alt="" class="icon"></button>
+      </header>
+      <div id="goal" class="goal" role="img">
+        <div id="goal-icon" class="goal-icon" data-color="0"><svg><use href="#f0"/></svg></div>
+        <div class="goal-mid"><b id="goal-text" class="goal-text"></b><div class="gbar"><i id="goal-fill"></i></div></div>
+        <span id="goal-count" class="goal-count">0/20</span>
+      </div>
+      <div class="subhud">
+        <div class="best-box"><svg class="crown" aria-hidden="true"><use href="#crown"/></svg><span id="hud-best">0</span><span class="sr" data-i18n="best"></span></div>
+        <div id="combo" class="combo" hidden></div>
+        <div id="next-box" class="next-box" role="img" data-i18n-aria="next"><div class="nb" id="next-a"></div><div class="nb" id="next-b"></div></div>
+      </div>
+      <div class="board-wrap">
+        <div id="board" class="board" role="group" data-i18n-aria="board" tabindex="0"></div>
+        <div class="fx" aria-hidden="true"><div id="blast" class="blast" hidden></div><div id="aim-bomb" class="aim-bomb" hidden><svg viewBox="0 0 64 64"><use href="#bomb"/></svg></div></div>
+        <div id="fx" class="fx" aria-hidden="true"></div>
+        <div id="tut" class="tut" hidden></div>
+      </div>
+      <div class="keyhelp" aria-hidden="true">
+        <span><kbd>&larr;</kbd><kbd>&rarr;</kbd> <b data-i18n="khMove"></b></span>
+        <span><kbd>&uarr;</kbd> <b data-i18n="khRotate"></b></span>
+        <span><kbd>&darr;</kbd> <b data-i18n="khSoft"></b></span>
+        <span><kbd class="wide" data-i18n="kSpace">Space</kbd> <b data-i18n="khDrop"></b></span>
+        <span><kbd>B</kbd> <b data-i18n="khBomb"></b></span>
+      </div>
+      <div class="controls" role="group" data-i18n-aria="controls">
+        <button id="c-left" class="btn ctl" data-i18n-aria="moveLeft"><svg><use href="#arrow"/></svg></button>
+        <button id="c-rot" class="btn ctl ctl-rot" data-i18n-aria="rotate"><svg><use href="#rot"/></svg></button>
+        <button id="c-drop" class="btn ctl" data-i18n-aria="drop"><svg><use href="#drop"/></svg></button>
+        <button id="c-bomb" class="btn ctl ctl-bomb" data-i18n-aria="bomb" disabled><svg><use href="#bomb"/></svg><kbd aria-hidden="true">B</kbd><b id="bomb-count" class="bomb-count" hidden>0</b></button>
+        <button id="c-right" class="btn ctl ctl-flip" data-i18n-aria="moveRight"><svg><use href="#arrow"/></svg></button>
+      </div>
+      <p id="live" class="sr" aria-live="polite"></p>
+    </section>
+
+    <section class="screen panel-screen" data-screen="settings" hidden>
+      <div class="card settings-card">
+        <h2 class="ribbon"><span data-i18n="settings"></span></h2>
+        <button id="set-music" class="btn toggle" role="switch" aria-checked="true"><span class="tl"></span><i class="track"><i class="knob"></i></i></button>
+        <button id="set-sfx" class="btn toggle" role="switch" aria-checked="true"><span class="tl"></span><i class="track"><i class="knob"></i></i></button>
+        <div class="lang-row" role="radiogroup" data-i18n-aria="language">
+          <button class="lang-btn" data-lang="en" role="radio"><img src="assets/icons/flags/en.svg" alt="" aria-hidden="true"><svg class="lang-check" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9"/><path d="m5.5 10 3 3 6-6"/></svg></button><button class="lang-btn" data-lang="nl" role="radio"><img src="assets/icons/flags/nl.svg" alt="" aria-hidden="true"><svg class="lang-check" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9"/><path d="m5.5 10 3 3 6-6"/></svg></button><button class="lang-btn" data-lang="de" role="radio"><img src="assets/icons/flags/de.svg" alt="" aria-hidden="true"><svg class="lang-check" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9"/><path d="m5.5 10 3 3 6-6"/></svg></button><button class="lang-btn" data-lang="fr" role="radio"><img src="assets/icons/flags/fr.svg" alt="" aria-hidden="true"><svg class="lang-check" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9"/><path d="m5.5 10 3 3 6-6"/></svg></button><button class="lang-btn" data-lang="es" role="radio"><img src="assets/icons/flags/es.svg" alt="" aria-hidden="true"><svg class="lang-check" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9"/><path d="m5.5 10 3 3 6-6"/></svg></button>
+        </div>
+        <p hidden id="save-status" class="muted"></p>
+        <button id="btn-back" class="btn btn-go"><span data-i18n="back"></span></button>
+      </div>
+    </section>
+
+    <section class="screen panel-screen" data-screen="achievements" role="dialog" aria-labelledby="t-ach" hidden>
+      <div class="card ach-card">
+        <button id="btn-ach-close" class="close-x" data-i18n-aria="close"><span aria-hidden="true">✕</span></button>
+        <h2 id="t-ach" class="ribbon"><span data-i18n="achievements"></span></h2>
+        <ul id="ach-list" class="ach-list"></ul>
+      </div>
+    </section>
+
+    <section class="screen tank-screen" data-screen="tank" hidden>
+      <div class="tank-top">
+        <button id="btn-tank-back" class="btn btn-round" data-i18n-aria="back"><img src="assets/icons/home.svg" alt="" class="icon"></button>
+        <h2 class="ribbon tank-title"><span data-i18n="tank"></span></h2>
+        <button id="btn-shop" class="btn btn-round btn-shopicon" data-i18n-aria="shop"><svg aria-hidden="true"><use href="#shopbag"/></svg></button>
+      </div>
+      <div class="tank-bar">
+        <button class="btn btn-round tank-prev" data-i18n-aria="prevTank" hidden><svg aria-hidden="true"><use href="#arrow"/></svg></button>
+        <span class="tank-name"></span><span class="tank-count"></span>
+        <span class="coins"><svg aria-hidden="true"><use href="#coin"/></svg><b class="tank-coins">0</b></span>
+        <button class="btn btn-round tank-next" data-i18n-aria="nextTank" hidden><svg aria-hidden="true"><use href="#arrow"/></svg></button>
+      </div>
+      <div class="tank-glass">
+        <div class="tank-water">
+          <span class="tray t1"></span><span class="tray t2"></span>
+          <div class="tank-bags"></div>
+          <p class="tank-empty" data-i18n="tankEmpty"></p>
+          <p class="tank-full" data-i18n="tankFull" hidden></p>
+          <span class="tank-plant p1"></span><span class="tank-plant p2"></span><span class="tank-plant p3"></span>
+          <span class="tank-rock r1"></span><span class="tank-rock r2"></span><div class="tank-deco"></div>
+          <i class="tbub b1"></i><i class="tbub b2"></i><i class="tbub b3"></i><i class="tbub b4"></i>
+          <span class="tank-sand"></span>
+        </div>
+      </div>
+      <p class="tank-help" data-i18n="tankHelp"></p>
+      <button id="btn-tank-play" class="btn btn-play"><span data-i18n="play"></span></button>
+    </section>
+
+    <section class="screen panel-screen" data-screen="shop" role="dialog" aria-labelledby="t-shop" hidden>
+      <div class="card shop-card">
+        <button id="btn-shop-close" class="close-x" data-i18n-aria="close"><span aria-hidden="true">✕</span></button>
+        <h2 id="t-shop" class="ribbon"><span data-i18n="shop"></span></h2>
+        <div class="shop-coins coins"><svg aria-hidden="true"><use href="#coin"/></svg><b id="shop-coins">0</b></div>
+        <div class="shop-scroll">
+        <p id="shop-for" class="shop-for"></p>
+        <h3 class="shop-h" data-i18n="shopPower"></h3>
+        <ul id="shop-power" class="shop-grid"></ul>
+        <h3 class="shop-h" data-i18n="shopDeco"></h3>
+        <ul id="shop-deco" class="shop-grid"></ul>
+        <h3 class="shop-h" data-i18n="shopTanks"></h3>
+        <ul id="shop-tanks" class="shop-grid"></ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="overlay" data-screen="paused" role="dialog" aria-modal="true" aria-labelledby="t-paused" hidden>
+      <div class="card">
+        <button id="btn-close-paused" class="close-x" data-i18n-aria="close"><span aria-hidden="true">✕</span></button>
+        <h2 id="t-paused" class="ribbon"><span data-i18n="paused"></span></h2>
+        <button id="btn-resume" class="btn btn-go"><img src="assets/icons/play.svg" alt="" class="icon"><span data-i18n="resume"></span></button>
+        <button id="btn-retry-paused" class="btn btn-blue"><img src="assets/icons/retry.svg" alt="" class="icon"><span data-i18n="retry"></span></button>
+        <button id="btn-settings-paused" class="btn btn-blue"><span data-i18n="settings"></span></button>
+        <button id="btn-ach-paused" class="btn btn-blue"><svg class="icon" aria-hidden="true"><use href="#trophy"/></svg><span data-i18n="achievements"></span></button>
+        <button id="btn-home-paused" class="btn btn-blue"><img src="assets/icons/home.svg" alt="" class="icon"><span data-i18n="home"></span></button>
+      </div>
+    </div>
+
+    <div class="overlay" data-screen="offer" role="dialog" aria-modal="true" aria-labelledby="t-offer" hidden>
+      <div class="card offer-card">
+        <button id="btn-offer-close" class="close-x" data-i18n-aria="noThanks"><span aria-hidden="true">✕</span></button>
+        <h2 id="t-offer" class="ribbon"><span data-i18n="offerTitle"></span></h2>
+        <p id="offer-score" class="offer-score">0</p>
+        <button id="btn-revive" class="btn btn-revive"><span class="ad-badge" aria-hidden="true">AD</span><span class="rv-row"><svg aria-hidden="true"><use href="#adtv"/></svg><span data-i18n="revive"></span></span></button>
+      </div>
+    </div>
+
+    <div class="overlay" data-screen="lose" role="dialog" aria-modal="true" aria-labelledby="t-lose" hidden>
+      <div class="card">
+        <h2 id="t-lose" class="ribbon"><span data-i18n="gameOver"></span></h2>
+        <p id="final-score" class="final-score">0</p>
+        <p id="final-best" class="final-best"><svg class="crown" aria-hidden="true"><use href="#crown"/></svg><span id="final-best-num">0</span></p>
+        <p id="new-best" class="new-best" hidden><span data-i18n="newBest"></span></p>
+        <p id="lose-bag" class="lose-bag" hidden></p>
+        <button id="btn-retry-lose" class="btn btn-go"><img src="assets/icons/retry.svg" alt="" class="icon"><span data-i18n="retry"></span></button>
+        <button id="btn-tank-lose" class="btn btn-blue btn-tank-sm"><span class="tank-ico" aria-hidden="true"></span><span data-i18n="tank"></span><b id="tank-badge-lose" class="tank-badge" hidden>0</b></button>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="particles" class="particles" aria-hidden="true"></canvas>
+  <div id="flash" class="flash" aria-hidden="true"></div>
+  <div id="words" class="words" aria-hidden="true"></div>
+  <div id="hint" class="hint" role="status" hidden></div>
+  <div id="ach-toast" class="ach-toast" role="status" hidden></div>
+  <div id="adscreen" class="adscreen" role="dialog" aria-modal="true" aria-labelledby="ad-title" hidden>
+    <span class="ad-tag" id="ad-title" data-i18n="adTag"></span>
+    <div class="ad-box" data-i18n="adPlaceholder"></div>
+    <div class="ad-count" id="ad-count">5</div>
+    <p data-i18n="adWait"></p>
+  </div>
+
+  <script>window.STUDIO_CONFIG={platform:'web',ftuxDirect:false,locale:'en',titleKey:'title',levelSelect:false,resetProgress:false,levelPreview:false,unlocks:false,fishSkin:'cartoon'};</script>
+  <script src="locales/en.js"></script>
+  <script src="locales/nl.js"></script>
+  <script src="locales/de.js"></script>
+  <script src="locales/fr.js"></script>
+  <script src="locales/es.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/rules.js"></script>
+  <script src="js/achievements.js"></script>
+  <script src="js/machine.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/template.js"></script>
+  <script src="js/art.js"></script>
+  <script src="js/fx.js"></script>
+  <script src="js/ads.js"></script>
+  <script src="js/platform.js"></script>
+  <script src="js/tank.js"></script>
+  <script src="js/shell.js"></script>
+</body>
+</html>

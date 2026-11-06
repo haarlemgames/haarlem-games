@@ -1,0 +1,4 @@
+(function(root){"use strict";var busy=false;function placeholder(done){var el=document.getElementById("adscreen"),cnt=document.getElementById("ad-count");if(!el){done(true);return;}
+var n=/[?&]instant=1/.test(location.search)?1:5,step=/[?&]instant=1/.test(location.search)?60:1000;el.hidden=false;cnt.textContent=n;var timer=setInterval(function(){n--;cnt.textContent=Math.max(n,0);if(n<=0){clearInterval(timer);el.hidden=true;done(true);}},step);}
+function showRewarded(done){if(busy)return;busy=true;var finish=function(ok){busy=false;done(!!ok);};try{(api.provider||placeholder)(finish);}catch(e){finish(false);}}
+var api={showRewarded:showRewarded,provider:null,placeholder:placeholder,isBusy:function(){return busy;}};root.WS=root.WS||{};root.WS.ads=api;})(typeof window!=="undefined"?window:globalThis);

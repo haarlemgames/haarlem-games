@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crazy Fish Blocks – from design document to game</title>
+<meta name="description" content="How Crazy Fish Blocks grew from a four-slide game design document into a finished, Poki-ready puzzle game.">
+<style>
+  :root {
+    --ink: #0b1a4a; --blue: #2a62e8; --blue-dk: #14317f; --indigo: #2b1d8f; --purple: #6a2bd8;
+    --yellow: #ffd52a; --orange: #ff8a1f; --red: #f0465f; --green: #22d45a; --cyan: #33d6ff; --sand: #f6e7b8;
+    --font: "Trebuchet MS", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font: 17px/1.55 var(--font); color: #fff; background: #1a1260 linear-gradient(180deg, #2a62e8 0, #2b1d8f 1400px, #1a1260 100%) no-repeat; min-height: 100vh; }
+  a { color: var(--yellow); }
+  img, video { display: block; max-width: 100%; height: auto; }
+  .wrap { width: min(1080px, 100% - 32px); margin: 0 auto; }
+
+  header.hero { text-align: center; padding: 48px 0 24px; }
+  .hero img.logo { width: min(440px, 86vw); margin: 0 auto 8px; filter: drop-shadow(0 8px 0 rgba(8, 20, 70, .35)); }
+  .hero h1 { margin: 8px 0 6px; font-size: clamp(26px, 4.6vw, 42px); line-height: 1.15; }
+  .hero p.lead { margin: 0 auto 22px; max-width: 640px; font-size: 19px; color: #dfe7ff; }
+  .btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 30px; font: 900 20px var(--font); color: var(--ink); text-decoration: none; background: linear-gradient(#ffe56b, var(--yellow) 55%, #f2b400); border: 3px solid #fff; border-radius: 999px; box-shadow: 0 5px 0 #b37d00, 0 10px 22px rgba(0, 0, 0, .3); }
+  .btn:hover { transform: translateY(-1px); }
+  .btn.ghost { background: rgba(255, 255, 255, .12); color: #fff; box-shadow: none; border-color: rgba(255, 255, 255, .6); }
+
+  .steps { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 26px 0 0; padding: 0; list-style: none; }
+  .steps a { display: block; padding: 7px 14px; font-weight: 800; font-size: 14px; color: #fff; text-decoration: none; background: rgba(255, 255, 255, .12); border-radius: 999px; }
+  .steps a:hover { background: rgba(255, 255, 255, .24); }
+
+  section { padding: 44px 0; }
+  .card { background: #fff; color: var(--ink); border-radius: 26px; padding: clamp(20px, 4vw, 40px); box-shadow: 0 8px 0 rgba(8, 20, 70, .35); }
+  .kicker { display: inline-block; margin-bottom: 8px; padding: 4px 12px; font-weight: 900; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink); background: var(--yellow); border-radius: 8px; }
+  h2 { margin: 0 0 10px; font-size: clamp(24px, 3.6vw, 34px); line-height: 1.2; }
+  h3 { margin: 18px 0 6px; font-size: 20px; }
+  p { margin: 0 0 12px; }
+  .muted { color: #4a5a8a; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .grid5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  figure { margin: 0; }
+  figcaption { margin-top: 8px; font-size: 14px; line-height: 1.35; color: #4a5a8a; }
+  .shot { border-radius: 18px; overflow: hidden; box-shadow: 0 6px 0 rgba(8, 20, 70, .3); background: #10205a; }
+  .slide { border-radius: 14px; overflow: hidden; border: 3px solid #eadfb8; }
+  video.gdd { width: 100%; border-radius: 18px; border: 4px solid #eadfb8; background: var(--sand); }
+
+  .timeline { position: relative; margin: 10px 0 0; padding: 0; list-style: none; }
+  .timeline::before { content: ""; position: absolute; left: 15px; top: 6px; bottom: 6px; width: 4px; background: linear-gradient(var(--yellow), var(--cyan)); border-radius: 4px; }
+  .timeline li { position: relative; padding: 0 0 20px 50px; }
+  .timeline li::before { content: attr(data-n); position: absolute; left: 0; top: 0; display: grid; place-items: center; width: 34px; height: 34px; font-weight: 900; color: var(--ink); background: var(--yellow); border: 3px solid #fff; border-radius: 50%; }
+  .timeline b { display: block; font-size: 18px; }
+
+  table.compare { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+  .compare th { text-align: left; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: #4a5a8a; padding: 0 12px; }
+  .compare td { padding: 12px 14px; vertical-align: top; background: #f2f5ff; }
+  .compare td:first-child { border-radius: 14px 0 0 14px; width: 42%; }
+  .compare td:last-child { border-radius: 0 14px 14px 0; }
+  .tag { display: inline-block; margin-right: 6px; padding: 2px 8px; font-size: 12px; font-weight: 900; border-radius: 6px; color: #fff; vertical-align: 1px; }
+  .tag.kept { background: var(--green); } .tag.changed { background: var(--orange); } .tag.new { background: var(--purple); } .tag.dropped { background: #8a93b8; }
+
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; padding: 0; list-style: none; }
+  .pills li { padding: 6px 12px; font-weight: 800; font-size: 14px; background: #eef2ff; color: var(--ink); border-radius: 999px; }
+
+  footer { padding: 30px 0 50px; text-align: center; color: #cfd9ff; font-size: 14px; }
+
+  @media (max-width: 820px) {
+    .grid2 { grid-template-columns: 1fr; }
+    .grid4 { grid-template-columns: 1fr 1fr; }
+    .grid3 { grid-template-columns: 1fr 1fr; }
+    .grid5 { grid-template-columns: repeat(3, 1fr); }
+    .compare td:first-child { width: auto; }
+  }
+  @media (max-width: 520px) {
+    .grid3 { grid-template-columns: 1fr; }
+    table.compare, .compare tbody, .compare tr, .compare td { display: block; width: 100%; }
+    .compare thead { display: none; }
+    .compare td:first-child { border-radius: 14px 14px 0 0; padding-bottom: 4px; }
+    .compare td:last-child { border-radius: 0 0 14px 14px; }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .btn:hover { transform: none; } }
+</style>
+</head>
+<body>
+
+<header class="hero wrap">
+  <img class="logo" src="../assets/art/branding/crazy-fish-blocks-logo.webp" width="1024" height="683" alt="Crazy Fish Blocks">
+  <h1>From a four-slide design document to a finished game</h1>
+  <p class="lead">Crazy Fish Blocks started as a short game design document: falling blocks of fish, match three, and a bomb fish. This page shows how that idea grew, version by version, into the game you can play today.</p>
+  <a class="btn" href="../index.html">▶ Play the game</a>
+  <nav aria-label="On this page"><ul class="steps">
+    <li><a href="#design">1. Design document</a></li>
+    <li><a href="#first">2. First playable</a></li>
+    <li><a href="#versions">3. Versions</a></li>
+    <li><a href="#compare">4. Design vs. game</a></li>
+    <li><a href="#decisions">5. Key decisions</a></li>
+    <li><a href="#final">6. Final result</a></li>
+  </ul></nav>
+</header>
+
+<main class="wrap">
+
+  <section id="design">
+    <div class="card">
+      <span class="kicker">Step 1 · The idea</span>
+      <h2>The game design document</h2>
+      <p>The whole game was described in four slides: a mock-up of the screen, the rules of an endless mode, the bomb fish feature and the score system. Short, clear and buildable.</p>
+      <div class="grid2">
+        <figure>
+          <video class="gdd" src="img/gdd-concept.mp4" poster="img/gdd-1-mockup.webp" controls muted playsinline preload="metadata"></video>
+          <figcaption>The original design document, as a short video.</figcaption>
+        </figure>
+        <div>
+          <h3>What the document asked for</h3>
+          <ul>
+            <li>Blocks of fish fall from the top; the arrow keys move and rotate them.</li>
+            <li>Three fish of the same colour in a row (horizontal or vertical) make a match and score points.</li>
+            <li>Four fish in a square turn into a <b>bomb fish</b> that clears the tiles around it.</li>
+            <li>More kinds of fish appear over time to raise the difficulty.</li>
+            <li>Game over when the water is full.</li>
+            <li>Score: 30 points for a match of three, 60 for a square, 30 + 20 per fish for a bomb.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="grid4" style="margin-top:22px">
+        <figure><img class="slide" src="img/gdd-1-mockup.webp" width="800" height="600" alt="Mock-up: an 8 by 8 grid with a falling fish block, the next block and the score" loading="lazy"><figcaption>Screen mock-up</figcaption></figure>
+        <figure><img class="slide" src="img/gdd-2-rules.webp" width="800" height="600" alt="Slide listing the rules of the endless mode" loading="lazy"><figcaption>Endless mode rules</figcaption></figure>
+        <figure><img class="slide" src="img/gdd-3-bombfish.webp" width="800" height="600" alt="Slide showing four red fish in a square turning into an exploding bomb fish" loading="lazy"><figcaption>Bomb fish feature</figcaption></figure>
+        <figure><img class="slide" src="img/gdd-4-score.webp" width="800" height="600" alt="Slide with the score system" loading="lazy"><figcaption>Score system</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="first">
+    <div class="card">
+      <span class="kicker">Step 2 · Make it playable</span>
+      <h2>The first playable version</h2>
+      <p>The first build did exactly what the document said, and nothing more: an 8×8 grid, falling blocks of two fish, match three, the square that becomes a bomb fish, the score and game over. Every rule was covered by automated tests before anything was made pretty. The score values from the document went into the game unchanged and are still the same today.</p>
+      <p class="muted">The fish in the first version were simple shapes drawn in code, so the rules could be tested before any art existed.</p>
+    </div>
+  </section>
+
+  <section id="versions">
+    <div class="card">
+      <span class="kicker">Step 3 · Iterate</span>
+      <h2>How the game grew</h2>
+      <p>After the first playable, the game was played, judged and improved in short rounds. The game director decided after each round what stayed, what changed and what came next.</p>
+      <ol class="timeline">
+        <li data-n="1"><b>First playable</b>The rules from the design document, with simple fish drawn in code.</li>
+        <li data-n="2"><b>Making every move feel good</b>Chain reactions play out step by step, with praise words (Great! Awesome! Incredible!), particles, screen shake and sound. Goals were added: clear a number of one fish to wipe the whole board.</li>
+        <li data-n="3"><b>New things on the board</b>Sharks that only disappear when two of them touch, and blocks of empty water that fish can swim through to make a match.</li>
+        <li data-n="4"><b>A reason to come back</b>Completed goals win fish for your own aquarium, with decorations, bigger tanks, a shop and achievements.</li>
+        <li data-n="5"><b>The final art style</b>Twenty weird cartoon creatures with swim and blink animations, a brighter palette and flat, bold buttons.</li>
+        <li data-n="6"><b>Ready for players</b>A tutorial and first-time tips, five languages (English, Dutch, German, French, Spanish), mobile touch controls and the Poki platform SDK.</li>
+        <li data-n="7"><b>A name and a logo</b>The working title Fish Block became <strong>Crazy Fish Blocks</strong>, with its own logo in all five languages and new illustrated icons and trophies.</li>
+      </ol>
+      <h3>Three art passes, same game</h3>
+      <div class="grid3">
+        <figure><div class="shot"><img src="img/v1-vector.webp" width="640" height="1386" alt="The game with simple vector fish" loading="lazy"></div><figcaption><b>Pass 1:</b> simple vector fish drawn in code (first versions).</figcaption></figure>
+        <figure><div class="shot"><img src="img/v2-painted.webp" width="640" height="1386" alt="The game with painted fish" loading="lazy"></div><figcaption><b>Pass 2:</b> a painted fish set.</figcaption></figure>
+        <figure><div class="shot"><img src="img/v3-cartoon.webp" width="640" height="1386" alt="The game with the final cartoon creatures" loading="lazy"></div><figcaption><b>Pass 3:</b> the final cartoon creatures.</figcaption></figure>
+      </div>
+      <p class="muted" style="margin-top:12px">The two earlier fish sets were retired from the game to keep it small and are kept in the studio's asset library. For a fair comparison these screenshots show each set in today's interface, on the same board.</p>
+    </div>
+  </section>
+
+  <section id="compare">
+    <div class="card">
+      <span class="kicker">Step 4 · Design vs. game</span>
+      <h2>What we kept, changed and added</h2>
+      <p>A design document is a starting point, not a contract. Playing the game showed what worked and what needed to change.</p>
+      <table class="compare">
+        <thead><tr><th>Design document</th><th>Final game</th></tr></thead>
+        <tbody>
+          <tr><td>Blocks of fish fall from the top; arrow keys to move and rotate.</td><td><span class="tag kept">Kept</span>Arrow keys and space on desktop; drag, tap and swipe on mobile.</td></tr>
+          <tr><td>Three of the same fish in a row make a match.</td><td><span class="tag kept">Kept</span>Plus chain reactions: fish fall down after a match and can make new matches.</td></tr>
+          <tr><td>Four fish in a square become a bomb fish; click it to explode.</td><td><span class="tag changed">Changed</span>The bomb fish is now collected. You choose where to drop it, so it becomes a tactical power-up instead of a tile on the board.</td></tr>
+          <tr><td>The bomb clears one tile on every side (3×3).</td><td><span class="tag changed">Changed</span>A bigger 4×4 blast, centred on four tiles, so a bomb always feels worth it.</td></tr>
+          <tr><td>Different fish appear to raise the difficulty.</td><td><span class="tag kept">Kept</span>You start with one kind of fish; it slowly grows to five.</td></tr>
+          <tr><td>Speed increases over time (optional).</td><td><span class="tag dropped">Dropped</span>After playtesting, the blocks keep the same speed. The challenge comes from more kinds of fish, water and sharks.</td></tr>
+          <tr><td>Game over when the water is full.</td><td><span class="tag kept">Kept</span>With one second chance per game: Revive is shown first and clears the board (see step 5).</td></tr>
+          <tr><td>Score: 30 for three, 60 for a square, 30 + 20 per fish for a bomb.</td><td><span class="tag kept">Kept</span>Exactly the same values.</td></tr>
+          <tr><td>—</td><td><span class="tag new">New</span>Goals that wipe the board, sharks, swimming fish, your own aquarium, a shop, achievements, a tutorial and five languages.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="decisions">
+    <div class="card">
+      <span class="kicker">Step 5 · Key decisions</span>
+      <h2>Two decisions that shaped the game</h2>
+      <div class="grid2">
+        <div>
+          <h3>A second chance comes first</h3>
+          <p>When the water is full, the game does not end straight away. The only thing you see is a big <b>Revive</b> button. The close button appears after two seconds, so the first choice a player sees is to keep playing.</p>
+          <p>We did this on purpose: a revive keeps players in the game they were enjoying, and it is the moment where an optional rewarded ad makes sense to the player. A revive clears the board and can be used once per game. The pop-up has no extra text: "Revive" says enough.</p>
+        </div>
+        <div class="grid2" style="gap:14px">
+          <figure><div class="shot"><img src="img/final-revive.webp" width="640" height="1386" alt="Game over pop-up showing only the score and a Revive button" loading="lazy"></div><figcaption>First, only Revive.</figcaption></figure>
+          <figure><div class="shot"><img src="img/final-revive-x.webp" width="640" height="1386" alt="The same pop-up after two seconds, now with a close button" loading="lazy"></div><figcaption>After 2 seconds, the close button appears.</figcaption></figure>
+        </div>
+      </div>
+      <div class="grid2" style="margin-top:28px">
+        <div>
+          <h3>Made for players everywhere</h3>
+          <p>The game is fully translated into <b>English, Dutch, German, French and Spanish</b>. It picks the player's browser language automatically, and the language can be changed in the settings at any time.</p>
+          <p>Even the logo is translated: every language has its own version of the title, drawn in the same style. All text lives in separate language files, so adding a new language does not touch the game itself.</p>
+          <ul class="pills"><li>English</li><li>Nederlands</li><li>Deutsch</li><li>Français</li><li>Español</li></ul>
+        </div>
+        <figure style="max-width:260px;margin:0 auto"><div class="shot"><img src="img/final-languages.webp" width="640" height="1386" alt="The settings screen in Dutch with language buttons EN, NL, DE, FR and ES" loading="lazy"></div><figcaption>Settings in Dutch, with the language switch.</figcaption></figure>
+      </div>
+      <h3>One logo, five languages</h3>
+      <div class="grid5">
+        <figure><div class="shot"><img src="img/home-en.webp" width="640" height="1386" alt="Start screen with the English logo Crazy Fish Blocks" loading="lazy"></div><figcaption>Crazy Fish Blocks</figcaption></figure>
+        <figure><div class="shot"><img src="img/home-nl.webp" width="640" height="1386" alt="Start screen with the Dutch logo Gekke Vis Blokken" loading="lazy"></div><figcaption>Gekke Vis Blokken</figcaption></figure>
+        <figure><div class="shot"><img src="img/home-de.webp" width="640" height="1386" alt="Start screen with the German logo Verrückte Fischblöcke" loading="lazy"></div><figcaption>Verrückte Fischblöcke</figcaption></figure>
+        <figure><div class="shot"><img src="img/home-fr.webp" width="640" height="1386" alt="Start screen with the French logo Blocs de Poissons Fous" loading="lazy"></div><figcaption>Blocs de Poissons Fous</figcaption></figure>
+        <figure><div class="shot"><img src="img/home-es.webp" width="640" height="1386" alt="Start screen with the Spanish logo Bloques de Peces Locos" loading="lazy"></div><figcaption>Bloques de Peces Locos</figcaption></figure>
+      </div>
+      <div class="grid3" style="margin-top:18px">
+        <figure><div class="shot"><img src="img/lang-de.webp" width="640" height="1386" alt="A first-time tip in German" loading="lazy"></div><figcaption>German</figcaption></figure>
+        <figure><div class="shot"><img src="img/lang-fr.webp" width="640" height="1386" alt="A first-time tip in French" loading="lazy"></div><figcaption>French</figcaption></figure>
+        <figure><div class="shot"><img src="img/lang-es.webp" width="640" height="1386" alt="A first-time tip in Spanish" loading="lazy"></div><figcaption>Spanish</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="final">
+    <div class="card">
+      <span class="kicker">Step 6 · The result</span>
+      <h2>Crazy Fish Blocks today</h2>
+      <p>A bright, fast puzzle game for phone and desktop that you can play in the browser.</p>
+      <div class="grid3">
+        <figure><div class="shot"><img src="img/final-home.webp" width="640" height="1386" alt="Start screen with the Crazy Fish Blocks logo" loading="lazy"></div><figcaption>Start screen with the new logo.</figcaption></figure>
+        <figure><div class="shot"><img src="img/final-tutorial.webp" width="640" height="1386" alt="The tutorial asks the player to move the fish block" loading="lazy"></div><figcaption>New players start straight in the game with a short tutorial.</figcaption></figure>
+        <figure><div class="shot"><img src="img/final-shark.webp" width="640" height="1386" alt="The board with a shark and water blocks" loading="lazy"></div><figcaption>Sharks and water make the board more interesting over time.</figcaption></figure>
+        <figure><div class="shot"><img src="img/final-aim.webp" width="640" height="1386" alt="Aiming the bomb fish at a 4 by 4 area" loading="lazy"></div><figcaption>The bomb fish from the design document, now aimed by the player.</figcaption></figure>
+        <figure><div class="shot"><img src="img/final-tank.webp" width="640" height="1386" alt="The aquarium with collected fish and decorations" loading="lazy"></div><figcaption>Your own aquarium fills up with the fish you win.</figcaption></figure>
+        <figure><div class="shot"><img src="img/final-shop.webp" width="640" height="1386" alt="The shop with bomb fish and decorations" loading="lazy"></div><figcaption>Spend coins on bomb fish, decorations and bigger tanks.</figcaption></figure>
+        <figure><div class="shot"><img src="img/final-achievements.webp" width="640" height="1386" alt="Achievements with iron, bronze, silver, gold and diamond trophies" loading="lazy"></div><figcaption>Achievements with five trophy levels, from iron to diamond.</figcaption></figure>
+        <figure><div class="shot"><img src="img/final-revive.webp" width="640" height="1386" alt="Game over pop-up with the Revive button" loading="lazy"></div><figcaption>Game over: a second chance comes first.</figcaption></figure>
+        <figure><div class="shot"><img src="img/final-languages.webp" width="640" height="1386" alt="Settings with the language switch" loading="lazy"></div><figcaption>Settings and language switch.</figcaption></figure>
+      </div>
+      <figure style="margin-top:22px"><div class="shot"><img src="img/final-desktop.webp" width="1600" height="900" alt="The game on a wide desktop screen with the controls listed beside the board" loading="lazy"></div><figcaption>On desktop the controls are listed beside the board.</figcaption></figure>
+      <h3>In numbers</h3>
+      <ul class="pills">
+        <li>4 slides of design</li><li>7 rounds of iteration</li><li>20+ cartoon creatures</li><li>5 languages</li><li>Phone and desktop</li><li>Hundreds of automated checks</li>
+      </ul>
+      <p style="margin-top:24px; text-align:center"><a class="btn" href="../index.html">▶ Play Crazy Fish Blocks</a></p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p>Crazy Fish Blocks · Haarlem Games</p>
+</footer>
+
+</body>
+</html>
