@@ -1,0 +1,3010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paw Pairs - Playable Prototype</title>
+<link rel="icon" type="image/png" href="assets/images/decor-paw-web.png">
+<link rel="apple-touch-icon" href="assets/images/decor-paw-web.png">
+<style>
+  :root {
+    --cream: #fff3e0;
+    --card: #fffdf9;
+    --brown-dark: #4a3222;
+    --brown: #8a5a34;
+    --brown-light: #b08a5f;
+    --accent: #ff9d4d;
+    --accent-dark: #e8792a;
+    --accent-shadow: #c85f1a;
+    --line: #f0dfc4;
+    --green: #4caf6b;
+    --gold: #ffc23c;
+    --red: #ef5757;
+    --blue: #7cc7ff;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    min-height: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    padding: 22px 14px 44px;
+    background:
+      radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.72), transparent 22%),
+      radial-gradient(circle at 84% 6%, rgba(255, 194, 60, 0.28), transparent 24%),
+      radial-gradient(ellipse at 50% 0%, #fff6e6 0%, #ffe3ba 55%, #ffcf95 100%);
+    background-attachment: fixed;
+    color: var(--brown-dark);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  body[data-screen="game"] {
+    padding: 4px;
+    overflow: hidden;
+  }
+
+  html.game-active {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .bg-decor {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .bg-decor img {
+    position: absolute;
+    width: 74px;
+    height: auto;
+    opacity: 0.38;
+    filter: drop-shadow(0 4px 2px rgba(74, 50, 34, 0.05));
+  }
+
+  .wrap {
+    width: min(100%, 720px);
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  body[data-screen="game"] .wrap {
+    width: 100%;
+    max-width: none;
+    height: calc(100dvh - 8px);
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  header {
+    text-align: center;
+    margin: 0 auto 10px;
+    position: relative;
+    z-index: 3;
+  }
+
+  .brand {
+    position: relative;
+    display: inline-grid;
+    gap: 0;
+    place-items: center;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    transition: padding 0.2s ease, border-radius 0.2s ease, transform 0.2s ease;
+  }
+
+  .brand::before,
+  .brand::after {
+    display: none;
+  }
+
+  .game-logo {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: min(82vw, 330px);
+    height: auto;
+    margin: -22px auto -30px;
+    filter: drop-shadow(0 7px 0 rgba(74, 50, 34, 0.05)) drop-shadow(0 13px 16px rgba(74, 50, 34, 0.13));
+    transition: width 0.2s ease, margin 0.2s ease, filter 0.2s ease;
+  }
+
+  .tagline {
+    position: relative;
+    z-index: 2;
+    margin: 0;
+    padding: 5px 12px 6px;
+    border-radius: 999px;
+    background: rgba(255, 246, 234, 0.92);
+    color: var(--brown);
+    font-weight: 800;
+    font-size: 12.5px;
+    box-shadow: 0 2px 0 rgba(240, 223, 196, 0.9);
+    transition: opacity 0.15s ease, transform 0.2s ease, max-height 0.2s ease, padding 0.2s ease;
+  }
+
+  .brand-play {
+    position: relative;
+    z-index: 2;
+    margin-top: 12px;
+    min-width: 168px;
+    font-size: 17px;
+    padding: 13px 26px;
+  }
+
+  body[data-screen="menu"] header {
+    margin-top: clamp(28px, 7vh, 72px);
+    margin-bottom: 0;
+  }
+
+  body[data-screen="menu"] .brand {
+    padding: 0;
+  }
+
+  body[data-screen="menu"] .game-logo {
+    width: min(88vw, 390px);
+    margin-top: -28px;
+    margin-bottom: -28px;
+  }
+
+  body:not([data-screen="menu"]) header {
+    display: none;
+  }
+
+  body:not([data-screen="menu"]) .brand {
+    padding: 6px 16px 8px;
+    border-radius: 24px;
+  }
+
+  body:not([data-screen="menu"]) .game-logo {
+    width: min(54vw, 220px);
+    margin: -18px auto -26px;
+    filter: drop-shadow(0 5px 0 rgba(74, 50, 34, 0.04)) drop-shadow(0 9px 10px rgba(74, 50, 34, 0.09));
+  }
+
+  body:not([data-screen="menu"]) .tagline {
+    opacity: 0;
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    transform: translateY(-4px);
+    overflow: hidden;
+  }
+
+  body:not([data-screen="menu"]) .brand-play {
+    display: none;
+  }
+
+  .card {
+    background: var(--card);
+    border-radius: 26px;
+    padding: 18px;
+    box-shadow: 0 6px 0 rgba(74, 50, 34, 0.08), 0 16px 34px rgba(74, 50, 34, 0.12);
+    margin-bottom: 16px;
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: 128px 1fr;
+    gap: 18px;
+    align-items: center;
+  }
+
+  .menu-card {
+    text-align: center;
+    padding: 16px 18px 22px;
+    margin-top: 12px;
+    background: rgba(255,253,249,0.72);
+  }
+
+  .menu-mascot {
+    width: 124px;
+    height: auto;
+    display: block;
+    margin: 0 auto 6px;
+    filter: drop-shadow(0 8px 10px rgba(74,50,34,0.18));
+    animation: wag 2.1s ease-in-out infinite;
+    transform-origin: 50% 82%;
+  }
+
+  .menu-card h2 {
+    margin: 0 0 6px;
+    font-size: clamp(22px, 5vw, 30px);
+    line-height: 1;
+  }
+
+  .menu-card p {
+    max-width: 420px;
+    margin: 0 auto;
+    color: var(--brown);
+    font-size: 15px;
+    line-height: 1.45;
+    font-weight: 650;
+  }
+
+  .mascot {
+    width: 128px;
+    aspect-ratio: 1;
+    border-radius: 28px;
+    background: #fff7ea;
+    display: grid;
+    place-items: center;
+    box-shadow: inset 0 -5px 0 rgba(240, 223, 196, 0.8);
+  }
+
+  .mascot img {
+    width: 104%;
+    max-width: none;
+    height: auto;
+    animation: wag 2.1s ease-in-out infinite;
+    transform-origin: 50% 82%;
+  }
+
+  @keyframes wag {
+    0%, 100% { transform: rotate(-1deg) translateY(0); }
+    50% { transform: rotate(2deg) translateY(-4px); }
+  }
+
+  .intro h2, .finish-card h2 {
+    margin: 0 0 8px;
+    font-size: clamp(26px, 6vw, 38px);
+    line-height: 1;
+  }
+
+  .intro p, .finish-card p {
+    margin: 0;
+    color: var(--brown);
+    font-size: 15px;
+    line-height: 1.45;
+    font-weight: 650;
+  }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 16px;
+  }
+
+  button {
+    border: 0;
+    border-radius: 16px;
+    padding: 11px 16px;
+    background: #fff;
+    color: var(--brown-dark);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 850;
+    cursor: pointer;
+    box-shadow: 0 4px 0 var(--line);
+    transition: transform 0.06s ease, box-shadow 0.06s ease, filter 0.12s ease;
+  }
+
+  button:hover { filter: brightness(1.03); }
+  button:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--line); }
+
+  .primary {
+    color: #fff;
+    background: var(--accent);
+    box-shadow: 0 5px 0 var(--accent-shadow);
+  }
+
+  .primary:active { box-shadow: 0 2px 0 var(--accent-shadow); }
+
+  .pill-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .shop-btn {
+    background: #fff6ea;
+  }
+
+  .trail-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .trail-header {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+    background: transparent;
+    border-radius: 0;
+    padding: 4px 2px 10px;
+    box-shadow: none;
+    margin-bottom: 4px;
+  }
+
+  .trail-header-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .trail-header-title {
+    flex: 1;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 900;
+    color: var(--brown-dark);
+    white-space: nowrap;
+  }
+
+  .dev-chip {
+    display: none;
+    margin-left: 6px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #4a90d9;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 950;
+    box-shadow: 0 2px 0 #3572a8;
+    vertical-align: middle;
+  }
+
+  body.dev-mode .dev-chip {
+    display: inline-flex;
+  }
+
+  .trail-header-bottom {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 9px;
+  }
+
+  .trail-header-stats {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .trail-stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #fff2e2;
+    border-radius: 999px;
+    padding: 5px 10px;
+    font-size: 11.5px;
+    font-weight: 800;
+    color: var(--brown);
+    white-space: nowrap;
+  }
+
+  .trail-stat img { width: 13px; height: 13px; }
+
+  .trail-progress-track {
+    flex: 1;
+    height: 8px;
+    background: var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .trail-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--gold));
+    border-radius: 999px;
+    transition: width 0.3s ease;
+  }
+
+  .trail-map {
+    position: relative;
+    width: 100%;
+    min-height: 3710px;
+    margin-top: 8px;
+    padding: 18px 14px 76px;
+    overflow: visible;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .trail-map::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 52px;
+    bottom: 72px;
+    width: 14px;
+    transform: translateX(-50%);
+    border-radius: 999px;
+    background: repeating-linear-gradient(180deg, #e9c687 0 24px, #deb36d 24px 48px);
+    opacity: 0.55;
+    box-shadow: inset 0 0 0 3px rgba(255,255,255,0.35);
+  }
+
+  .trail-node {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 74px;
+    height: 74px;
+    margin: 0 auto 18px;
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .trail-node:nth-child(odd) { transform: translateX(-72px); }
+  .trail-node:nth-child(even) { transform: translateX(72px); }
+  .trail-node:active:not(:disabled) { transform: translateX(var(--node-x, 0)) translateY(3px); }
+  .trail-node:nth-child(odd) { --node-x: -72px; }
+  .trail-node:nth-child(even) { --node-x: 72px; }
+  .trail-node:disabled { cursor: default; }
+  .trail-node:disabled .badge-img {
+    opacity: 0.72;
+    filter: grayscale(0.2) drop-shadow(0 2px 3px rgba(74,50,34,0.18));
+  }
+
+  .trail-node .badge-img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+    filter: drop-shadow(0 3px 5px rgba(74,50,34,0.25));
+  }
+
+  .trail-node.current {
+    width: 88px;
+    height: 88px;
+    margin-bottom: 10px;
+  }
+
+  .trail-ring {
+    position: absolute;
+    inset: -10px;
+    border-radius: 50%;
+    border: 3px solid var(--accent);
+    animation: trailPulse 1.6s ease-out infinite;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .play-tag {
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent-dark);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 0.4px;
+    padding: 2px 9px;
+    border-radius: 999px;
+    box-shadow: 0 2px 0 var(--accent-shadow);
+    white-space: nowrap;
+  }
+
+  .hard-tag {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffc23c;
+    color: #7d471f;
+    font-size: 9px;
+    font-weight: 950;
+    letter-spacing: 0.25px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    box-shadow: 0 2px 0 #c7831f;
+    white-space: nowrap;
+    z-index: 3;
+  }
+
+  .lv-stars {
+    position: absolute;
+    bottom: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--gold);
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-shadow: 0 1px 0 #fff;
+  }
+
+  .trail-mascot {
+    display: block;
+    width: 72px;
+    margin: -62px auto 0;
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 6px 10px rgba(74,50,34,0.3));
+  }
+
+  @keyframes trailPulse {
+    0% { transform: scale(0.9); opacity: 0.9; }
+    100% { transform: scale(1.35); opacity: 0; }
+  }
+
+  .game-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+
+  body[data-screen="game"] .controls {
+    gap: 8px;
+  }
+
+  .settings-wrap {
+    position: relative;
+    margin-left: 2px;
+  }
+
+  .game-tools {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .hint-wrap {
+    position: relative;
+    display: inline-flex;
+  }
+
+  .settings-round,
+  .hint-round {
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(circle at 34% 24%, rgba(255,255,255,0.9), transparent 30%),
+      linear-gradient(180deg, #fff8e9, #ffd99a 70%, #d98a32);
+    color: var(--brown-dark);
+    border: 3px solid #fff5dc;
+    box-shadow: 0 4px 0 #b96524, 0 8px 14px rgba(74,50,34,0.16);
+    font-size: 0;
+    line-height: 1;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.62);
+  }
+
+  .hint-round {
+    background:
+      radial-gradient(circle at 34% 24%, rgba(255,255,255,0.9), transparent 30%),
+      linear-gradient(180deg, #ffe991, #ffc23c 70%, #d98a32);
+    font-size: 23px;
+    font-weight: 950;
+  }
+
+  .settings-round img {
+    width: 27px;
+    height: 27px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 0 rgba(255,255,255,0.5)) drop-shadow(0 2px 2px rgba(74,50,34,0.22));
+    transform: rotate(-10deg);
+    pointer-events: none;
+  }
+
+  .hint-round .btn-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .hint-round .hint-mark {
+    position: relative;
+    width: 20px;
+    height: 24px;
+    transform: translateY(-1px);
+    filter: drop-shadow(0 2px 0 rgba(255,255,255,0.45)) drop-shadow(0 2px 2px rgba(74,50,34,0.2));
+  }
+
+  .hint-round .hint-mark::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 1px;
+    width: 17px;
+    height: 17px;
+    border-radius: 50% 50% 44% 44%;
+    transform: translateX(-50%);
+    background:
+      radial-gradient(circle at 35% 28%, rgba(255,255,255,0.9), transparent 28%),
+      linear-gradient(180deg, #fff8b7, #ffb83f);
+    border: 2px solid #7b471f;
+    box-sizing: border-box;
+  }
+
+  .hint-round .hint-mark::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 1px;
+    width: 12px;
+    height: 8px;
+    border-radius: 3px 3px 5px 5px;
+    transform: translateX(-50%);
+    background: linear-gradient(180deg, #8a5127, #5b321a);
+    box-shadow: inset 0 2px 0 rgba(255,255,255,0.25);
+  }
+
+  .settings-round:active {
+    box-shadow: 0 2px 0 #b96524, 0 5px 10px rgba(74,50,34,0.14);
+  }
+
+  .hint-round:active {
+    box-shadow: 0 2px 0 #b96524, 0 5px 10px rgba(74,50,34,0.14);
+  }
+
+  .hint-round:disabled {
+    opacity: 0.55;
+    cursor: default;
+    transform: none;
+  }
+
+  .hint-badge {
+    position: absolute;
+    top: -6px;
+    right: -5px;
+    z-index: 2;
+    padding: 2px 5px;
+    border-radius: 8px;
+    background: #4a90d9;
+    color: #fff;
+    font-size: 8px;
+    font-weight: 950;
+    letter-spacing: 0.03em;
+    box-shadow: 0 2px 0 #3572a8;
+    pointer-events: none;
+  }
+
+  .settings-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    z-index: 8;
+    min-width: 168px;
+    display: grid;
+    gap: 7px;
+    padding: 10px;
+    border-radius: 18px;
+    background: rgba(255, 250, 242, 0.96);
+    box-shadow: 0 8px 0 rgba(74, 50, 34, 0.06), 0 18px 34px rgba(74, 50, 34, 0.18);
+  }
+
+  .settings-menu button {
+    width: 100%;
+    padding: 9px 12px;
+    font-size: 13px;
+    text-align: left;
+    background: #fff6ea;
+    box-shadow: 0 2px 0 var(--line);
+  }
+
+  #screen-game {
+    width: min(100%, 760px);
+  }
+
+  body[data-screen="game"] #screen-game {
+    --game-chrome: clamp(100px, 15dvh, 146px);
+    --board-ratio: 1;
+    --board-cols: 4;
+    --board-rows: 2;
+    --board-gap: clamp(6px, 1.5vmin, 11px);
+    --board-target: 78vmin;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    align-items: center;
+    width: 100%;
+    max-width: none;
+    height: calc(100dvh - 8px);
+    min-height: 0;
+    overflow: hidden;
+    margin: 0 auto;
+    padding: clamp(3px, 0.8vmin, 8px);
+    background: transparent;
+    box-shadow: none;
+  }
+
+  body[data-screen="game"] .game-top {
+    justify-content: center;
+    margin-bottom: clamp(4px, 1vmin, 10px);
+  }
+
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 112px;
+    justify-content: center;
+    padding: 13px 20px 16px;
+    border-radius: 999px;
+    background: transparent url("assets/ui/button-secondary.png") center / 100% 100% no-repeat;
+    color: var(--brown);
+    font-size: 12.5px;
+    font-weight: 800;
+    box-shadow: none;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.62);
+  }
+
+  .chip b { color: var(--brown-dark); }
+
+  .chip-label {
+    color: rgba(74, 50, 34, 0.62);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .shuffle-chip {
+    background: transparent url("assets/ui/button-primary.png") center / 100% 100% no-repeat;
+    color: #fff;
+    text-shadow: 0 2px 0 rgba(160, 80, 24, 0.4);
+  }
+
+  .shuffle-chip .chip-label,
+  .shuffle-chip b {
+    color: #fff;
+  }
+
+  .board-frame {
+    border-radius: 26px;
+    padding: clamp(10px, 2.6vw, 16px);
+    background:
+      linear-gradient(#fffaf2, #fff4e7) padding-box,
+      repeating-linear-gradient(45deg, #f4c879 0 16px, #f0b35d 16px 32px) border-box;
+    border: 7px solid transparent;
+    box-shadow: inset 0 0 0 3px rgba(255,255,255,0.7), 0 5px 0 rgba(74,50,34,0.08);
+  }
+
+  body[data-screen="game"] .board-frame {
+    width: min(
+      100%,
+      var(--board-target),
+      calc(
+        ((100dvh - var(--game-chrome) - ((var(--board-rows) - 1) * var(--board-gap))) * var(--board-ratio)) +
+        ((var(--board-cols) - 1) * var(--board-gap))
+      )
+    );
+    max-height: calc(100dvh - var(--game-chrome));
+    margin: 0 auto;
+    padding: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    position: relative;
+  }
+
+  body[data-screen="game"] .board-frame.board-shuffle {
+    animation: boardShuffleWiggle 0.72s ease;
+  }
+
+  body[data-screen="game"] .board-frame.board-shuffle::after {
+    content: "";
+    position: absolute;
+    inset: -5px;
+    z-index: 6;
+    border-radius: 28px;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 22% 28%, rgba(255, 255, 255, 0.8), transparent 9%),
+      radial-gradient(circle at 70% 34%, rgba(255, 194, 60, 0.55), transparent 8%),
+      radial-gradient(circle at 42% 72%, rgba(255, 255, 255, 0.7), transparent 8%),
+      linear-gradient(100deg, transparent 0%, rgba(255,255,255,0.42) 45%, transparent 78%);
+    opacity: 0;
+    animation: boardShuffleSweep 0.72s ease;
+  }
+
+  @keyframes boardShuffleWiggle {
+    0%, 100% { transform: translateX(0) scale(1); }
+    18% { transform: translateX(-4px) scale(0.992); }
+    38% { transform: translateX(4px) scale(1.006); }
+    58% { transform: translateX(-2px) scale(0.998); }
+    78% { transform: translateX(2px) scale(1.002); }
+  }
+
+  @keyframes boardShuffleSweep {
+    0% { opacity: 0; transform: translateX(-16%) scale(0.98); }
+    22% { opacity: 1; }
+    78% { opacity: 0.9; }
+    100% { opacity: 0; transform: translateX(16%) scale(1.02); }
+  }
+
+  #board {
+    display: grid;
+    gap: clamp(8px, 2vw, 12px);
+    perspective: 900px;
+  }
+
+  body[data-screen="game"] #board {
+    gap: var(--board-gap);
+  }
+
+  .memory-card {
+    position: relative;
+    aspect-ratio: 1;
+    border: 0;
+    padding: 0;
+    border-radius: clamp(20px, 3.4vw, 30px);
+    background: transparent;
+    box-shadow: none;
+    transform-style: preserve-3d;
+    appearance: none;
+    -webkit-appearance: none;
+    overflow: visible;
+  }
+
+  .memory-card:active { transform: none; box-shadow: none; }
+
+  .card-inner {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    transform-style: preserve-3d;
+    transition: transform 0.36s cubic-bezier(.2,.8,.2,1);
+  }
+
+  .memory-card.flipped .card-inner,
+  .memory-card.matched .card-inner {
+    transform: rotateY(180deg);
+  }
+
+  .face {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    display: grid;
+    place-items: center;
+    backface-visibility: hidden;
+    overflow: visible;
+  }
+
+  .back {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .back-tile-art {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    image-rendering: auto;
+    transform: translateZ(0);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .back-icon {
+    position: relative;
+    z-index: 1;
+    width: var(--back-icon-size, 54%);
+    height: auto;
+    opacity: 0.92;
+    image-rendering: auto;
+    transform: translateZ(0);
+    filter: drop-shadow(0 2px 0 rgba(255,255,255,0.55));
+  }
+
+  .front {
+    transform: rotateY(180deg);
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 32% 18%, rgba(255,255,255,0.82), transparent 30%),
+      linear-gradient(160deg, #fffdf7, #fff0d9);
+    box-shadow: inset 0 -6px 0 rgba(214, 175, 119, 0.38), 0 4px 0 rgba(74, 50, 34, 0.1);
+  }
+
+  .front::after {
+    content: "";
+    position: absolute;
+    inset: 10%;
+    border-radius: 999px;
+    background: var(--tile-color, #ffe59d);
+    opacity: 0.78;
+    z-index: 0;
+  }
+
+  .front img {
+    width: 92%;
+    height: 92%;
+    object-fit: contain;
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 6px 3px rgba(74,50,34,0.13));
+  }
+
+  .memory-card.matched .front {
+    outline: 4px solid rgba(76, 175, 107, 0.45);
+  }
+
+  .memory-card.just-matched .front {
+    animation: matchPop 0.82s cubic-bezier(.18, .9, .18, 1.2);
+    box-shadow:
+      inset 0 -6px 0 rgba(240, 223, 196, 0.9),
+      0 0 0 7px rgba(76, 175, 107, 0.22),
+      0 0 0 14px rgba(255, 194, 60, 0.16),
+      0 14px 26px rgba(76, 175, 107, 0.24);
+  }
+
+  .memory-card.just-matched .front img {
+    animation: pupHappy 0.82s ease;
+  }
+
+  @keyframes matchPop {
+    0% { transform: rotateY(180deg) scale(1); }
+    20% { transform: rotateY(180deg) scale(1.16) rotate(-2.5deg); }
+    46% { transform: rotateY(180deg) scale(0.96) rotate(1.5deg); }
+    72% { transform: rotateY(180deg) scale(1.04) rotate(-0.5deg); }
+    100% { transform: rotateY(180deg) scale(1); }
+  }
+
+  @keyframes pupHappy {
+    0%, 100% { transform: translateY(0) rotate(0); }
+    24% { transform: translateY(-10px) rotate(-5deg) scale(1.05); }
+    52% { transform: translateY(-2px) rotate(4deg) scale(1.02); }
+    76% { transform: translateY(-5px) rotate(-2deg) scale(1.035); }
+  }
+
+  .memory-card.no-match .card-inner {
+    animation: noMatchShake 0.38s ease;
+  }
+
+  .memory-card.hinted .front {
+    outline: 4px solid rgba(255, 194, 60, 0.7);
+    box-shadow:
+      inset 0 -6px 0 rgba(240, 223, 196, 0.9),
+      0 0 0 7px rgba(255, 194, 60, 0.2),
+      0 10px 18px rgba(217, 139, 50, 0.18);
+  }
+
+  .memory-card.hinted .front img {
+    animation: hintPulse 0.85s ease-in-out infinite;
+  }
+
+  @keyframes hintPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08) rotate(-2deg); }
+  }
+
+  @keyframes noMatchShake {
+    0%, 100% { transform: rotateY(180deg) translateX(0); }
+    20% { transform: rotateY(180deg) translateX(-5px) rotate(-1deg); }
+    45% { transform: rotateY(180deg) translateX(5px) rotate(1deg); }
+    70% { transform: rotateY(180deg) translateX(-3px); }
+  }
+
+  .float-feedback {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    z-index: 12;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: #fff6ea;
+    color: var(--brown-dark);
+    font-size: 15px;
+    font-weight: 950;
+    box-shadow: 0 5px 0 rgba(214, 175, 119, 0.7), 0 12px 24px rgba(74,50,34,0.18);
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0.82);
+    animation: floatFeedback 0.92s ease-out forwards;
+  }
+
+  .float-feedback.good {
+    background: #fff3bd;
+    color: #7d5612;
+  }
+
+  .float-feedback.bad {
+    background: #ffe6e2;
+    color: #9b3c2f;
+  }
+
+  @keyframes floatFeedback {
+    0% { opacity: 0; transform: translate(-50%, -35%) scale(0.78); }
+    22% { opacity: 1; transform: translate(-50%, -60%) scale(1.04); }
+    100% { opacity: 0; transform: translate(-50%, -110%) scale(1); }
+  }
+
+  .win-confetti {
+    position: fixed;
+    inset: 0;
+    z-index: 11;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .win-confetti span {
+    position: absolute;
+    top: -34px;
+    left: var(--x);
+    width: 18px;
+    height: 18px;
+    display: grid;
+    place-items: center;
+    color: var(--c);
+    font-size: 20px;
+    font-weight: 950;
+    animation: confettiFall var(--d) ease-in forwards;
+    animation-delay: var(--delay);
+  }
+
+  @keyframes confettiFall {
+    to { transform: translateY(110vh) rotate(360deg); opacity: 0.2; }
+  }
+
+  .match-burst {
+    position: absolute;
+    inset: -14px;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 4;
+  }
+
+  .match-burst span {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 20px;
+    height: 20px;
+    display: grid;
+    place-items: center;
+    color: var(--burst-color, var(--gold));
+    font-size: 18px;
+    font-weight: 900;
+    text-shadow: 0 2px 0 #fff;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.7);
+    animation: burstFly 0.92s ease-out forwards;
+  }
+
+  .match-burst span:nth-child(1) { --tx: -48px; --ty: -48px; --rot: -24deg; --burst-color: var(--gold); animation-delay: 0.02s; }
+  .match-burst span:nth-child(2) { --tx: 48px; --ty: -46px; --rot: 20deg; --burst-color: var(--green); animation-delay: 0.06s; }
+  .match-burst span:nth-child(3) { --tx: -52px; --ty: 30px; --rot: 28deg; --burst-color: #ff7ba4; animation-delay: 0.10s; }
+  .match-burst span:nth-child(4) { --tx: 52px; --ty: 32px; --rot: -22deg; --burst-color: var(--accent); animation-delay: 0.14s; }
+  .match-burst span:nth-child(5) { --tx: 0px; --ty: -60px; --rot: 16deg; --burst-color: #7fb7ff; animation-delay: 0.04s; }
+  .match-burst span:nth-child(6) { --tx: 0px; --ty: 58px; --rot: -16deg; --burst-color: var(--gold); animation-delay: 0.12s; }
+
+  @keyframes burstFly {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.55) rotate(0deg); }
+    18% { opacity: 1; }
+    100% { opacity: 0; transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.2) rotate(var(--rot)); }
+  }
+
+  .memory-card.board-celebrate {
+    animation: tileVictoryDance 0.88s cubic-bezier(.18, .88, .2, 1.12) var(--dance-delay, 0ms) both;
+    z-index: 3;
+  }
+
+  .memory-card.board-celebrate .front {
+    box-shadow:
+      inset 0 -6px 0 rgba(240, 223, 196, 0.9),
+      0 0 0 7px rgba(255, 194, 60, 0.20),
+      0 12px 22px rgba(255, 157, 77, 0.22);
+  }
+
+  @keyframes tileVictoryDance {
+    0% { transform: translateY(0) rotate(0deg) scale(1); }
+    22% { transform: translateY(-14px) rotate(var(--dance-rot, -3deg)) scale(1.06); }
+    48% { transform: translateY(5px) rotate(calc(var(--dance-rot, -3deg) * -0.7)) scale(0.98); }
+    72% { transform: translateY(-7px) rotate(calc(var(--dance-rot, -3deg) * 0.45)) scale(1.03); }
+    100% { transform: translateY(0) rotate(0deg) scale(1); }
+  }
+
+  .status {
+    min-height: 32px;
+    margin-top: clamp(4px, 1.2vmin, 12px);
+    display: grid;
+    place-items: center;
+    text-align: center;
+    color: var(--brown);
+    font-weight: 850;
+  }
+
+  .stars {
+    margin: 10px 0 4px;
+    font-size: 34px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-shadow: 0 3px 0 rgba(74,50,34,0.12);
+  }
+
+  .modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    background: rgba(74, 50, 34, 0.28);
+    backdrop-filter: blur(5px);
+  }
+
+  .modal.show { display: flex; }
+
+  .tutorial-card,
+  .shop-card,
+  .album-card {
+    width: min(100%, 520px);
+    text-align: center;
+    position: relative;
+    animation: finishPop 0.22s cubic-bezier(.2,.9,.2,1);
+  }
+
+  .tutorial-card h2,
+  .shop-card h2,
+  .album-card h2 {
+    margin: 0 0 8px;
+    font-size: clamp(24px, 5vw, 34px);
+    line-height: 1;
+  }
+
+  .tutorial-steps {
+    display: grid;
+    gap: 8px;
+    margin: 14px 0 0;
+    text-align: left;
+  }
+
+  .tutorial-steps div {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 18px;
+    background: #fff6ea;
+    color: var(--brown);
+    font-size: 14px;
+    font-weight: 750;
+    box-shadow: 0 2px 0 var(--line);
+  }
+
+  .tutorial-steps span {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 950;
+  }
+
+  .shop-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
+    gap: 9px;
+    margin-top: 14px;
+    max-height: min(54vh, 410px);
+    overflow: auto;
+    padding: 2px 6px 10px;
+  }
+
+  .back-card {
+    position: relative;
+    display: grid;
+    gap: 7px;
+    justify-items: center;
+    padding: 9px 8px;
+    border-radius: 18px;
+    background: #fff6ea;
+    box-shadow: 0 3px 0 var(--line);
+    text-align: center;
+  }
+
+  .back-card.selected {
+    outline: 4px solid rgba(76, 175, 107, 0.3);
+  }
+
+  .back-card.locked {
+    opacity: 1;
+    background: rgba(255, 246, 234, 0.58);
+    color: rgba(74,50,34,0.62);
+  }
+
+  .back-preview {
+    width: 68px;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    border-radius: 18px;
+    background: var(--back-preview);
+    background-size: cover;
+    background-position: center;
+    box-shadow: inset 0 -6px 0 rgba(200, 95, 26, 0.25), 0 4px 0 rgba(74,50,34,0.1);
+  }
+
+  .back-preview img {
+    width: var(--icon-size, 46px);
+    filter: drop-shadow(0 2px 0 rgba(255,255,255,0.55));
+  }
+
+  .back-preview.locked-preview {
+    background:
+      radial-gradient(circle at 34% 24%, rgba(255,255,255,0.75), transparent 30%),
+      linear-gradient(145deg, #efe6d9, #d8c7b4);
+    box-shadow: inset 0 -6px 0 rgba(139, 103, 75, 0.18), 0 4px 0 rgba(74,50,34,0.08);
+  }
+
+  .lock-icon {
+    position: relative;
+    width: 30px;
+    height: 28px;
+  }
+
+  .lock-icon::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 17px;
+    height: 15px;
+    border: 4px solid rgba(116, 84, 62, 0.76);
+    border-bottom: 0;
+    border-radius: 12px 12px 0 0;
+    transform: translateX(-50%);
+    box-sizing: border-box;
+  }
+
+  .lock-icon::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 28px;
+    height: 20px;
+    border-radius: 7px;
+    transform: translateX(-50%);
+    background: linear-gradient(180deg, #a98262, #76533d);
+    box-shadow: inset 0 2px 0 rgba(255,255,255,0.28);
+  }
+
+  .back-card b {
+    color: var(--brown-dark);
+    font-size: 12.5px;
+  }
+
+  .back-card small {
+    color: rgba(74,50,34,0.7);
+    font-size: 11px;
+    font-weight: 800;
+  }
+
+  .album-card {
+    width: min(100%, 690px);
+  }
+
+  .album-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+    gap: 10px;
+    margin-top: 14px;
+    max-height: min(56vh, 440px);
+    overflow: auto;
+    padding: 2px 6px 10px;
+  }
+
+  .dog-card {
+    display: grid;
+    justify-items: center;
+    gap: 7px;
+    padding: 10px 8px;
+    border-radius: 20px;
+    background: #fff6ea;
+    box-shadow: 0 3px 0 var(--line);
+    min-height: 154px;
+  }
+
+  .dog-portrait {
+    width: 78px;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    background: var(--dog-color);
+    box-shadow: inset 0 -5px 0 rgba(74,50,34,0.08), 0 4px 0 rgba(74,50,34,0.08);
+    overflow: hidden;
+  }
+
+  .dog-portrait img {
+    width: 96%;
+    height: 96%;
+    object-fit: contain;
+    filter: drop-shadow(0 3px 0 rgba(74,50,34,0.12));
+  }
+
+  .dog-card.locked {
+    background: rgba(255, 246, 234, 0.58);
+    color: rgba(74,50,34,0.62);
+  }
+
+  .dog-card.locked .dog-portrait {
+    background:
+      radial-gradient(circle at 34% 24%, rgba(255,255,255,0.72), transparent 30%),
+      linear-gradient(145deg, #efe6d9, #d8c7b4);
+  }
+
+  .dog-card.locked .dog-portrait img {
+    filter: grayscale(1) brightness(0) opacity(0.22);
+  }
+
+  .dog-card b {
+    color: var(--brown-dark);
+    font-size: 12.5px;
+  }
+
+  .dog-card small {
+    color: rgba(74,50,34,0.68);
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1.25;
+  }
+
+  .unlock-preview {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 12px auto 0;
+    padding: 10px 12px;
+    border-radius: 20px;
+    background: #fff6ea;
+    box-shadow: 0 3px 0 var(--line);
+  }
+
+  .unlock-preview.show {
+    display: inline-flex;
+  }
+
+  .unlock-preview .back-preview {
+    width: 58px;
+    border-radius: 16px;
+  }
+
+  .unlock-preview .dog-portrait {
+    width: 58px;
+  }
+
+  .unlock-preview span {
+    color: var(--brown-dark);
+    font-size: 13px;
+    font-weight: 900;
+    text-align: left;
+  }
+
+  .finish-card {
+    width: min(100%, 440px);
+    text-align: center;
+    position: relative;
+    animation: finishPop 0.22s cubic-bezier(.2,.9,.2,1);
+    padding-top: 22px;
+  }
+
+  .result-kicker {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 8px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    color: var(--brown);
+    background: #fff6ea;
+    font-size: 12px;
+    font-weight: 900;
+    box-shadow: 0 2px 0 var(--line);
+  }
+
+  .best-line {
+    min-height: 18px;
+    margin: 4px 0 0;
+    color: var(--green);
+    font-size: 13px;
+    font-weight: 900;
+  }
+
+  .finish-card.win {
+    outline: 5px solid rgba(76, 175, 107, 0.18);
+    background:
+      radial-gradient(circle at 50% 0%, rgba(255, 194, 60, 0.24), transparent 38%),
+      var(--card);
+  }
+
+  .finish-card.lose {
+    outline: 5px solid rgba(239, 87, 87, 0.16);
+  }
+
+  .finish-mascot {
+    width: 118px;
+    height: 118px;
+    margin: -70px auto 8px;
+    border-radius: 30px;
+    background: #fff7ea;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 6px 0 rgba(74, 50, 34, 0.08);
+  }
+
+  .finish-card.win .finish-mascot {
+    background: #fff2d7;
+    box-shadow:
+      0 6px 0 rgba(74, 50, 34, 0.08),
+      0 0 0 8px rgba(255, 194, 60, 0.14);
+  }
+
+  .finish-card.win #resultTitle {
+    color: var(--green);
+  }
+
+  .finish-mascot img {
+    width: 108%;
+    height: auto;
+  }
+
+  @keyframes finishPop {
+    from { opacity: 0; transform: translateY(12px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .hidden { display: none !important; }
+
+  @media (max-width: 620px) {
+    body { padding: 8px; padding-top: 8px; }
+    body[data-screen="game"] { padding: 3px; overflow: hidden; }
+    .hero { grid-template-columns: 1fr; text-align: center; }
+    .mascot { width: 118px; margin: 0 auto; }
+    .trail-node:nth-child(odd) { transform: translateX(-58px); --node-x: -58px; }
+    .trail-node:nth-child(even) { transform: translateX(58px); --node-x: 58px; }
+    body[data-screen="game"] #screen-game {
+      --game-chrome: 92px;
+      --board-gap: clamp(4px, 1.35vmin, 8px);
+      --board-target: 84vmin;
+      height: calc(100dvh - 6px);
+      padding: 2px;
+    }
+    body[data-screen="game"] .game-top {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 5px;
+      width: 100%;
+      text-align: center;
+    }
+    body[data-screen="game"] .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 5px;
+      min-width: 0;
+    }
+    body[data-screen="game"] .chip {
+      min-width: 0;
+      padding: 6px 7px 8px;
+      font-size: 11px;
+      gap: 3px;
+    white-space: nowrap;
+  }
+
+  .best-tag {
+    position: absolute;
+    top: -23px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff6ea;
+    color: var(--green);
+    font-size: 9px;
+    font-weight: 950;
+    padding: 3px 8px;
+    border-radius: 999px;
+    box-shadow: 0 2px 0 var(--line);
+    white-space: nowrap;
+  }
+    body[data-screen="game"] .chip-label {
+      font-size: 9px;
+    }
+    body[data-screen="game"] .game-tools {
+      gap: 5px;
+      flex: none;
+    }
+    body[data-screen="game"] .settings-round,
+    body[data-screen="game"] .hint-round {
+      width: 38px;
+      height: 38px;
+      border-width: 2px;
+      box-shadow: 0 3px 0 #b96524, 0 6px 10px rgba(74,50,34,0.14);
+    }
+    body[data-screen="game"] .settings-round img {
+      width: 24px;
+      height: 24px;
+    }
+    body[data-screen="game"] .hint-mark {
+      transform: scale(0.86);
+    }
+    body[data-screen="game"] #board {
+      gap: var(--board-gap);
+    }
+    body[data-screen="game"] .memory-card {
+      border-radius: clamp(10px, 3vw, 22px);
+    }
+    body[data-screen="game"] .status {
+      min-height: 20px;
+      margin-top: 2px;
+      font-size: 12px;
+      line-height: 1.2;
+    }
+    .trail-header-top { flex-wrap: wrap; justify-content: center; }
+    .trail-actions { margin-left: 0; justify-content: center; }
+  }
+
+  @media (max-width: 430px) {
+    body[data-screen="game"] #screen-game {
+      --game-chrome: 72px;
+      --board-target: 88vmin;
+    }
+    body[data-screen="game"] .game-top {
+      gap: 4px;
+    }
+    body[data-screen="game"] .stats {
+      gap: 4px;
+    }
+    body[data-screen="game"] .chip {
+      padding: 5px 5px 7px;
+      font-size: 10px;
+    }
+    body[data-screen="game"] .chip-label {
+      display: none;
+    }
+    body[data-screen="game"] .settings-round,
+    body[data-screen="game"] .hint-round {
+      width: 34px;
+      height: 34px;
+    }
+    body[data-screen="game"] .hint-badge {
+      top: -6px;
+      right: -4px;
+      min-width: 17px;
+      height: 17px;
+      font-size: 10px;
+    }
+    body[data-screen="game"] .status {
+      display: none;
+    }
+  }
+
+  @media (max-height: 560px) and (orientation: landscape) {
+    body[data-screen="game"] #screen-game {
+      --game-chrome: 66px;
+      --board-target: 82vmin;
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+    body[data-screen="game"] .game-top {
+      margin-bottom: 2px;
+    }
+    body[data-screen="game"] .chip {
+      padding: 6px 8px 8px;
+      font-size: 10px;
+    }
+    body[data-screen="game"] .chip-label,
+    body[data-screen="game"] .status {
+      display: none;
+    }
+    body[data-screen="game"] .settings-round,
+    body[data-screen="game"] .hint-round {
+      width: 36px;
+      height: 36px;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="bg-decor" aria-hidden="true">
+    <img src="assets/images/decor-paw-web.png" style="left: 7%; top: 8%; transform: rotate(-18deg);" alt="">
+    <img src="assets/images/decor-bone-web.png" style="right: 7%; top: 14%; width: 94px; transform: rotate(20deg);" alt="">
+    <img src="assets/images/decor-tennis-ball-web.png" style="left: 11%; bottom: 14%; width: 68px;" alt="">
+    <img src="assets/images/decor-star-web.png" style="right: 10%; bottom: 11%; width: 72px; transform: rotate(-10deg);" alt="">
+  </div>
+
+  <main class="wrap">
+    <header>
+      <div class="brand">
+        <img class="game-logo" src="assets/images/paw-pairs-logo.png" alt="Paw Pairs">
+        <button class="primary brand-play" id="playBtn">Play</button>
+      </div>
+    </header>
+
+    <section id="screen-menu" aria-label="Start screen"></section>
+
+    <section id="screen-levels" class="hidden">
+      <div class="trail-header">
+        <div class="trail-header-top">
+          <button class="pill-btn" id="menuBackBtn">← Menu</button>
+          <div class="trail-header-title">Choose a level <span class="dev-chip">DEV</span></div>
+          <div class="trail-actions">
+            <button class="pill-btn" id="dogAlbumBtn">Dog album</button>
+            <button class="pill-btn shop-btn" id="cardBacksBtn">Card backs</button>
+          </div>
+        </div>
+        <div class="trail-header-bottom">
+          <div class="trail-header-stats">
+            <span class="trail-stat"><img src="assets/images/decor-star-web.png" alt=""> <span id="starsSummary">0/120</span></span>
+            <span class="trail-stat"><img src="assets/images/decor-paw-web.png" alt=""> <span id="levelsSummary">0/40</span></span>
+          </div>
+          <div class="trail-progress-track"><div class="trail-progress-fill" id="progressFill" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="trail-map" id="trailMap" aria-label="Choose a Paw Pairs level"></div>
+      <img class="trail-mascot" src="assets/images/mascot-helper-web.png" alt="Dog mascot">
+    </section>
+
+    <section id="screen-game" class="card hidden">
+      <div class="game-top">
+        <div class="stats">
+          <span class="chip"><b id="levelLabel">Level 1</b></span>
+          <span class="chip"><span class="chip-label">Moves</span> <b id="movesLeftLabel">10 left</b></span>
+          <span class="chip shuffle-chip hidden" id="shuffleLabel"><b>Hard</b></span>
+        </div>
+        <div class="game-tools">
+          <div class="hint-wrap">
+            <button id="hintBtn" class="hint-round" type="button" title="Get a free hint" aria-label="Get a free hint">
+              <span class="hint-mark" aria-hidden="true"></span>
+              <span class="btn-label">Hint</span>
+            </button>
+            <span class="hint-badge" id="hintBadge" aria-hidden="true">1</span>
+          </div>
+          <div class="settings-wrap">
+            <button id="settingsBtn" class="settings-round" aria-label="Open settings" aria-expanded="false">
+              <img src="assets/images/decor-paw-web.png" alt="">
+            </button>
+            <div id="settingsMenu" class="settings-menu hidden">
+              <button id="settingsRestartBtn" type="button">Restart level</button>
+              <button id="settingsMusicBtn" type="button">Music: On</button>
+              <button id="settingsSfxBtn" type="button">SFX: On</button>
+              <button id="settingsAlbumBtn" type="button">Dog album</button>
+              <button id="settingsLevelsBtn" type="button">Back to levels</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="board-frame">
+        <div id="board" aria-label="Paw Pairs memory board"></div>
+      </div>
+      <div class="status" id="status">Pick two cards to find a pup pair.</div>
+    </section>
+  </main>
+
+  <section id="finishModal" class="modal" aria-live="polite" aria-modal="true" role="dialog">
+    <div id="finishCard" class="card finish-card">
+      <div class="finish-mascot">
+        <img id="finishMascot" src="assets/images/mascot-helper-web.png" alt="Dog mascot">
+      </div>
+      <h2 id="resultTitle">Tail wags!</h2>
+      <div class="result-kicker" id="resultKicker">Level 1</div>
+      <div class="stars" id="stars">★★★</div>
+      <div class="best-line" id="bestLine"></div>
+      <p id="resultText">You matched every pair.</p>
+      <div class="unlock-preview" id="unlockPreview" aria-live="polite"></div>
+      <div class="controls">
+        <button id="menuBtn">Back to menu</button>
+        <button id="againBtn">Try again</button>
+        <button class="primary" id="nextBtn">Next level</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="tutorialModal" class="modal" aria-live="polite" aria-modal="true" role="dialog">
+    <div class="card tutorial-card">
+      <h2>How to play</h2>
+      <p>Quick cozy puzzle: find every dog pair before your moves run out.</p>
+      <div class="tutorial-steps">
+        <div><span>1</span>Flip one card and remember the pup.</div>
+        <div><span>2</span>Flip another card to search for its twin.</div>
+        <div><span>3</span>A match stays open. A miss flips back.</div>
+        <div><span>?</span>You get one hint per level when the kennel gets tricky.</div>
+      </div>
+      <div class="controls">
+        <button class="primary" id="tutorialStartBtn">Got it</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="hardModal" class="modal" aria-live="polite" aria-modal="true" role="dialog">
+    <div class="card tutorial-card">
+      <h2>Hard Level</h2>
+      <p>After a few missed pairs, hidden pups may move around. Stay sharp and trust your memory.</p>
+      <div class="controls">
+        <button class="primary" id="hardStartBtn">Got it</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="shopModal" class="modal" aria-live="polite" aria-modal="true" role="dialog">
+    <div class="card shop-card">
+      <h2>Card backs</h2>
+      <p>Unlock new card backs every 5 levels.</p>
+      <div class="shop-grid" id="shopGrid"></div>
+      <div class="controls">
+        <button class="primary" id="shopCloseBtn">Done</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="albumModal" class="modal" aria-live="polite" aria-modal="true" role="dialog">
+    <div class="card album-card">
+      <h2>Dog Album</h2>
+      <p id="albumSummary">Collect pups by completing levels.</p>
+      <div class="album-grid" id="albumGrid"></div>
+      <div class="controls">
+        <button class="primary" id="albumCloseBtn">Done</button>
+      </div>
+    </div>
+  </section>
+
+<script>
+(function () {
+  var dogs = [
+    { id: "beagle", name: "Beagle", img: "assets/images/dog-beagle-web.webp", color: "#ffe59d" },
+    { id: "bichon", name: "Bichon", img: "assets/images/dog-bichon-web.webp", color: "#d8f7ff" },
+    { id: "corgi", name: "Corgi", img: "assets/images/dog-corgi-web.webp", color: "#ffd0a6" },
+    { id: "dachshund", name: "Dachshund", img: "assets/images/dog-dachshund-web.webp", color: "#ffd5ea" },
+    { id: "husky", name: "Husky", img: "assets/images/dog-husky-web.webp", color: "#dfe6ff" },
+    { id: "pug", name: "Pug", img: "assets/images/dog-pug-web.webp", color: "#ddffd8" },
+    { id: "golden", name: "Golden Retriever", img: "assets/images/dog-golden-retriever-web.webp", color: "#fff2b3" },
+    { id: "labrador", name: "Labrador", img: "assets/images/dog-labrador-web.webp", color: "#e6f2c6" },
+    { id: "shepherd", name: "German Shepherd", img: "assets/images/dog-german-shepherd-web.webp", color: "#ffbf8f" },
+    { id: "frenchie", name: "French Bulldog", img: "assets/images/dog-french-bulldog-web.webp", color: "#eadcff" },
+    { id: "collie", name: "Border Collie", img: "assets/images/dog-border-collie-web.webp", color: "#e9edf5" },
+    { id: "shiba", name: "Shiba Inu", img: "assets/images/dog-shiba-inu-web.webp", color: "#ffc98e" },
+    { id: "shaggy", name: "Shaggy Dog", img: "assets/images/dog-shaggy-brown-web.webp", color: "#d7a06f" },
+    { id: "dalmatian", name: "Dalmatian", img: "assets/images/dog-dalmatian-web.webp", color: "#eef0f2" },
+    { id: "poodle", name: "Poodle", img: "assets/images/dog-poodle-web.webp", color: "#f8d7b0" },
+    { id: "chihuahua", name: "Chihuahua", img: "assets/images/dog-chihuahua-web.webp", color: "#cfeaff" },
+    { id: "boxer", name: "Boxer", img: "assets/images/dog-boxer-web.webp", color: "#f7b37f" },
+    { id: "rottweiler", name: "Rottweiler", img: "assets/images/dog-rottweiler-web.webp", color: "#c9b08b" }
+  ];
+
+  var levels = [
+    { level: 1, name: "Puppy Steps", pairs: 4, cols: 4, maxMoves: 12, stars: [8, 10] },
+    { level: 2, name: "Puppy Steps", pairs: 4, cols: 4, maxMoves: 11, stars: [7, 9] },
+    { level: 3, name: "Puppy Steps", pairs: 4, cols: 4, maxMoves: 10, stars: [7, 9] },
+    { level: 4, name: "Puppy Steps", pairs: 4, cols: 4, maxMoves: 9, stars: [6, 8] },
+    { level: 5, name: "Good Boy", pairs: 6, cols: 4, maxMoves: 18, stars: [12, 15] },
+    { level: 6, name: "Good Boy", pairs: 6, cols: 4, maxMoves: 17, stars: [11, 14] },
+    { level: 7, name: "Good Boy", pairs: 6, cols: 4, maxMoves: 16, stars: [11, 13] },
+    { level: 8, name: "Good Boy", pairs: 6, cols: 4, maxMoves: 15, stars: [10, 12] },
+    { level: 9, name: "Dog Park Pro", pairs: 8, cols: 4, maxMoves: 24, stars: [16, 20] },
+    { level: 10, name: "Hard Level", pairs: 8, cols: 4, maxMoves: 23, stars: [15, 19], shuffle: true },
+    { level: 11, name: "Dog Park Pro", pairs: 8, cols: 4, maxMoves: 22, stars: [15, 18] },
+    { level: 12, name: "Dog Park Pro", pairs: 8, cols: 4, maxMoves: 21, stars: [14, 17] },
+    { level: 13, name: "Show Dog", pairs: 10, cols: 5, maxMoves: 30, stars: [20, 25] },
+    { level: 14, name: "Show Dog", pairs: 10, cols: 5, maxMoves: 29, stars: [19, 24] },
+    { level: 15, name: "Show Dog", pairs: 10, cols: 5, maxMoves: 28, stars: [19, 23] },
+    { level: 16, name: "Show Dog", pairs: 10, cols: 5, maxMoves: 27, stars: [18, 22] },
+    { level: 17, name: "Big Yard", pairs: 12, cols: 6, maxMoves: 38, stars: [26, 32] },
+    { level: 18, name: "Big Yard", pairs: 12, cols: 6, maxMoves: 36, stars: [25, 30] },
+    { level: 19, name: "Big Yard", pairs: 12, cols: 6, maxMoves: 34, stars: [24, 29] },
+    { level: 20, name: "Hard Level", pairs: 12, cols: 6, maxMoves: 32, stars: [23, 28], shuffle: true },
+    { level: 21, name: "Big Yard", pairs: 12, cols: 6, maxMoves: 30, stars: [22, 26] },
+    { level: 22, name: "Big Yard", pairs: 12, cols: 6, maxMoves: 28, stars: [21, 25] },
+    { level: 23, name: "Clever Canines", pairs: 14, cols: 7, maxMoves: 44, stars: [30, 37] },
+    { level: 24, name: "Clever Canines", pairs: 14, cols: 7, maxMoves: 42, stars: [29, 35] },
+    { level: 25, name: "Clever Canines", pairs: 14, cols: 7, maxMoves: 40, stars: [28, 34] },
+    { level: 26, name: "Clever Canines", pairs: 14, cols: 7, maxMoves: 38, stars: [27, 32] },
+    { level: 27, name: "Clever Canines", pairs: 14, cols: 7, maxMoves: 36, stars: [26, 31] },
+    { level: 28, name: "Clever Canines", pairs: 14, cols: 7, maxMoves: 34, stars: [25, 30] },
+    { level: 29, name: "Kennel Masters", pairs: 16, cols: 8, maxMoves: 52, stars: [36, 44] },
+    { level: 30, name: "Hard Level", pairs: 16, cols: 8, maxMoves: 50, stars: [35, 42], shuffle: true },
+    { level: 31, name: "Kennel Masters", pairs: 16, cols: 8, maxMoves: 48, stars: [34, 41] },
+    { level: 32, name: "Kennel Masters", pairs: 16, cols: 8, maxMoves: 46, stars: [33, 39] },
+    { level: 33, name: "Kennel Masters", pairs: 16, cols: 8, maxMoves: 44, stars: [32, 38] },
+    { level: 34, name: "Kennel Masters", pairs: 16, cols: 8, maxMoves: 42, stars: [31, 36] },
+    { level: 35, name: "Best in Show", pairs: 18, cols: 6, maxMoves: 60, stars: [42, 51] },
+    { level: 36, name: "Best in Show", pairs: 18, cols: 6, maxMoves: 58, stars: [41, 49] },
+    { level: 37, name: "Best in Show", pairs: 18, cols: 6, maxMoves: 56, stars: [40, 48] },
+    { level: 38, name: "Best in Show", pairs: 18, cols: 6, maxMoves: 54, stars: [39, 46] },
+    { level: 39, name: "Best in Show", pairs: 18, cols: 6, maxMoves: 52, stars: [38, 45] },
+    { level: 40, name: "Final Hard Level", pairs: 18, cols: 6, maxMoves: 50, stars: [37, 43], shuffle: true }
+  ];
+
+  var cardBacks = [
+    { id: "paw-orange", name: "Paw Print", unlock: 1, tile: "assets/images/card-backs-hd/tile-orange.png", icon: "assets/images/card-backs-hd/decor-paw-web.png", iconSize: "54%" },
+    { id: "bone-blue", name: "Bone Pattern", unlock: 6, tile: "assets/images/card-backs-hd/tile-blue.png", icon: "assets/images/card-backs-hd/decor-bone-web.png", iconSize: "62%" },
+    { id: "ball-green", name: "Tennis Ball", unlock: 11, tile: "assets/images/card-backs-hd/tile-green.png", icon: "assets/images/card-backs-hd/decor-tennis-ball-web.png", iconSize: "58%" },
+    { id: "park-teal", name: "Dog Park", unlock: 16, tile: "assets/images/card-backs-hd/tile-teal.png", icon: "assets/images/card-backs-hd/decor-paw-web.png", iconSize: "52%" },
+    { id: "blanket-purple", name: "Cozy Blanket", unlock: 21, tile: "assets/images/card-backs-hd/tile-purple.png", icon: "assets/images/card-backs-hd/decor-star-web.png", iconSize: "52%" },
+    { id: "pink-paw", name: "Pink Paw", unlock: 26, tile: "assets/images/card-backs-hd/tile-pink.png", icon: "assets/images/card-backs-hd/decor-paw-web.png", iconSize: "54%" },
+    { id: "yellow-bone", name: "Sunny Bone", unlock: 31, tile: "assets/images/card-backs-hd/tile-yellow.png", icon: "assets/images/card-backs-hd/decor-bone-web.png", iconSize: "62%" },
+    { id: "coral-star", name: "Show Star", unlock: 36, tile: "assets/images/card-backs-hd/tile-coral.png", icon: "assets/images/card-backs-hd/decor-star-web.png", iconSize: "52%" }
+  ];
+
+  var state = {
+    levelIndex: 0,
+    deck: [],
+    flipped: [],
+    matched: 0,
+    moves: 0,
+    locked: false,
+    finished: false,
+    unlocked: 0,
+    completed: {},
+    musicOn: true,
+    sfxOn: true,
+    bestMoves: {},
+    hintsUsed: 0,
+    hinting: [],
+    wrongStreak: 0,
+    matchStreak: 0,
+    selectedBack: "paw-orange",
+    discoveredDogs: {},
+    tutorialSeen: false,
+    hardIntroSeen: false,
+    albumIntroSeen: false
+  };
+
+  var screenMenu = document.getElementById("screen-menu");
+  var screenLevels = document.getElementById("screen-levels");
+  var screenGame = document.getElementById("screen-game");
+  var trailMap = document.getElementById("trailMap");
+  var dogAlbumBtn = document.getElementById("dogAlbumBtn");
+  var cardBacksBtn = document.getElementById("cardBacksBtn");
+  var starsSummary = document.getElementById("starsSummary");
+  var levelsSummary = document.getElementById("levelsSummary");
+  var progressFill = document.getElementById("progressFill");
+  var board = document.getElementById("board");
+  var levelLabel = document.getElementById("levelLabel");
+  var movesLeftLabel = document.getElementById("movesLeftLabel");
+  var shuffleLabel = document.getElementById("shuffleLabel");
+  var hintBtn = document.getElementById("hintBtn");
+  var hintBadge = document.getElementById("hintBadge");
+  var settingsBtn = document.getElementById("settingsBtn");
+  var settingsMenu = document.getElementById("settingsMenu");
+  var settingsRestartBtn = document.getElementById("settingsRestartBtn");
+  var settingsMusicBtn = document.getElementById("settingsMusicBtn");
+  var settingsSfxBtn = document.getElementById("settingsSfxBtn");
+  var settingsAlbumBtn = document.getElementById("settingsAlbumBtn");
+  var settingsLevelsBtn = document.getElementById("settingsLevelsBtn");
+  var statusEl = document.getElementById("status");
+  var finishModal = document.getElementById("finishModal");
+  var finishCard = document.getElementById("finishCard");
+  var finishMascot = document.getElementById("finishMascot");
+  var resultTitle = document.getElementById("resultTitle");
+  var resultKicker = document.getElementById("resultKicker");
+  var resultText = document.getElementById("resultText");
+  var stars = document.getElementById("stars");
+  var bestLine = document.getElementById("bestLine");
+  var unlockPreview = document.getElementById("unlockPreview");
+  var nextBtn = document.getElementById("nextBtn");
+  var againBtn = document.getElementById("againBtn");
+  var menuBtn = document.getElementById("menuBtn");
+  var tutorialModal = document.getElementById("tutorialModal");
+  var tutorialStartBtn = document.getElementById("tutorialStartBtn");
+  var hardModal = document.getElementById("hardModal");
+  var hardStartBtn = document.getElementById("hardStartBtn");
+  var shopModal = document.getElementById("shopModal");
+  var shopGrid = document.getElementById("shopGrid");
+  var shopCloseBtn = document.getElementById("shopCloseBtn");
+  var albumModal = document.getElementById("albumModal");
+  var albumGrid = document.getElementById("albumGrid");
+  var albumSummary = document.getElementById("albumSummary");
+  var albumCloseBtn = document.getElementById("albumCloseBtn");
+  var audioContext = null;
+  var audioUnlocked = false;
+  var bgMusicEl = null;
+  var musicWantsPlaying = false;
+  var sfxFiles = {
+    happy: "assets/audio/paw-happy-bark.wav",
+    angry: "assets/audio/paw-angry-bark.wav",
+    howl: "assets/audio/paw-win-howl.wav"
+  };
+  var saveKey = "pawPairsSaveV1";
+  var devMode = /(?:[?&]dev=1\b|#dev\b)/.test(window.location.search + window.location.hash);
+
+  function shuffle(items) {
+    var copy = items.slice();
+    for (var i = copy.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = copy[i];
+      copy[i] = copy[j];
+      copy[j] = temp;
+    }
+    return copy;
+  }
+
+  function currentLevel() {
+    return levels[state.levelIndex];
+  }
+
+  function currentBack() {
+    return cardBacks.filter(function (back) { return back.id === state.selectedBack; })[0] || cardBacks[0];
+  }
+
+  function highestUnlockedLevelNumber() {
+    if (devMode) return levels.length;
+    return Math.max(1, state.unlocked + 1);
+  }
+
+  function isBackUnlocked(back) {
+    return highestUnlockedLevelNumber() >= back.unlock;
+  }
+
+  function saveProgress() {
+    try {
+      localStorage.setItem(saveKey, JSON.stringify({
+        unlocked: state.unlocked,
+        completed: state.completed,
+        selectedBack: state.selectedBack,
+        discoveredDogs: state.discoveredDogs,
+        musicOn: state.musicOn,
+        sfxOn: state.sfxOn,
+        bestMoves: state.bestMoves,
+        tutorialSeen: state.tutorialSeen,
+        hardIntroSeen: state.hardIntroSeen,
+        albumIntroSeen: state.albumIntroSeen
+      }));
+    } catch (error) {
+      // Local saves can fail in private/sandboxed browsers; gameplay should continue.
+    }
+  }
+
+  function loadProgress() {
+    try {
+      var raw = localStorage.getItem(saveKey);
+      if (!raw) return;
+      var saved = JSON.parse(raw);
+      if (typeof saved.unlocked === "number") {
+        state.unlocked = Math.max(0, Math.min(levels.length - 1, saved.unlocked));
+      }
+      if (saved.completed && typeof saved.completed === "object") {
+        state.completed = saved.completed;
+      }
+      if (saved.selectedBack && cardBacks.some(function (back) { return back.id === saved.selectedBack && isBackUnlocked(back); })) {
+        state.selectedBack = saved.selectedBack;
+      }
+      if (saved.discoveredDogs && typeof saved.discoveredDogs === "object") {
+        state.discoveredDogs = saved.discoveredDogs;
+      }
+      if (typeof saved.soundOn === "boolean") {
+        state.musicOn = saved.soundOn;
+        state.sfxOn = saved.soundOn;
+      }
+      if (typeof saved.musicOn === "boolean") state.musicOn = saved.musicOn;
+      if (typeof saved.sfxOn === "boolean") state.sfxOn = saved.sfxOn;
+      if (saved.bestMoves && typeof saved.bestMoves === "object") state.bestMoves = saved.bestMoves;
+      if (typeof saved.tutorialSeen === "boolean") state.tutorialSeen = saved.tutorialSeen;
+      if (typeof saved.hardIntroSeen === "boolean") state.hardIntroSeen = saved.hardIntroSeen;
+      if (typeof saved.albumIntroSeen === "boolean") state.albumIntroSeen = saved.albumIntroSeen;
+    } catch (error) {
+      state.unlocked = 0;
+      state.completed = {};
+      state.selectedBack = "paw-orange";
+      state.discoveredDogs = {};
+      state.bestMoves = {};
+      state.tutorialSeen = false;
+      state.hardIntroSeen = false;
+      state.albumIntroSeen = false;
+    }
+    if (devMode) {
+      state.unlocked = levels.length - 1;
+      dogs.forEach(function (dog) { state.discoveredDogs[dog.id] = true; });
+      state.tutorialSeen = true;
+      state.hardIntroSeen = true;
+      state.albumIntroSeen = true;
+    }
+  }
+
+  function updateStats() {
+    var level = currentLevel();
+    levelLabel.textContent = "Level " + level.level;
+    movesLeftLabel.textContent = Math.max(0, level.maxMoves - state.moves) + " left";
+    shuffleLabel.classList.toggle("hidden", !level.shuffle);
+  }
+
+  function closeSettingsMenu() {
+    settingsMenu.classList.add("hidden");
+    settingsBtn.setAttribute("aria-expanded", "false");
+  }
+
+  function toggleSettingsMenu() {
+    var isClosed = settingsMenu.classList.contains("hidden");
+    settingsMenu.classList.toggle("hidden", !isClosed);
+    settingsBtn.setAttribute("aria-expanded", isClosed ? "true" : "false");
+  }
+
+  function updateSoundButtons() {
+    settingsMusicBtn.textContent = state.musicOn ? "Music: On" : "Music: Off";
+    settingsSfxBtn.textContent = state.sfxOn ? "SFX: On" : "SFX: Off";
+  }
+
+  function updateHintBadge() {
+    var hintLeft = state.hintsUsed === 0;
+    hintBadge.textContent = hintLeft ? "1" : "0";
+    hintBtn.disabled = !hintLeft || state.finished;
+    hintBtn.title = hintLeft ? "Use your level hint" : "Hint used for this level";
+    hintBtn.setAttribute("aria-label", hintBtn.title);
+  }
+
+  function setScreen(name) {
+    document.body.dataset.screen = name;
+    document.documentElement.classList.toggle("game-active", name === "game");
+  }
+
+  function ensureAudio() {
+    var AudioCtor = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtor) return false;
+    if (!audioContext) audioContext = new AudioCtor();
+    if (audioContext.state === "suspended") {
+      audioContext.resume();
+    }
+    return true;
+  }
+
+  function ensureBackgroundMusic() {
+    if (bgMusicEl) return bgMusicEl;
+    var AudioCtor = (typeof window !== "undefined" && window.Audio) ? window.Audio : (typeof Audio !== "undefined" ? Audio : null);
+    if (!AudioCtor) return null;
+    bgMusicEl = new AudioCtor("assets/audio/theme.mp3");
+    bgMusicEl.loop = true;
+    bgMusicEl.preload = "auto";
+    bgMusicEl.volume = 0.18;
+    return bgMusicEl;
+  }
+
+  function updateBackgroundMusic() {
+    var music = ensureBackgroundMusic();
+    if (!music) return;
+    if (state.musicOn && musicWantsPlaying) {
+      var playPromise = music.play();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(function () {
+          // Browser has not accepted a gesture yet; the next tap will try again.
+        });
+      }
+    } else {
+      music.pause();
+    }
+  }
+
+  function startBackgroundMusic() {
+    musicWantsPlaying = true;
+    updateBackgroundMusic();
+  }
+
+  function unlockAudio() {
+    if (!audioUnlocked && ensureAudio()) {
+      var silent = audioContext.createOscillator();
+      var gain = audioContext.createGain();
+      gain.gain.setValueAtTime(0.0001, audioContext.currentTime);
+      silent.connect(gain);
+      gain.connect(audioContext.destination);
+      silent.start();
+      silent.stop(audioContext.currentTime + 0.02);
+      audioUnlocked = true;
+    }
+    if (state.musicOn) startBackgroundMusic();
+  }
+
+  function audioNow() {
+    if (!state.sfxOn || !ensureAudio()) return null;
+    return audioContext.currentTime;
+  }
+
+  function barkTone(startTime, frequency, duration, type, volume, slide) {
+    if (!audioContext) return;
+    var oscillator = audioContext.createOscillator();
+    var gain = audioContext.createGain();
+    var filter = audioContext.createBiquadFilter();
+    var shaper = audioContext.createWaveShaper();
+    oscillator.type = type || "sawtooth";
+    oscillator.frequency.setValueAtTime(frequency, startTime);
+    oscillator.frequency.exponentialRampToValueAtTime(Math.max(70, frequency * (slide || 0.58)), startTime + duration);
+    filter.type = "bandpass";
+    filter.frequency.setValueAtTime(frequency * 1.65, startTime);
+    filter.Q.setValueAtTime(5.5, startTime);
+    shaper.curve = new Float32Array([-1, -0.72, -0.2, 0, 0.2, 0.72, 1]);
+    gain.gain.setValueAtTime(0.0001, startTime);
+    gain.gain.exponentialRampToValueAtTime(volume, startTime + 0.012);
+    gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+    oscillator.connect(filter);
+    filter.connect(shaper);
+    shaper.connect(gain);
+    gain.connect(audioContext.destination);
+    oscillator.start(startTime);
+    oscillator.stop(startTime + duration + 0.03);
+  }
+
+  function barkNoise(startTime, duration, volume) {
+    if (!audioContext) return;
+    var sampleRate = audioContext.sampleRate;
+    var buffer = audioContext.createBuffer(1, Math.max(1, Math.floor(sampleRate * duration)), sampleRate);
+    var data = buffer.getChannelData(0);
+    for (var i = 0; i < data.length; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 1.8);
+    }
+    var source = audioContext.createBufferSource();
+    var filter = audioContext.createBiquadFilter();
+    var gain = audioContext.createGain();
+    filter.type = "lowpass";
+    filter.frequency.setValueAtTime(1100, startTime);
+    gain.gain.setValueAtTime(volume, startTime);
+    gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+    source.buffer = buffer;
+    source.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioContext.destination);
+    source.start(startTime);
+  }
+
+  function playSfxFile(key, volume, fallback) {
+    if (!state.sfxOn) return true;
+    var AudioCtor = (typeof window !== "undefined" && window.Audio) ? window.Audio : (typeof Audio !== "undefined" ? Audio : null);
+    if (!AudioCtor || !sfxFiles[key]) return false;
+    try {
+      var sound = new AudioCtor(sfxFiles[key]);
+      sound.preload = "auto";
+      sound.volume = volume;
+      var playPromise = sound.play();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(function () {
+          if (fallback) fallback();
+        });
+      }
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function playSyntheticBark(kind) {
+    var now = audioNow();
+    if (now === null) return;
+    if (kind === "match") {
+      barkNoise(now, 0.09, 0.16);
+      barkTone(now, 510, 0.14, "square", 0.38, 0.78);
+      barkTone(now + 0.14, 680, 0.12, "square", 0.32, 0.86);
+    } else {
+      barkNoise(now, 0.15, 0.22);
+      barkTone(now, 155, 0.22, "sawtooth", 0.42, 0.48);
+      barkTone(now + 0.14, 112, 0.2, "sawtooth", 0.34, 0.52);
+    }
+  }
+
+  function playBark(kind) {
+    var key = kind === "match" ? "happy" : "angry";
+    var played = playSfxFile(key, kind === "match" ? 0.46 : 0.42, function () {
+      playSyntheticBark(kind);
+    });
+    if (!played) playSyntheticBark(kind);
+  }
+
+  function playSyntheticHowl() {
+    var now = audioNow();
+    if (now === null) return;
+    var oscillator = audioContext.createOscillator();
+    var harmony = audioContext.createOscillator();
+    var gain = audioContext.createGain();
+    var filter = audioContext.createBiquadFilter();
+    oscillator.type = "sine";
+    harmony.type = "triangle";
+    oscillator.frequency.setValueAtTime(280, now);
+    oscillator.frequency.exponentialRampToValueAtTime(520, now + 0.32);
+    oscillator.frequency.exponentialRampToValueAtTime(260, now + 1.1);
+    harmony.frequency.setValueAtTime(420, now);
+    harmony.frequency.exponentialRampToValueAtTime(760, now + 0.34);
+    harmony.frequency.exponentialRampToValueAtTime(390, now + 1.05);
+    filter.type = "bandpass";
+    filter.frequency.setValueAtTime(760, now);
+    filter.Q.setValueAtTime(3.4, now);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.34, now + 0.12);
+    gain.gain.setValueAtTime(0.34, now + 0.72);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.35);
+    oscillator.connect(filter);
+    harmony.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioContext.destination);
+    oscillator.start(now);
+    harmony.start(now + 0.03);
+    oscillator.stop(now + 1.42);
+    harmony.stop(now + 1.38);
+  }
+
+  function playHowl() {
+    var played = playSfxFile("howl", 0.58, playSyntheticHowl);
+    if (!played) playSyntheticHowl();
+  }
+
+  function playMatchChime() {
+    var now = audioNow();
+    if (now === null) return;
+    [659, 880, 1175].forEach(function (frequency, index) {
+      var start = now + index * 0.055;
+      var oscillator = audioContext.createOscillator();
+      var gain = audioContext.createGain();
+      var filter = audioContext.createBiquadFilter();
+      oscillator.type = "sine";
+      oscillator.frequency.setValueAtTime(frequency, start);
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(2600, start);
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(0.075, start + 0.018);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.22);
+      oscillator.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioContext.destination);
+      oscillator.start(start);
+      oscillator.stop(start + 0.24);
+    });
+  }
+
+  function streakMessage(streak) {
+    if (streak >= 5) return "Pawfect streak!";
+    if (streak === 4) return "Amazing memory!";
+    if (streak === 3) return "Great memory!";
+    if (streak === 2) return "Nice streak!";
+    return "Good match!";
+  }
+
+  function chooseDogsForLevel(level) {
+    var pool = dogs.slice();
+
+    // Golden Retriever and Labrador are intentionally close in shape/color.
+    // Keep that harder comparison for level 9+ so early levels stay readable.
+    if (level.level <= 8) {
+      var dogToHoldBack = Math.random() < 0.5 ? "golden" : "labrador";
+      pool = pool.filter(function (dog) { return dog.id !== dogToHoldBack; });
+    }
+
+    return shuffle(pool).slice(0, level.pairs);
+  }
+
+  function createDeck(level) {
+    var chosen = chooseDogsForLevel(level);
+    return shuffle(chosen.concat(chosen).map(function (dog, index) {
+      return {
+        dog: dog,
+        key: dog.id + "-" + index,
+        matched: false
+      };
+    }));
+  }
+
+  function renderBoard() {
+    var level = currentLevel();
+    var back = currentBack();
+    var rows = Math.ceil((level.pairs * 2) / level.cols);
+    board.innerHTML = "";
+    board.style.gridTemplateColumns = "repeat(" + level.cols + ", minmax(0, 1fr))";
+    screenGame.style.setProperty("--board-ratio", (level.cols / rows).toFixed(3));
+    screenGame.style.setProperty("--board-cols", level.cols);
+    screenGame.style.setProperty("--board-rows", rows);
+    state.deck.forEach(function (card, index) {
+      var btn = document.createElement("button");
+      btn.className = "memory-card";
+      btn.type = "button";
+      btn.setAttribute("aria-label", "Hidden dog card");
+      btn.dataset.index = index;
+      btn.innerHTML =
+        '<span class="card-inner">' +
+          '<span class="face back" style="--back-icon-size:' + back.iconSize + '">' +
+            '<img class="back-tile-art" src="' + back.tile + '" alt="">' +
+            '<img class="back-icon" src="' + back.icon + '" alt="">' +
+          '</span>' +
+          '<span class="face front" style="--tile-color:' + card.dog.color + '">' +
+            '<img src="' + card.dog.img + '" alt="' + card.dog.name + '">' +
+          '</span>' +
+        '</span>';
+      btn.addEventListener("click", onCardClick);
+      board.appendChild(btn);
+    });
+  }
+
+  function refreshCards() {
+    Array.prototype.forEach.call(board.children, function (el, index) {
+      var card = state.deck[index];
+      var front = el.querySelector(".front");
+      var frontImg = front && front.querySelector("img");
+      if (front) {
+        front.style.setProperty("--tile-color", card.dog.color);
+      }
+      if (frontImg) {
+        if (frontImg.getAttribute("src") !== card.dog.img) {
+          frontImg.src = card.dog.img;
+        }
+        frontImg.alt = card.dog.name;
+      }
+      var isFlipped = state.flipped.indexOf(index) !== -1;
+      var isHinted = state.hinting.indexOf(index) !== -1;
+      el.classList.toggle("flipped", isFlipped || isHinted);
+      el.classList.toggle("matched", card.matched);
+      el.classList.toggle("hinted", isHinted);
+      el.disabled = card.matched || state.locked || state.finished || isHinted;
+      if (card.matched || isFlipped || isHinted) {
+        el.setAttribute("aria-label", card.dog.name + " card");
+      } else {
+        el.setAttribute("aria-label", "Hidden dog card");
+      }
+    });
+  }
+
+  function cardElement(index) {
+    return board.children[index];
+  }
+
+  function clearBurst(el) {
+    var old = el && el.querySelector(".match-burst");
+    if (old) old.remove();
+  }
+
+  function celebrateCard(index) {
+    var el = cardElement(index);
+    if (!el) return;
+    clearBurst(el);
+    el.classList.remove("just-matched");
+    void el.offsetWidth;
+    el.classList.add("just-matched");
+    var burst = document.createElement("span");
+    burst.className = "match-burst";
+    burst.setAttribute("aria-hidden", "true");
+    burst.innerHTML = "<span>&#9733;</span><span>&bull;</span><span>&#10022;</span><span>&#9733;</span><span>&#10022;</span><span>&bull;</span>";
+    el.appendChild(burst);
+    setTimeout(function () {
+      el.classList.remove("just-matched");
+      clearBurst(el);
+    }, 920);
+  }
+
+  function shakeNoMatch(indices) {
+    indices.forEach(function (index) {
+      var el = cardElement(index);
+      if (!el) return;
+      el.classList.remove("no-match");
+      void el.offsetWidth;
+      el.classList.add("no-match");
+    });
+  }
+
+  function showBoardShuffleEffect() {
+    var frame = board.parentElement;
+    if (!frame) return;
+    frame.classList.remove("board-shuffle");
+    void frame.offsetWidth;
+    frame.classList.add("board-shuffle");
+    setTimeout(function () {
+      frame.classList.remove("board-shuffle");
+    }, 760);
+  }
+
+  function kennelShuffleHiddenCards() {
+    var indices = [];
+    state.deck.forEach(function (card, index) {
+      if (!card.matched && state.flipped.indexOf(index) === -1 && state.hinting.indexOf(index) === -1) {
+        indices.push(index);
+      }
+    });
+    if (indices.length < 4) return false;
+    var cards = indices.map(function (index) { return state.deck[index]; });
+    var shuffledCards = shuffle(cards);
+    var changed = false;
+    for (var i = 0; i < indices.length; i++) {
+      if (state.deck[indices[i]] !== shuffledCards[i]) changed = true;
+      state.deck[indices[i]] = shuffledCards[i];
+    }
+    if (!changed) {
+      shuffledCards.push(shuffledCards.shift());
+      for (var j = 0; j < indices.length; j++) state.deck[indices[j]] = shuffledCards[j];
+    }
+    showBoardShuffleEffect();
+    refreshCards();
+    showFloatingText("Pups moved!", "good");
+    playBark("match");
+    statusEl.textContent = "The hidden pups moved around.";
+    return true;
+  }
+
+  function maybeTriggerKennelShuffle() {
+    var level = currentLevel();
+    if (!level.shuffle || state.finished) return false;
+    if (state.wrongStreak < 3) return false;
+    state.wrongStreak = 0;
+    return kennelShuffleHiddenCards();
+  }
+
+  function showFloatingText(text, kind) {
+    var el = document.createElement("div");
+    el.className = "float-feedback " + (kind || "");
+    el.textContent = text;
+    document.body.appendChild(el);
+    setTimeout(function () { el.remove(); }, 980);
+  }
+
+  function showerConfetti() {
+    var wrap = document.createElement("div");
+    wrap.className = "win-confetti";
+    var bits = ["★", "•", "✦", "●"];
+    var colors = ["#ffc23c", "#ff8e3f", "#4caf6b", "#ff7ba4", "#7fb7ff"];
+    for (var i = 0; i < 34; i++) {
+      var bit = document.createElement("span");
+      bit.textContent = bits[i % bits.length];
+      bit.style.setProperty("--x", Math.round(Math.random() * 100) + "vw");
+      bit.style.setProperty("--c", colors[i % colors.length]);
+      bit.style.setProperty("--d", (900 + Math.random() * 900) + "ms");
+      bit.style.setProperty("--delay", (Math.random() * 360) + "ms");
+      wrap.appendChild(bit);
+    }
+    document.body.appendChild(wrap);
+    setTimeout(function () { wrap.remove(); }, 2100);
+  }
+
+  function dogBio(dog) {
+    var bios = {
+      beagle: "Snack detective",
+      bichon: "Cloud-soft cuddle pro",
+      corgi: "Tiny legs, big confidence",
+      dachshund: "Blanket tunnel expert",
+      husky: "Drama singer",
+      pug: "Professional nap critic",
+      golden: "Sunshine retriever",
+      labrador: "Loyal snack buddy",
+      shepherd: "Very serious helper",
+      frenchie: "Couch royalty",
+      collie: "Puzzle genius",
+      shiba: "Independent little legend",
+      shaggy: "Lovable mop of joy",
+      dalmatian: "Spotted show-off",
+      poodle: "Fancy and focused",
+      chihuahua: "Pocket-sized boss",
+      boxer: "Goofy bounce machine",
+      rottweiler: "Gentle guardian"
+    };
+    return bios[dog.id] || "Good pup";
+  }
+
+  function isDogDiscovered(dog) {
+    return devMode || !!state.discoveredDogs[dog.id];
+  }
+
+  function collectDogsFromDeck() {
+    var newDogs = [];
+    state.deck.forEach(function (card) {
+      if (!state.discoveredDogs[card.dog.id]) {
+        state.discoveredDogs[card.dog.id] = true;
+        if (!newDogs.some(function (dog) { return dog.id === card.dog.id; })) {
+          newDogs.push(card.dog);
+        }
+      }
+    });
+    return newDogs;
+  }
+
+  function renderAlbum() {
+    var collected = dogs.filter(isDogDiscovered).length;
+    albumSummary.textContent = collected + "/" + dogs.length + " pups collected. Complete levels to add new dogs.";
+    albumGrid.innerHTML = "";
+    dogs.forEach(function (dog) {
+      var unlocked = isDogDiscovered(dog);
+      var item = document.createElement("div");
+      item.className = "dog-card" + (unlocked ? "" : " locked");
+      item.innerHTML =
+        '<span class="dog-portrait" style="--dog-color:' + dog.color + '">' +
+          '<img src="' + dog.img + '" alt="' + (unlocked ? dog.name : "Locked dog") + '">' +
+        '</span>' +
+        '<b>' + (unlocked ? dog.name : "Mystery pup") + '</b>' +
+        '<small>' + (unlocked ? dogBio(dog) : "Find this pup in a level") + '</small>';
+      albumGrid.appendChild(item);
+    });
+  }
+
+  function showAlbum() {
+    closeSettingsMenu();
+    renderAlbum();
+    albumModal.classList.add("show");
+  }
+
+  function closeAlbum() {
+    albumModal.classList.remove("show");
+  }
+
+  function renderShop() {
+    shopGrid.innerHTML = "";
+    cardBacks.forEach(function (back) {
+      var unlocked = isBackUnlocked(back);
+      var selected = state.selectedBack === back.id;
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "back-card" + (selected ? " selected" : "") + (!unlocked ? " locked" : "");
+      btn.disabled = !unlocked;
+      var preview = unlocked
+        ? '<span class="back-preview" style="--back-preview:url(' + back.tile + '); --icon-size:' + back.iconSize + '"><img src="' + back.icon + '" alt=""></span>'
+        : '<span class="back-preview locked-preview"><span class="lock-icon" aria-hidden="true"></span></span>';
+      btn.innerHTML =
+        preview +
+        '<b>' + back.name + '</b>' +
+        '<small>' + (unlocked ? (selected ? "Selected" : "Unlocked") : "Unlocks at level " + back.unlock) + '</small>';
+      btn.addEventListener("click", function () {
+        state.selectedBack = back.id;
+        saveProgress();
+        renderShop();
+        if (!screenGame.classList.contains("hidden")) renderBoard();
+        showFloatingText("Card back equipped", "good");
+      });
+      shopGrid.appendChild(btn);
+    });
+  }
+
+  function showShop() {
+    renderShop();
+    shopModal.classList.add("show");
+  }
+
+  function closeShop() {
+    shopModal.classList.remove("show");
+  }
+
+  function showTutorialIfNeeded() {
+    if (state.tutorialSeen || currentLevel().level !== 1) return;
+    state.locked = true;
+    tutorialModal.classList.add("show");
+  }
+
+  function showHardIntroIfNeeded() {
+    if (state.hardIntroSeen || !currentLevel().shuffle) return;
+    state.locked = true;
+    hardModal.classList.add("show");
+  }
+
+  function closeTutorial() {
+    state.tutorialSeen = true;
+    tutorialModal.classList.remove("show");
+    state.locked = false;
+    statusEl.textContent = "Tap any card to reveal your first pup.";
+    saveProgress();
+    refreshCards();
+  }
+
+  function closeHardIntro() {
+    state.hardIntroSeen = true;
+    hardModal.classList.remove("show");
+    state.locked = false;
+    statusEl.textContent = "Hard level: hidden pups may move after missed pairs.";
+    saveProgress();
+    refreshCards();
+  }
+
+  function findHintPair() {
+    var byDog = {};
+    for (var i = 0; i < state.deck.length; i++) {
+      var card = state.deck[i];
+      if (card.matched || state.flipped.indexOf(i) !== -1) continue;
+      if (!byDog[card.dog.id]) byDog[card.dog.id] = [];
+      byDog[card.dog.id].push(i);
+      if (byDog[card.dog.id].length === 2) return byDog[card.dog.id];
+    }
+    return null;
+  }
+
+  function grantHint() {
+    if (state.locked || state.finished) return false;
+    if (state.flipped.length) {
+      statusEl.textContent = "Finish this pair first, then ask for a hint.";
+      return false;
+    }
+    var pair = findHintPair();
+    if (!pair) {
+      statusEl.textContent = "No hidden pair left to hint.";
+      return false;
+    }
+    state.locked = true;
+    state.hinting = pair;
+    state.hintsUsed += 1;
+    updateHintBadge();
+    statusEl.textContent = "Hint: remember this pup pair.";
+    showFloatingText("Hint revealed", "good");
+    playBark("match");
+    refreshCards();
+    pair.forEach(celebrateCard);
+    setTimeout(function () {
+      state.hinting = [];
+      state.locked = false;
+      statusEl.textContent = "Now try to match that pair.";
+      refreshCards();
+    }, 1150);
+    return true;
+  }
+
+  function requestHint() {
+    unlockAudio();
+    if (state.hintsUsed === 0) {
+      grantHint();
+      return;
+    }
+    statusEl.textContent = "Hint already used for this level.";
+    showFloatingText("Hint used", "bad");
+    playBark("miss");
+  }
+
+  function celebrateBoardThenWin() {
+    state.locked = true;
+    statusEl.textContent = "All pairs found! One last tail-wag...";
+    showerConfetti();
+    playHowl();
+    Array.prototype.forEach.call(board.children, function (el, index) {
+      el.classList.remove("board-celebrate");
+      el.style.setProperty("--dance-delay", (index * 42) + "ms");
+      el.style.setProperty("--dance-rot", (index % 2 === 0 ? "-4deg" : "4deg"));
+      void el.offsetWidth;
+      el.classList.add("board-celebrate");
+    });
+    setTimeout(function () {
+      Array.prototype.forEach.call(board.children, function (el) {
+        el.classList.remove("board-celebrate");
+        el.style.removeProperty("--dance-delay");
+        el.style.removeProperty("--dance-rot");
+      });
+      finishLevel(true);
+    }, 1220);
+  }
+
+  function onCardClick(event) {
+    unlockAudio();
+    var index = Number(event.currentTarget.dataset.index);
+    var card = state.deck[index];
+    if (state.locked || state.finished || card.matched || state.flipped.indexOf(index) !== -1) return;
+    state.flipped.push(index);
+    refreshCards();
+
+    if (state.flipped.length === 1) {
+      statusEl.textContent = "Now find " + card.dog.name + "'s twin.";
+      return;
+    }
+
+    state.moves += 1;
+    updateStats();
+    var first = state.deck[state.flipped[0]];
+    var second = state.deck[state.flipped[1]];
+
+    if (first.dog.id === second.dog.id) {
+      state.matchStreak += 1;
+      playBark("match");
+      playMatchChime();
+      showFloatingText(streakMessage(state.matchStreak), "good");
+      var matchedIndices = state.flipped.slice();
+      first.matched = true;
+      second.matched = true;
+      state.matched += 1;
+      state.wrongStreak = 0;
+      state.flipped = [];
+      statusEl.textContent = "Matched " + first.dog.name + "! Very dignified.";
+      refreshCards();
+      matchedIndices.forEach(celebrateCard);
+      if (state.matched === currentLevel().pairs) {
+        celebrateBoardThenWin();
+      }
+      return;
+    }
+
+    state.locked = true;
+    state.matchStreak = 0;
+    if (currentLevel().shuffle) state.wrongStreak += 1;
+    playBark("miss");
+    showFloatingText("Try again", "bad");
+    shakeNoMatch(state.flipped.slice());
+    if (state.moves >= currentLevel().maxMoves) {
+      statusEl.textContent = "Out of moves. The pups got away this round.";
+      refreshCards();
+      setTimeout(function () { finishLevel(false); }, 540);
+      return;
+    }
+
+    statusEl.textContent = "No match. The pups are getting tricky.";
+    refreshCards();
+    setTimeout(function () {
+      state.flipped = [];
+      refreshCards();
+      if (maybeTriggerKennelShuffle()) {
+        setTimeout(function () {
+          state.locked = false;
+          statusEl.textContent = "Try another pair.";
+          refreshCards();
+        }, 780);
+      } else {
+        state.locked = false;
+        statusEl.textContent = currentLevel().shuffle
+          ? "Try another pair. Pups may move after " + Math.max(0, 3 - state.wrongStreak) + " more misses."
+          : "Try another pair.";
+        refreshCards();
+      }
+    }, 760);
+  }
+
+  function rating(level, moves) {
+    if (moves <= level.stars[0]) return 3;
+    if (moves <= level.stars[1]) return 2;
+    return 1;
+  }
+
+  function bestMovesFor(index) {
+    var value = state.bestMoves[index];
+    return typeof value === "number" && value > 0 ? value : null;
+  }
+
+  function finishLevel(won) {
+    if (state.finished) return;
+    state.finished = true;
+    var level = currentLevel();
+    var didWin = won !== false;
+    finishCard.classList.toggle("win", didWin);
+    finishCard.classList.toggle("lose", !didWin);
+    finishMascot.src = didWin ? "assets/images/mascot-helper-web.png" : "assets/images/dog-pug-web.webp";
+
+    if (didWin) {
+      var earned = rating(level, state.moves);
+      var previousHighestLevel = highestUnlockedLevelNumber();
+      var previousBest = bestMovesFor(state.levelIndex);
+      var isNewBest = !previousBest || state.moves < previousBest;
+      state.unlocked = Math.max(state.unlocked, Math.min(state.levelIndex + 1, levels.length - 1));
+      state.completed[state.levelIndex] = Math.max(state.completed[state.levelIndex] || 0, earned);
+      if (isNewBest) state.bestMoves[state.levelIndex] = state.moves;
+      var newDogs = collectDogsFromDeck();
+      var isFirstAlbumUnlock = newDogs.length && !state.albumIntroSeen;
+      if (isFirstAlbumUnlock) state.albumIntroSeen = true;
+      var newBack = cardBacks.filter(function (back) {
+        return back.unlock > previousHighestLevel && back.unlock <= highestUnlockedLevelNumber();
+      })[0];
+      saveProgress();
+      stars.textContent = "★★★".slice(0, earned) + "☆☆☆".slice(0, 3 - earned);
+      resultTitle.textContent = "Level Complete!";
+      resultKicker.textContent = isNewBest ? "New best" : isFirstAlbumUnlock ? "Album discovery" : earned === 3 ? "Perfect paws" : earned === 2 ? "Nice match" : "Puzzle fetched";
+      bestLine.textContent = isNewBest ? "New best: " + state.moves + " moves" : "Best: " + bestMovesFor(state.levelIndex) + " moves";
+      resultText.textContent = newBack
+        ? "New card back unlocked: " + newBack.name + "!"
+        : newDogs.length
+          ? (newDogs.length === 1 ? "New dog added to your album: " + newDogs[0].name + "!" : newDogs.length + " new dogs added to your album!")
+          : "Level " + level.level + " complete with " + state.moves + " moves.";
+      unlockPreview.innerHTML = newBack
+        ? '<span class="back-preview" style="--back-preview:url(' + newBack.tile + '); --icon-size:' + newBack.iconSize + '"><img src="' + newBack.icon + '" alt=""></span><span>' + newBack.name + '<br>Added to Card Backs</span>'
+        : newDogs.length
+          ? '<span class="dog-portrait" style="--dog-color:' + newDogs[0].color + '"><img src="' + newDogs[0].img + '" alt="' + newDogs[0].name + '"></span><span>' + (newDogs.length === 1 ? newDogs[0].name : newDogs[0].name + ' +' + (newDogs.length - 1)) + '<br>Added to Dog Album</span>'
+        : "";
+      unlockPreview.classList.toggle("show", !!newBack || !!newDogs.length);
+      if (newBack) showFloatingText("New card back!", "good");
+      else if (newDogs.length) showFloatingText(newDogs.length === 1 ? "New dog found!" : "New dogs found!", "good");
+      nextBtn.textContent = state.levelIndex >= levels.length - 1 ? "Back to level 1" : "Next level";
+      nextBtn.classList.remove("hidden");
+      againBtn.classList.add("hidden");
+      menuBtn.classList.remove("hidden");
+      statusEl.textContent = "All pairs found. That board has been officially sniffed.";
+    } else {
+      stars.textContent = "☆☆☆";
+      bestLine.textContent = "";
+      unlockPreview.innerHTML = "";
+      unlockPreview.classList.remove("show");
+      resultTitle.textContent = "Almost!";
+      resultKicker.textContent = "Give it another sniff";
+      resultText.textContent = "Match all " + level.pairs + " pairs within " + level.maxMoves + " moves to clear level " + level.level + ".";
+      nextBtn.classList.add("hidden");
+      againBtn.classList.remove("hidden");
+      menuBtn.classList.remove("hidden");
+      statusEl.textContent = "Lose screen open. Try the level again when you're ready.";
+    }
+
+    finishModal.classList.add("show");
+    updateStats();
+    renderLevelPath();
+  }
+
+  function startLevel(index) {
+    state.levelIndex = Math.max(0, Math.min(index, levels.length - 1));
+    state.deck = createDeck(currentLevel());
+    state.flipped = [];
+    state.matched = 0;
+    state.moves = 0;
+    state.locked = false;
+    state.finished = false;
+    state.hintsUsed = 0;
+    state.hinting = [];
+    state.wrongStreak = 0;
+    state.matchStreak = 0;
+    finishModal.classList.remove("show");
+    hardModal.classList.remove("show");
+    bestLine.textContent = "";
+    unlockPreview.innerHTML = "";
+    unlockPreview.classList.remove("show");
+    closeSettingsMenu();
+    nextBtn.classList.remove("hidden");
+    againBtn.classList.remove("hidden");
+    menuBtn.classList.remove("hidden");
+    setScreen("game");
+    screenMenu.classList.add("hidden");
+    screenLevels.classList.add("hidden");
+    screenGame.classList.remove("hidden");
+    statusEl.textContent = currentLevel().shuffle
+      ? "Hard level: hidden pups may move after missed pairs."
+      : "Pick two cards to find a pup pair.";
+    renderBoard();
+    updateStats();
+    updateHintBadge();
+    renderLevelPath();
+    showTutorialIfNeeded();
+    showHardIntroIfNeeded();
+  }
+
+  function showMenu() {
+    finishModal.classList.remove("show");
+    hardModal.classList.remove("show");
+    closeAlbum();
+    closeSettingsMenu();
+    setScreen("menu");
+    screenGame.classList.add("hidden");
+    screenLevels.classList.add("hidden");
+    screenMenu.classList.remove("hidden");
+  }
+
+  function showLevelPath() {
+    finishModal.classList.remove("show");
+    hardModal.classList.remove("show");
+    closeAlbum();
+    closeSettingsMenu();
+    setScreen("levels");
+    screenMenu.classList.add("hidden");
+    screenGame.classList.add("hidden");
+    screenLevels.classList.remove("hidden");
+    renderLevelPath();
+  }
+
+  function levelBadgeLeague(levelNumber) {
+    if (levelNumber <= 10) return "puppy-steps";
+    if (levelNumber <= 22) return "good-boy";
+    if (levelNumber <= 34) return "dog-park-pro";
+    if (levelNumber <= 46) return "show-dog";
+    return "alpha";
+  }
+
+  function badgeSrc(stateName, levelNumber) {
+    var nn = String(levelNumber).padStart(2, "0");
+    var league = levelBadgeLeague(levelNumber);
+    return "assets/level-badges/" + stateName + "/level-" + nn + "-" + league + "-" + stateName + ".png";
+  }
+
+  function renderLevelPath() {
+    trailMap.innerHTML = "";
+    var completedCount = 0;
+    var totalStars = 0;
+    levels.forEach(function (level, index) {
+      var earned = state.completed[index] || 0;
+      if (earned) completedCount++;
+      totalStars += earned;
+    });
+    levelsSummary.textContent = completedCount + "/" + levels.length;
+    starsSummary.textContent = totalStars + "/" + (levels.length * 3);
+    progressFill.style.width = Math.round((completedCount / levels.length) * 100) + "%";
+
+    levels.forEach(function (level, index) {
+      var earned = state.completed[index] || 0;
+      var locked = index > state.unlocked;
+      var completed = earned > 0;
+      var stateName = locked ? "locked" : completed ? "completed" : "playable";
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "trail-node" + (index === state.unlocked && !completed ? " current" : "");
+      btn.setAttribute("aria-label", locked ? "Level " + level.level + " locked" : "Play level " + level.level + ", " + level.name);
+      btn.innerHTML =
+        (index === state.unlocked && !completed ? '<span class="trail-ring"></span>' : '') +
+        '<img class="badge-img" src="' + badgeSrc(stateName, level.level) + '" alt="">' +
+        (completed ? '<span class="lv-stars">' + "★★★".slice(0, earned) + '</span>' : '') +
+        (completed && bestMovesFor(index) ? '<span class="best-tag">Best ' + bestMovesFor(index) + '</span>' : '') +
+        (!locked && !completed ? '<span class="play-tag">PLAY</span>' : '') +
+        (level.shuffle ? '<span class="hard-tag">HARD</span>' : '');
+      if (locked) {
+        btn.disabled = true;
+      } else {
+        btn.addEventListener("click", function () { startLevel(index); });
+      }
+      trailMap.appendChild(btn);
+    });
+  }
+
+  document.getElementById("playBtn").addEventListener("click", function () {
+    unlockAudio();
+    // First-time experience: skip the level map and drop new players straight into Level 1.
+    var isFirstTime = !devMode && !state.tutorialSeen && state.unlocked === 0 && Object.keys(state.completed).length === 0;
+    if (isFirstTime) {
+      startLevel(0);
+    } else {
+      showLevelPath();
+    }
+  });
+  document.getElementById("menuBackBtn").addEventListener("click", showMenu);
+  dogAlbumBtn.addEventListener("click", showAlbum);
+  cardBacksBtn.addEventListener("click", showShop);
+  shopCloseBtn.addEventListener("click", closeShop);
+  albumCloseBtn.addEventListener("click", closeAlbum);
+  tutorialStartBtn.addEventListener("click", closeTutorial);
+  hardStartBtn.addEventListener("click", closeHardIntro);
+  settingsBtn.addEventListener("click", function (event) {
+    event.stopPropagation();
+    toggleSettingsMenu();
+  });
+  hintBtn.addEventListener("click", requestHint);
+  settingsRestartBtn.addEventListener("click", function () { startLevel(state.levelIndex); });
+  settingsAlbumBtn.addEventListener("click", showAlbum);
+  settingsMusicBtn.addEventListener("click", function () {
+    state.musicOn = !state.musicOn;
+    updateSoundButtons();
+    saveProgress();
+    updateBackgroundMusic();
+    if (state.musicOn) {
+      unlockAudio();
+    }
+  });
+  settingsSfxBtn.addEventListener("click", function () {
+    state.sfxOn = !state.sfxOn;
+    updateSoundButtons();
+    saveProgress();
+    if (state.sfxOn) {
+      unlockAudio();
+      playBark("match");
+    }
+  });
+  settingsLevelsBtn.addEventListener("click", showLevelPath);
+  document.addEventListener("click", function (event) {
+    if (!settingsMenu.classList.contains("hidden") && !settingsMenu.contains(event.target) && event.target !== settingsBtn) {
+      closeSettingsMenu();
+    }
+  });
+  againBtn.addEventListener("click", function () { startLevel(state.levelIndex); });
+  menuBtn.addEventListener("click", showMenu);
+  nextBtn.addEventListener("click", function () {
+    startLevel((state.levelIndex + 1) % levels.length);
+  });
+
+  document.body.classList.toggle("dev-mode", devMode);
+  loadProgress();
+  updateSoundButtons();
+  showMenu();
+}());
+</script>
+</body>
+</html>
